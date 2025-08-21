@@ -62,21 +62,16 @@ class ApiClient {
     final url = '$baseUrl$endpoint';
     final headers = await _getHeaders();
     
-    print('GET request to: $url');
-    print('Headers: $headers');
     
     final response = await _client.get(
       Uri.parse(url),
       headers: headers,
     );
     
-    print('Response status: ${response.statusCode}');
     
     if (response.statusCode == 401 && _onTokenRefresh != null) {
-      print('Access token expired, attempting refresh...');
       final refreshSuccess = await _onTokenRefresh!();
       if (refreshSuccess) {
-        print('Token refreshed, retrying GET request...');
         final newHeaders = await _getHeaders();
         return await _client.get(
           Uri.parse(url),
@@ -92,10 +87,7 @@ class ApiClient {
     final url = '$baseUrl$endpoint';
     final requestHeaders = await _getHeaders(headers);
     
-    print('POST request to: $url');
-    print('Headers: $requestHeaders');
     if (body != null) {
-      print('Request body: ${json.encode(body)}');
     }
     
     final response = await _client.post(
@@ -104,14 +96,10 @@ class ApiClient {
       body: body != null ? json.encode(body) : null,
     );
     
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
     
     if (response.statusCode == 401 && _onTokenRefresh != null && !endpoint.contains('/auth/refresh')) {
-      print('Access token expired, attempting refresh...');
       final refreshSuccess = await _onTokenRefresh!();
       if (refreshSuccess) {
-        print('Token refreshed, retrying POST request...');
         final newHeaders = await _getHeaders(headers);
         return await _client.post(
           Uri.parse(url),

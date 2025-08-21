@@ -32,15 +32,12 @@ class AuthService extends ChangeNotifier {
     _setLoading(true);
     
     try {
-      print('Attempting JWT login with username: $username');
       
       final response = await _apiClient.post('/api/v1/auth/login', body: {
         'username': username,
         'password': password,
       });
       
-      print('JWT login response: ${response.statusCode}');
-      print('JWT login response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -98,7 +95,6 @@ class AuthService extends ChangeNotifier {
         );
       }
     } catch (e) {
-      print('JWT login error: $e');
       return AuthResponse(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -116,7 +112,6 @@ class AuthService extends ChangeNotifier {
     _setLoading(true);
     
     try {
-      print('Attempting JWT registration with username: $username');
       
       final response = await _apiClient.post('/api/v1/auth/register', body: {
         'username': username,
@@ -124,8 +119,6 @@ class AuthService extends ChangeNotifier {
         'password': password,
       });
 
-      print('JWT register response: ${response.statusCode}');
-      print('JWT register response body: ${response.body}');
 
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
@@ -172,7 +165,6 @@ class AuthService extends ChangeNotifier {
         );
       }
     } catch (e) {
-      print('JWT registration error: $e');
       return AuthResponse(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -192,7 +184,7 @@ class AuthService extends ChangeNotifier {
         });
       }
     } catch (e) {
-      print('Logout API call failed: $e');
+      // Ignore logout errors - user will be logged out locally regardless
     } finally {
       _currentUser = null;
       _accessToken = null;
@@ -249,7 +241,6 @@ class AuthService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print('Auth status check failed: $e');
       await logout();
       return false;
     }
@@ -261,7 +252,6 @@ class AuthService extends ChangeNotifier {
     }
     
     try {
-      print('Attempting to refresh JWT token');
       
       final response = await _apiClient.post('/api/v1/auth/refresh', body: {
         'refresh_token': _refreshToken!,
@@ -275,14 +265,11 @@ class AuthService extends ChangeNotifier {
         await _saveTokensToStorage(_accessToken!, _refreshToken!);
         _apiClient.setAuthToken(_accessToken!);
         
-        print('JWT token refreshed successfully');
         return true;
       } else {
-        print('JWT token refresh failed: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      print('JWT token refresh error: $e');
       return false;
     }
   }
@@ -321,7 +308,6 @@ class AuthService extends ChangeNotifier {
       try {
         return User.fromJson(json.decode(userJson));
       } catch (e) {
-        print('Failed to parse user from storage: $e');
         return null;
       }
     }
@@ -337,15 +323,12 @@ class AuthService extends ChangeNotifier {
     _setLoading(true);
     
     try {
-      print('Attempting TOTP verification with code: $code');
       
       final response = await _apiClient.post('/api/v1/auth/totp/verify', 
         body: {'code': code},
         headers: {'Authorization': 'Bearer $temporaryToken'},
       );
       
-      print('TOTP verify response: ${response.statusCode}');
-      print('TOTP verify response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -388,7 +371,6 @@ class AuthService extends ChangeNotifier {
         );
       }
     } catch (e) {
-      print('TOTP verification error: $e');
       return AuthResponse(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -406,11 +388,9 @@ class AuthService extends ChangeNotifier {
         final data = json.decode(response.body);
         return TOTPSetupResponse.fromJson(data);
       } else {
-        print('TOTP setup failed: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('TOTP setup error: $e');
       return null;
     }
   }
@@ -431,11 +411,9 @@ class AuthService extends ChangeNotifier {
         }
         return true;
       } else {
-        print('TOTP enable failed: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      print('TOTP enable error: $e');
       return false;
     }
   }
@@ -457,11 +435,9 @@ class AuthService extends ChangeNotifier {
         }
         return true;
       } else {
-        print('TOTP disable failed: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      print('TOTP disable error: $e');
       return false;
     }
   }
@@ -474,89 +450,69 @@ class AuthService extends ChangeNotifier {
         final data = json.decode(response.body);
         return TOTPStatusResponse.fromJson(data);
       } else {
-        print('TOTP status failed: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('TOTP status error: $e');
       return null;
     }
   }
 
   Future<List<UserSession>?> getSessions() async {
     try {
-      print('Attempting to fetch user sessions');
       
       final response = await _apiClient.post('/api/v1/sessions', body: {
         'refresh_token': _refreshToken!,
       });
       
-      print('Sessions response: ${response.statusCode}');
-      print('Sessions response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('Sessions data: $data');
         final sessionsResponse = SessionsResponse.fromJson(data);
         
         return sessionsResponse.sessions;
       } else {
-        final data = json.decode(response.body);
-        print('Failed to fetch sessions: ${data['message']}');
+        // Failed to fetch sessions
         return null;
       }
     } catch (e) {
-      print('Sessions fetch error: $e');
       return null;
     }
   }
 
   Future<bool> revokeSession(int sessionId) async {
     try {
-      print('Attempting to revoke session: $sessionId');
       
       final response = await _apiClient.post('/api/v1/sessions/revoke', body: {
         'session_id': sessionId,
       });
       
-      print('Revoke session response: ${response.statusCode}');
-      print('Revoke session response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        print('Session revoked successfully');
         return true;
       } else {
-        final data = json.decode(response.body);
-        print('Failed to revoke session: ${data['message']}');
+        // Failed to revoke session
         return false;
       }
     } catch (e) {
-      print('Session revoke error: $e');
       return false;
     }
   }
 
   Future<bool> revokeAllOtherSessions() async {
     try {
-      print('Attempting to revoke all other sessions');
       
       final response = await _apiClient.post('/api/v1/sessions/revoke-all-others', body: {
         'refresh_token': _refreshToken!,
       });
       
-      print('Revoke all sessions response: ${response.statusCode}');
-      print('Revoke all sessions response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        print('All other sessions revoked successfully');
         return true;
       } else {
-        final data = json.decode(response.body);
-        print('Failed to revoke all sessions: ${data['message']}');
+        // Failed to revoke all sessions
         return false;
       }
     } catch (e) {
-      print('Revoke all sessions error: $e');
       return false;
     }
   }

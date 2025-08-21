@@ -22,17 +22,14 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
 
   Future<void> _saveAndContinue() async {
     final url = _urlController.text.trim();
-    print('Saving URL: $url');
     
     final configService = context.read<ConfigService>();
     final success = await configService.setServerUrl(url);
     
     if (success && mounted) {
       context.read<ApiClient>().setBaseUrl(url);
-      print('URL saved, ready for login');
       context.go('/login');
     } else {
-      print('Failed to save URL');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Failed to save server URL'),
