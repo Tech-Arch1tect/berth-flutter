@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 import '../../services/config_service.dart';
+import '../../theme/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -89,15 +90,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    border: Border.all(color: Colors.green.shade200),
+                    color: Theme.of(context).colorScheme.successContainer,
+                    border: Border.all(color: Theme.of(context).colorScheme.success),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.cloud_done_outlined,
-                        color: Colors.green.shade700,
+                        color: Theme.of(context).colorScheme.onSuccessContainer,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -108,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text(
                               'Connected to server',
                               style: TextStyle(
-                                color: Colors.green.shade700,
+                                color: Theme.of(context).colorScheme.onSuccessContainer,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
                               ),
@@ -116,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text(
                               configService.serverUrl!,
                               style: TextStyle(
-                                color: Colors.green.shade600,
+                                color: Theme.of(context).colorScheme.onSuccessContainer,
                                 fontSize: 12,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -147,11 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
               
               const SizedBox(height: 8),
               
-              const Text(
+              Text(
                 'Sign in to your account',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -215,15 +216,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          border: Border.all(color: Colors.red.shade200),
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          border: Border.all(color: Theme.of(context).colorScheme.error),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
                             Icon(
                               Icons.error_outline,
-                              color: Colors.red.shade700,
+                              color: Theme.of(context).colorScheme.onErrorContainer,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
@@ -231,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 _errorMessage!,
                                 style: TextStyle(
-                                  color: Colors.red.shade700,
+                                  color: Theme.of(context).colorScheme.onErrorContainer,
                                   fontSize: 14,
                                 ),
                               ),
@@ -249,19 +250,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: authService.isLoading ? null : _handleLogin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              foregroundColor: Colors.white,
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             child: authService.isLoading
-                                ? const SizedBox(
+                                ? SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: CircularProgressIndicator(
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                       strokeWidth: 2,
                                     ),
                                   )

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
+import '../theme/app_theme.dart';
 
 class AppDrawer extends StatelessWidget {
   final String currentRoute;
@@ -102,8 +103,8 @@ class AppDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+            title: Text('Logout', style: TextStyle(color: Theme.of(context).colorScheme.error)),
             onTap: () async {
               Navigator.pop(context);
               await authService.logout();
@@ -197,16 +198,16 @@ class AppDrawer extends StatelessWidget {
                   
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Two-factor authentication has been disabled'),
-                        backgroundColor: Colors.green,
+                      SnackBar(
+                        content: const Text('Two-factor authentication has been disabled'),
+                        backgroundColor: Theme.of(context).colorScheme.success,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Failed to disable two-factor authentication'),
-                        backgroundColor: Colors.red,
+                      SnackBar(
+                        content: const Text('Failed to disable two-factor authentication'),
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                     );
                   }

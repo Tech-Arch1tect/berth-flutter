@@ -34,9 +34,9 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
     } else {
       print('Failed to save URL');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to save server URL'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Failed to save server URL'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
