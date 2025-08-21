@@ -89,13 +89,13 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: Icon(
                     Icons.security,
                     size: 40,
-                    color: Colors.blue.shade600,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
               ),
@@ -113,11 +113,11 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
               
               const SizedBox(height: 8),
               
-              const Text(
+              Text(
                 'Please enter the 6-digit code from your authenticator app',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -164,15 +164,15 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          border: Border.all(color: Colors.red.shade200),
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          border: Border.all(color: Theme.of(context).colorScheme.error),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
                             Icon(
                               Icons.error_outline,
-                              color: Colors.red.shade700,
+                              color: Theme.of(context).colorScheme.onErrorContainer,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
@@ -180,7 +180,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                               child: Text(
                                 _errorMessage!,
                                 style: TextStyle(
-                                  color: Colors.red.shade700,
+                                  color: Theme.of(context).colorScheme.onErrorContainer,
                                   fontSize: 14,
                                 ),
                               ),
@@ -234,8 +234,8 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  border: Border.all(color: Colors.blue.shade200),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  border: Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -245,14 +245,14 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: Colors.blue.shade700,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           'Need help?',
                           style: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
@@ -263,7 +263,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                     Text(
                       'Open your authenticator app (Google Authenticator, Authy, etc.) and enter the 6-digit code that\'s currently displayed for this account.',
                       style: TextStyle(
-                        color: Colors.blue.shade600,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                         fontSize: 13,
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/session.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_drawer.dart';
+import '../theme/app_theme.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -56,10 +57,10 @@ class _SessionsScreenState extends State<SessionsScreen> {
 
       if (mounted) {
         if (success) {
-          _showSnackBar('Session revoked successfully', Colors.green);
+          _showSnackBar('Session revoked successfully', Theme.of(context).colorScheme.success);
           _loadSessions();
         } else {
-          _showSnackBar('Failed to revoke session', Colors.red);
+          _showSnackBar('Failed to revoke session', Theme.of(context).colorScheme.error);
         }
       }
     }
@@ -79,10 +80,10 @@ class _SessionsScreenState extends State<SessionsScreen> {
 
       if (mounted) {
         if (success) {
-          _showSnackBar('All other sessions revoked successfully', Colors.green);
+          _showSnackBar('All other sessions revoked successfully', Theme.of(context).colorScheme.success);
           _loadSessions();
         } else {
-          _showSnackBar('Failed to revoke other sessions', Colors.red);
+          _showSnackBar('Failed to revoke other sessions', Theme.of(context).colorScheme.error);
         }
       }
     }
@@ -101,14 +102,14 @@ class _SessionsScreenState extends State<SessionsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
+                foregroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: const Text('Revoke'),
+              child: Text('Revoke'),
             ),
           ],
         );
@@ -171,34 +172,34 @@ class _SessionsScreenState extends State<SessionsScreen> {
     return Icons.computer;
   }
 
-  Color _getSessionColor(UserSession session) {
+  Color _getSessionColor(BuildContext context, UserSession session) {
     if (session.current) {
-      return Colors.green;
+      return Theme.of(context).colorScheme.success;
     } else if (session.isExpired) {
-      return Colors.red;
+      return Theme.of(context).colorScheme.error;
     } else {
-      return Colors.blue;
+      return Theme.of(context).colorScheme.primary;
     }
   }
 
-  Color _getDeviceTypeColor(UserSession session) {
-    if (session.bot) return Colors.purple;
-    if (session.mobile) return Colors.blue;
-    if (session.tablet) return Colors.green;
-    return Colors.grey;
+  Color _getDeviceTypeColor(BuildContext context, UserSession session) {
+    if (session.bot) return Theme.of(context).colorScheme.secondary;
+    if (session.mobile) return Theme.of(context).colorScheme.primary;
+    if (session.tablet) return Theme.of(context).colorScheme.success;
+    return Theme.of(context).colorScheme.onSurfaceVariant;
   }
 
-  Widget _buildSessionCard(UserSession session) {
+  Widget _buildSessionCard(BuildContext context, UserSession session) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
         leading: CircleAvatar(
-          backgroundColor: _getSessionColor(session).withValues(alpha: 0.2),
+          backgroundColor: _getSessionColor(context, session).withValues(alpha: 0.2),
           child: Icon(
             _getDeviceIcon(session),
-            color: _getSessionColor(session),
+            color: _getSessionColor(context, session),
           ),
         ),
         title: Row(
@@ -209,50 +210,50 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: _getDeviceTypeColor(session),
+                color: _getDeviceTypeColor(context, session),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 session.deviceType,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 session.type.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.surface,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             if (session.current) ...[
-              const SizedBox(width: 4),
+              SizedBox(width: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: Theme.of(context).colorScheme.success,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
+                child: Text(
                   'Current',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSuccess,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -264,18 +265,18 @@ class _SessionsScreenState extends State<SessionsScreen> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text('Operating System: ${session.os}'),
             Text('Device: ${session.device}'),
             Text('Location: ${session.location}'),
             Text('IP Address: ${session.ipAddress}'),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Row(
               children: [
                 Text(
                   'Last Active: ${_formatDateTime(session.lastUsed)}',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 12,
                   ),
                 ),
@@ -286,7 +287,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 Text(
                   'Created: ${_formatDateTime(session.createdAt)}',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 12,
                   ),
                 ),
@@ -297,16 +298,16 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 Text(
                   'Expires: ${_formatDateTime(session.expiresAt)}',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 12,
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 if (session.isExpired)
                   Text(
                     'Expired',
                     style: TextStyle(
-                      color: Colors.red[600],
+                      color: Theme.of(context).colorScheme.error,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -318,7 +319,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
         trailing: session.current
             ? null
             : IconButton(
-                icon: const Icon(Icons.logout, color: Colors.red),
+                icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
                 onPressed: () => _revokeSession(session),
                 tooltip: 'Revoke Session',
               ),
@@ -330,15 +331,15 @@ class _SessionsScreenState extends State<SessionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Active Sessions'),
+        title: Text('Active Sessions'),
         actions: [
           if (_sessions.where((s) => !s.current).isNotEmpty)
             TextButton.icon(
               onPressed: _revokeAllOtherSessions,
-              icon: const Icon(Icons.logout, color: Colors.red),
-              label: const Text(
+              icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+              label: Text(
                 'Revoke All Others',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
           IconButton(
@@ -355,7 +356,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -368,18 +369,18 @@ class _SessionsScreenState extends State<SessionsScreen> {
             Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red[300],
+              color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               _errorMessage!,
               style: const TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadSessions,
-              child: const Text('Retry'),
+              child: Text('Retry'),
             ),
           ],
         ),
@@ -387,14 +388,14 @@ class _SessionsScreenState extends State<SessionsScreen> {
     }
 
     if (_sessions.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.devices_other,
               size: 64,
-              color: Colors.grey,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             SizedBox(height: 16),
             Text(
@@ -418,7 +419,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         itemCount: _sessions.length,
         itemBuilder: (context, index) {
-          return _buildSessionCard(_sessions[index]);
+          return _buildSessionCard(context, _sessions[index]);
         },
       ),
     );

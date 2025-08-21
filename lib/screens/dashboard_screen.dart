@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_drawer.dart';
+import '../theme/app_theme.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -37,34 +38,34 @@ class DashboardScreen extends StatelessWidget {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'profile',
                 child: Row(
                   children: [
                     Icon(Icons.person),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text('Profile'),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'settings',
                 child: Row(
                   children: [
                     Icon(Icons.settings),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text('Settings'),
                   ],
                 ),
               ),
               const PopupMenuDivider(),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Logout', style: TextStyle(color: Colors.red)),
+                    Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                    const SizedBox(width: 8),
+                    Text('Logout', style: TextStyle(color: Theme.of(context).colorScheme.error)),
                   ],
                 ),
               ),
@@ -99,13 +100,13 @@ class DashboardScreen extends StatelessWidget {
                   Text(
                     'Welcome back,',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9),
                     ),
                   ),
                   Text(
                     '${authService.currentUser?.username ?? 'User'}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -113,7 +114,7 @@ class DashboardScreen extends StatelessWidget {
                   Text(
                     'Have a productive day!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -143,7 +144,7 @@ class DashboardScreen extends StatelessWidget {
                   'Sessions',
                   Icons.devices,
                   'Manage active sessions',
-                  Colors.blue,
+                  Theme.of(context).colorScheme.primary,
                   () => context.go('/sessions'),
                 ),
                 _buildQuickActionCard(
@@ -151,7 +152,7 @@ class DashboardScreen extends StatelessWidget {
                   '2FA Settings',
                   Icons.security,
                   authService.currentUser?.totpEnabled == true ? 'Manage 2FA' : 'Enable 2FA',
-                  authService.currentUser?.totpEnabled == true ? Colors.green : Colors.orange,
+                  authService.currentUser?.totpEnabled == true ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.warning,
                   () {
                     if (authService.currentUser?.totpEnabled == true) {
                       _showTOTPManagementDialog(context);
@@ -203,7 +204,7 @@ class DashboardScreen extends StatelessWidget {
                               Text(
                                 authService.currentUser?.email ?? '',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
@@ -218,6 +219,7 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _buildInfoChip(
+                            context,
                             'Account ID',
                             '${authService.currentUser?.id}',
                             Icons.badge,
@@ -226,10 +228,11 @@ class DashboardScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: _buildInfoChip(
+                            context,
                             'Two-Factor Auth',
                             authService.currentUser?.totpEnabled == true ? 'Enabled' : 'Disabled',
                             Icons.security,
-                            color: authService.currentUser?.totpEnabled == true ? Colors.green : Colors.orange,
+                            color: authService.currentUser?.totpEnabled == true ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.warning,
                           ),
                         ),
                       ],
@@ -286,7 +289,7 @@ class DashboardScreen extends StatelessWidget {
               Text(
                 subtitle,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -299,18 +302,18 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip(String label, String value, IconData icon, {Color? color}) {
+  Widget _buildInfoChip(BuildContext context, String label, String value, IconData icon, {Color? color}) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: (color ?? Colors.grey).withValues(alpha: 0.1),
+        color: (color ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
           Icon(
             icon,
-            color: color ?? Colors.grey[600],
+            color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
             size: 20,
           ),
           const SizedBox(height: 8),
@@ -318,7 +321,7 @@ class DashboardScreen extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -328,7 +331,7 @@ class DashboardScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: color ?? Colors.grey[800],
+              color: color ?? Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -414,16 +417,16 @@ class DashboardScreen extends StatelessWidget {
                   
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Two-factor authentication has been disabled'),
-                        backgroundColor: Colors.green,
+                      SnackBar(
+                        content: const Text('Two-factor authentication has been disabled'),
+                        backgroundColor: Theme.of(context).colorScheme.success,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Failed to disable two-factor authentication'),
-                        backgroundColor: Colors.red,
+                      SnackBar(
+                        content: const Text('Failed to disable two-factor authentication'),
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                     );
                   }

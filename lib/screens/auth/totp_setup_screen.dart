@@ -193,8 +193,8 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.grey.shade300),
+                                  color: Theme.of(context).colorScheme.surface,
+                                  border: Border.all(color: Theme.of(context).colorScheme.outline),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Center(
@@ -207,18 +207,18 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              const Text(
+                              Text(
                                 'Or manually enter this secret key:',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Row(
@@ -295,15 +295,15 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.shade50,
-                                      border: Border.all(color: Colors.red.shade200),
+                                      color: Theme.of(context).colorScheme.errorContainer,
+                                      border: Border.all(color: Theme.of(context).colorScheme.error),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
                                       children: [
                                         Icon(
                                           Icons.error_outline,
-                                          color: Colors.red.shade700,
+                                          color: Theme.of(context).colorScheme.onErrorContainer,
                                           size: 20,
                                         ),
                                         const SizedBox(width: 8),
@@ -311,7 +311,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                           child: Text(
                                             _errorMessage!,
                                             style: TextStyle(
-                                              color: Colors.red.shade700,
+                                              color: Theme.of(context).colorScheme.onErrorContainer,
                                               fontSize: 14,
                                             ),
                                           ),
@@ -375,8 +375,8 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.orange.shade50,
-                            border: Border.all(color: Colors.orange.shade200),
+                            color: Theme.of(context).colorScheme.tertiaryContainer,
+                            border: Border.all(color: Theme.of(context).colorScheme.tertiary),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
@@ -386,14 +386,14 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                 children: [
                                   Icon(
                                     Icons.warning_outlined,
-                                    color: Colors.orange.shade700,
+                                    color: Theme.of(context).colorScheme.onTertiaryContainer,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'Important',
                                     style: TextStyle(
-                                      color: Colors.orange.shade700,
+                                      color: Theme.of(context).colorScheme.onTertiaryContainer,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
                                     ),
@@ -404,7 +404,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                               Text(
                                 'Make sure to save your secret key in a secure location. If you lose access to your authenticator app, you\'ll need this key to regain access to your account.',
                                 style: TextStyle(
-                                  color: Colors.orange.shade700,
+                                  color: Theme.of(context).colorScheme.onTertiaryContainer,
                                   fontSize: 13,
                                 ),
                               ),
