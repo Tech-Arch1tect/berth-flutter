@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../config/app_config.dart';
 
 class ApiClient {
   final http.Client _client;
-  static const _secureStorage = FlutterSecureStorage();
   String? _baseUrl;
   String? _authToken;
   Function? _onTokenRefresh;
@@ -35,21 +33,11 @@ class ApiClient {
     return _baseUrl!;
   }
 
-  Future<Map<String, String>> _getHeaders([Map<String, String>? additionalHeaders]) async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    final mobileAppHeader = await _secureStorage.read(key: 'mobile_app_header') ?? 
-                           prefs.getString('mobile_app_header') ?? 'X-Mobile-App';
-    final mobileAppIdentifier = await _secureStorage.read(key: 'mobile_app_identifier') ?? 
-                               prefs.getString('mobile_app_identifier') ?? 'brx-flutter';
-    final userAgent = await _secureStorage.read(key: 'user_agent') ?? 
-                     prefs.getString('user_agent') ?? 'BRX-Flutter-Mobile-App/1.0';
-    
+  Map<String, String> _getHeaders([Map<String, String>? additionalHeaders]) {
     final headers = <String, String>{
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      mobileAppHeader: mobileAppIdentifier,
-      'User-Agent': userAgent,
+      ...AppConfig.defaultHeaders,
+      AppConfig.mobileAppHeader: AppConfig.mobileAppIdentifier,
+      'User-Agent': AppConfig.userAgent,
     };
     
     if (_authToken != null && _authToken!.isNotEmpty) {
@@ -65,7 +53,7 @@ class ApiClient {
 
   Future<http.Response> get(String endpoint) async {
     final url = '$baseUrl$endpoint';
-    final headers = await _getHeaders();
+    final headers = _getHeaders();
     
     
     final response = await _client.get(
@@ -77,7 +65,7 @@ class ApiClient {
     if (response.statusCode == 401 && _onTokenRefresh != null) {
       final refreshSuccess = await _onTokenRefresh!();
       if (refreshSuccess) {
-        final newHeaders = await _getHeaders();
+        final newHeaders = _getHeaders();
         return await _client.get(
           Uri.parse(url),
           headers: newHeaders,
@@ -90,7 +78,7 @@ class ApiClient {
 
   Future<http.Response> post(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     final url = '$baseUrl$endpoint';
-    final requestHeaders = await _getHeaders(headers);
+    final requestHeaders = _getHeaders(headers);
     
     if (body != null) {
     }
@@ -105,7 +93,7 @@ class ApiClient {
     if (response.statusCode == 401 && _onTokenRefresh != null && !endpoint.contains('/auth/refresh')) {
       final refreshSuccess = await _onTokenRefresh!();
       if (refreshSuccess) {
-        final newHeaders = await _getHeaders(headers);
+        final newHeaders = _getHeaders(headers);
         return await _client.post(
           Uri.parse(url),
           headers: newHeaders,
