@@ -122,6 +122,10 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Setup Two-Factor Authentication'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/dashboard'),
+        ),
       ),
       body: SafeArea(
         child: _isLoading
@@ -346,6 +350,19 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: TextButton(
+                                    onPressed: () => context.go('/dashboard'),
+                                    child: const Text(
+                                      'Skip for now',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
