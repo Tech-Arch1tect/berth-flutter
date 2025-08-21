@@ -20,9 +20,7 @@ class DashboardScreen extends StatelessWidget {
             onSelected: (value) async {
               switch (value) {
                 case 'profile':
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile - TODO: implement navigation')),
-                  );
+                  context.go('/profile');
                   break;
                 case 'settings':
                   ScaffoldMessenger.of(context).showSnackBar(

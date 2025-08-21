@@ -84,11 +84,12 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text('Profile'),
+            selected: currentRoute == '/profile',
             onTap: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profile - TODO: implement navigation')),
-              );
+              if (currentRoute != '/profile') {
+                context.go('/profile');
+              }
             },
           ),
           ListTile(
