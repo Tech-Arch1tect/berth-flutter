@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ConfigService extends ChangeNotifier {
+  static const _secureStorage = FlutterSecureStorage();
   String? _serverUrl;
   bool _isConfigured = false;
 
@@ -9,8 +10,7 @@ class ConfigService extends ChangeNotifier {
   bool get isConfigured => _isConfigured;
 
   Future<void> loadConfiguration() async {
-    final prefs = await SharedPreferences.getInstance();
-    _serverUrl = prefs.getString('server_url');
+    _serverUrl = await _secureStorage.read(key: 'server_url');
     _isConfigured = _serverUrl != null && _serverUrl!.isNotEmpty;
     notifyListeners();
   }
@@ -24,8 +24,7 @@ class ConfigService extends ChangeNotifier {
 
       String cleanUrl = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
       
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('server_url', cleanUrl);
+      await _secureStorage.write(key: 'server_url', value: cleanUrl);
       
       _serverUrl = cleanUrl;
       _isConfigured = true;
@@ -38,8 +37,7 @@ class ConfigService extends ChangeNotifier {
   }
 
   Future<void> clearConfiguration() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('server_url');
+    await _secureStorage.delete(key: 'server_url');
     
     _serverUrl = null;
     _isConfigured = false;

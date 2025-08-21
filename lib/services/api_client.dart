@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
   final http.Client _client;
+  static const _secureStorage = FlutterSecureStorage();
   String? _baseUrl;
   String? _authToken;
   Function? _onTokenRefresh;
@@ -36,9 +38,12 @@ class ApiClient {
   Future<Map<String, String>> _getHeaders([Map<String, String>? additionalHeaders]) async {
     final prefs = await SharedPreferences.getInstance();
     
-    final mobileAppHeader = prefs.getString('mobile_app_header') ?? 'X-Mobile-App';
-    final mobileAppIdentifier = prefs.getString('mobile_app_identifier') ?? 'brx-flutter';
-    final userAgent = prefs.getString('user_agent') ?? 'BRX-Flutter-Mobile-App/1.0';
+    final mobileAppHeader = await _secureStorage.read(key: 'mobile_app_header') ?? 
+                           prefs.getString('mobile_app_header') ?? 'X-Mobile-App';
+    final mobileAppIdentifier = await _secureStorage.read(key: 'mobile_app_identifier') ?? 
+                               prefs.getString('mobile_app_identifier') ?? 'brx-flutter';
+    final userAgent = await _secureStorage.read(key: 'user_agent') ?? 
+                     prefs.getString('user_agent') ?? 'BRX-Flutter-Mobile-App/1.0';
     
     final headers = <String, String>{
       'Content-Type': 'application/json',

@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user.dart';
 import '../models/session.dart';
 import 'api_client.dart';
 
 class AuthService extends ChangeNotifier {
   final ApiClient _apiClient;
+  static const _secureStorage = FlutterSecureStorage();
   
   User? _currentUser;
   bool _isLoading = false;
@@ -275,15 +276,13 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> _saveTokensToStorage(String accessToken, String refreshToken) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', accessToken);
-    await prefs.setString('refresh_token', refreshToken);
+    await _secureStorage.write(key: 'access_token', value: accessToken);
+    await _secureStorage.write(key: 'refresh_token', value: refreshToken);
   }
 
   Future<Map<String, String?>> _getTokensFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final accessToken = prefs.getString('access_token');
-    final refreshToken = prefs.getString('refresh_token');
+    final accessToken = await _secureStorage.read(key: 'access_token');
+    final refreshToken = await _secureStorage.read(key: 'refresh_token');
     return {
       'access_token': accessToken,
       'refresh_token': refreshToken,
@@ -291,19 +290,16 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> _clearTokensFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('access_token');
-    await prefs.remove('refresh_token');
+    await _secureStorage.delete(key: 'access_token');
+    await _secureStorage.delete(key: 'refresh_token');
   }
 
   Future<void> _saveUserToStorage(User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('current_user', json.encode(user.toJson()));
+    await _secureStorage.write(key: 'current_user', value: json.encode(user.toJson()));
   }
 
   Future<User?> _getUserFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('current_user');
+    final userJson = await _secureStorage.read(key: 'current_user');
     if (userJson != null) {
       try {
         return User.fromJson(json.decode(userJson));
@@ -315,8 +311,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> _removeUserFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('current_user');
+    await _secureStorage.delete(key: 'current_user');
   }
 
   Future<AuthResponse> verifyTOTP(String temporaryToken, String code) async {

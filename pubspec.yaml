@@ -47,6 +47,9 @@ dependencies:
   # Shared preferences for app configuration and token storage
   shared_preferences: ^2.2.2
   
+  # Secure storage for sensitive data (tokens, credentials)
+  flutter_secure_storage: ^9.2.4
+  
   # JSON serialisation
   json_annotation: ^4.8.1
   
