@@ -24,16 +24,19 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
     final url = _urlController.text.trim();
     
     final configService = context.read<ConfigService>();
+    final apiClient = context.read<ApiClient>();
+    final colorScheme = Theme.of(context).colorScheme;
+    
     final success = await configService.setServerUrl(url);
     
     if (success && mounted) {
-      context.read<ApiClient>().setBaseUrl(url);
+      apiClient.setBaseUrl(url);
       context.go('/login');
-    } else {
+    } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Failed to save server URL'),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          backgroundColor: colorScheme.error,
         ),
       );
     }

@@ -43,6 +43,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   Future<void> _revokeSession(UserSession session) async {
+    final authService = Provider.of<AuthService>(context, listen: false);
     final confirmed = await _showRevokeConfirmDialog(
       title: 'Revoke Session',
       content: 'Are you sure you want to revoke this session?\n\n'
@@ -52,7 +53,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
     );
 
     if (confirmed == true) {
-      final authService = Provider.of<AuthService>(context, listen: false);
       final success = await authService.revokeSession(session.id);
 
       if (mounted) {
@@ -67,6 +67,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   Future<void> _revokeAllOtherSessions() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
     final confirmed = await _showRevokeConfirmDialog(
       title: 'Revoke All Other Sessions',
       content: 'This will log you out from all other devices and browsers.\n\n'
@@ -75,7 +76,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
     );
 
     if (confirmed == true) {
-      final authService = Provider.of<AuthService>(context, listen: false);
       final success = await authService.revokeAllOtherSessions();
 
       if (mounted) {
