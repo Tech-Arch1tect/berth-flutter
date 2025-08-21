@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 import '../../services/config_service.dart';
 
@@ -44,16 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result.success) {
       if (result.totpRequired && result.temporaryToken != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('TOTP verification required - will implement navigation')),
-        );
+        if (mounted) {
+          context.push('/totp-verify', extra: result.temporaryToken);
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (mounted) {
+          context.go('/dashboard');
+        }
       }
     } else {
       setState(() {
@@ -73,11 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const Text('Server Setup - TODO: implement navigation'),
-                ),
-              );
+              context.go('/server-setup');
             },
             tooltip: 'Change Server',
           ),
@@ -132,9 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Change server - TODO: implement navigation')),
-                          );
+                          context.go('/server-setup');
                         },
                         child: const Text('Change'),
                       ),
@@ -296,9 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Register - TODO: implement navigation')),
-                      );
+                      context.go('/register');
                     },
                     child: const Text('Sign Up'),
                   ),

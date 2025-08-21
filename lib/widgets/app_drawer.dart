@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -36,9 +37,9 @@ class AppDrawer extends StatelessWidget {
             selected: currentRoute == '/dashboard',
             onTap: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Dashboard - TODO: implement navigation')),
-              );
+              if (currentRoute != '/dashboard') {
+                context.go('/dashboard');
+              }
             },
           ),
           ListTile(
@@ -47,9 +48,9 @@ class AppDrawer extends StatelessWidget {
             selected: currentRoute == '/sessions',
             onTap: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sessions - TODO: implement navigation')),
-              );
+              if (currentRoute != '/sessions') {
+                context.go('/sessions');
+              }
             },
           ),
           ListTile(
@@ -61,9 +62,9 @@ class AppDrawer extends StatelessWidget {
               if (authService.currentUser?.totpEnabled == true) {
                 _showTOTPManagementDialog(context, authService);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('TOTP Setup - TODO: implement navigation')),
-                );
+                if (currentRoute != '/totp-setup') {
+                  context.go('/totp-setup');
+                }
               }
             },
           ),
@@ -96,9 +97,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.pop(context);
               await authService.logout();
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Logged out - TODO: implement navigation')),
-                );
+                context.go('/login');
               }
             },
           ),

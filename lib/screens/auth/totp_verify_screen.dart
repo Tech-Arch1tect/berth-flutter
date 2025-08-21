@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 
 class TOTPVerifyScreen extends StatefulWidget {
@@ -44,12 +45,9 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
     if (!mounted) return;
 
     if (result.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('TOTP verification successful! Will navigate to dashboard when routing is implemented.'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        context.go('/dashboard');
+      }
     } else {
       setState(() {
         _errorMessage = result.message;
@@ -61,9 +59,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
     final authService = context.read<AuthService>();
     await authService.logout();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cancelled TOTP verification. Will navigate to login when routing is implemented.')),
-      );
+      context.go('/login');
     }
   }
 

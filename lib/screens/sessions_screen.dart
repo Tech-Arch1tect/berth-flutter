@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/session.dart';
 import '../services/auth_service.dart';
+import '../widgets/app_drawer.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -347,6 +348,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
           ),
         ],
       ),
+      drawer: const AppDrawer(currentRoute: '/sessions'),
       body: _buildBody(),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../services/auth_service.dart';
 
@@ -96,13 +97,9 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('TOTP enabled! Will navigate to dashboard when routing is implemented.'),
-                  backgroundColor: Colors.green,
-                ),
-              );
+              if (mounted) {
+                context.go('/dashboard');
+              }
             },
             child: const Text('Continue'),
           ),

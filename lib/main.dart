@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'services/config_service.dart';
 import 'services/auth_service.dart';
 import 'services/api_client.dart';
+import 'screens/setup/simple_server_setup.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/register_screen.dart';
+import 'screens/auth/totp_setup_screen.dart';
+import 'screens/auth/totp_verify_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/sessions_screen.dart';
 
 void main() {
   runApp(const AppInitializer());
@@ -83,7 +91,7 @@ class BrxApp extends StatelessWidget {
         Provider.value(value: apiClient),
         ChangeNotifierProvider.value(value: authService),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'BRX Mobile',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -96,12 +104,85 @@ class BrxApp extends StatelessWidget {
             elevation: 0,
           ),
         ),
-        home: const Scaffold(
-          body: Center(
-            child: Text('BRX Mobile App - Ready for routing'),
-          ),
-        ),
+        routerConfig: _createRouter(),
       ),
     );
+  }
+
+  GoRouter _createRouter() {
+    return GoRouter(
+      initialLocation: _getInitialLocation(),
+      redirect: (context, state) {
+        final isConfigured = configService.isConfigured;
+        final isAuthenticated = authService.isAuthenticated;
+        final path = state.fullPath;
+
+        if (!isConfigured && path != '/server-setup') {
+          return '/server-setup';
+        }
+
+        if (isConfigured && !isAuthenticated && 
+            !path!.startsWith('/login') && 
+            !path.startsWith('/register') &&
+            !path.startsWith('/totp-verify') &&
+            path != '/server-setup') {
+          return '/login';
+        }
+
+        if (isAuthenticated && (path == '/login' || path == '/register')) {
+          return '/dashboard';
+        }
+
+        return null;
+      },
+      routes: [
+        GoRoute(
+          path: '/server-setup',
+          builder: (context, state) => const SimpleServerSetupScreen(),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const RegisterScreen(),
+        ),
+        GoRoute(
+          path: '/totp-verify',
+          builder: (context, state) {
+            final temporaryToken = state.extra as String?;
+            if (temporaryToken == null) {
+              return const LoginScreen();
+            }
+            return TOTPVerifyScreen(temporaryToken: temporaryToken);
+          },
+        ),
+        GoRoute(
+          path: '/totp-setup',
+          builder: (context, state) => const TOTPSetupScreen(),
+        ),
+        GoRoute(
+          path: '/dashboard',
+          builder: (context, state) => const DashboardScreen(),
+        ),
+        GoRoute(
+          path: '/sessions',
+          builder: (context, state) => const SessionsScreen(),
+        ),
+      ],
+    );
+  }
+
+  String _getInitialLocation() {
+    if (!configService.isConfigured) {
+      return '/server-setup';
+    }
+    
+    if (authService.isAuthenticated) {
+      return '/dashboard';
+    }
+    
+    return '/login';
   }
 }

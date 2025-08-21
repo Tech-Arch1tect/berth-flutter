@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
+import '../widgets/app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -29,9 +31,7 @@ class DashboardScreen extends StatelessWidget {
                 case 'logout':
                   await authService.logout();
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logged out successfully!')),
-                    );
+                    context.go('/login');
                   }
                   break;
               }
@@ -72,6 +72,7 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
+      drawer: const AppDrawer(currentRoute: '/dashboard'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -143,9 +144,7 @@ class DashboardScreen extends StatelessWidget {
                   Icons.devices,
                   'Manage active sessions',
                   Colors.blue,
-                  () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sessions - TODO: implement navigation')),
-                  ),
+                  () => context.go('/sessions'),
                 ),
                 _buildQuickActionCard(
                   context,
@@ -157,9 +156,7 @@ class DashboardScreen extends StatelessWidget {
                     if (authService.currentUser?.totpEnabled == true) {
                       _showTOTPManagementDialog(context);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Enable TOTP - TODO: implement navigation')),
-                      );
+                      context.go('/totp-setup');
                     }
                   },
                 ),

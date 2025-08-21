@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/config_service.dart';
 import '../../services/api_client.dart';
 
@@ -29,12 +30,7 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
     if (success && mounted) {
       context.read<ApiClient>().setBaseUrl(url);
       print('URL saved, ready for login');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Server configured successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      context.go('/login');
     } else {
       print('Failed to save URL');
       ScaffoldMessenger.of(context).showSnackBar(

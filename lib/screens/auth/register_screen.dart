@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 import '../../services/config_service.dart';
 
@@ -49,12 +50,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (result.success) {
       if (result.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful! You are now logged in.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (mounted) {
+          context.go('/dashboard');
+        }
       } else {
         setState(() {
           _successMessage = result.message;
@@ -82,9 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Change server - TODO: implement navigation')),
-              );
+              context.go('/server-setup');
             },
             tooltip: 'Change Server',
           ),
@@ -139,9 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Change server - TODO: implement navigation')),
-                          );
+                          context.go('/server-setup');
                         },
                         child: const Text('Change'),
                       ),
@@ -361,7 +355,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const Text('Already have an account? '),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      context.go('/login');
                     },
                     child: const Text('Sign In'),
                   ),
