@@ -20,8 +20,19 @@ class AppDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            accountName: Text(authService.currentUser?.username ?? 'User'),
-            accountEmail: Text(authService.currentUser?.email ?? ''),
+            accountName: Text(
+              authService.currentUser?.username ?? 'User',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            accountEmail: Text(
+              authService.currentUser?.email ?? '',
+              style: const TextStyle(
+                color: Colors.white70,
+              ),
+            ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(
