@@ -11,6 +11,7 @@ import 'screens/auth/totp_setup_screen.dart';
 import 'screens/auth/totp_verify_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/sessions_screen.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(const AppInitializer());
@@ -93,17 +94,9 @@ class BrxApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         title: 'BRX Mobile',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.light,
-          ),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            elevation: 0,
-          ),
-        ),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
         routerConfig: _createRouter(),
       ),
     );
