@@ -1,0 +1,220 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
+
+class AppDrawer extends StatelessWidget {
+  final String currentRoute;
+  
+  const AppDrawer({super.key, required this.currentRoute});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = context.read<AuthService>();
+    
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            accountName: Text(authService.currentUser?.username ?? 'User'),
+            accountEmail: Text(authService.currentUser?.email ?? ''),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.person,
+                color: Theme.of(context).primaryColor,
+                size: 32,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Dashboard'),
+            selected: currentRoute == '/dashboard',
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Dashboard - TODO: implement navigation')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.devices),
+            title: const Text('Active Sessions'),
+            selected: currentRoute == '/sessions',
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Sessions - TODO: implement navigation')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.security),
+            title: const Text('Two-Factor Authentication'),
+            selected: currentRoute == '/totp-setup',
+            onTap: () {
+              Navigator.pop(context);
+              if (authService.currentUser?.totpEnabled == true) {
+                _showTOTPManagementDialog(context, authService);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('TOTP Setup - TODO: implement navigation')),
+                );
+              }
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profile - TODO: implement navigation')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Settings - TODO: implement navigation')),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () async {
+              Navigator.pop(context);
+              await authService.logout();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Logged out - TODO: implement navigation')),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTOTPManagementDialog(BuildContext context, AuthService authService) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Manage Two-Factor Authentication'),
+        content: const Text(
+          'Two-factor authentication is currently enabled for your account. '
+          'To disable it, you would need to provide your current TOTP code and password.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _showDisableTOTPDialog(context, authService);
+            },
+            child: const Text('Disable 2FA'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDisableTOTPDialog(BuildContext context, AuthService authService) {
+    final codeController = TextEditingController();
+    final passwordController = TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Disable Two-Factor Authentication'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'To disable two-factor authentication, please enter your current TOTP code and password:',
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: codeController,
+                decoration: const InputDecoration(
+                  labelText: 'TOTP Code',
+                  hintText: 'Enter 6-digit code',
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: isLoading ? null : () async {
+                setState(() => isLoading = true);
+                
+                final success = await authService.disableTOTP(
+                  codeController.text.trim(),
+                  passwordController.text,
+                );
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Two-factor authentication has been disabled'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to disable two-factor authentication'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+                
+                setState(() => isLoading = false);
+              },
+              child: isLoading 
+                  ? const SizedBox(
+                      width: 16, 
+                      height: 16, 
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Disable'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
