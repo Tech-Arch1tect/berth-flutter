@@ -88,8 +88,8 @@ class DashboardScreen extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor.withOpacity(0.8),
+                    Theme.of(context).colorScheme.primaryContainer,
+                    Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -100,13 +100,13 @@ class DashboardScreen extends StatelessWidget {
                   Text(
                     'Welcome back,',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9),
+                      color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.9),
                     ),
                   ),
                   Text(
                     '${authService.currentUser?.username ?? 'User'}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -114,7 +114,7 @@ class DashboardScreen extends StatelessWidget {
                   Text(
                     'Have a productive day!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.8),
+                      color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -183,10 +183,10 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 24,
-                          backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                           child: Icon(
                             Icons.person,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                             size: 28,
                           ),
                         ),
