@@ -102,7 +102,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${authService.currentUser?.username ?? 'User'}',
+                    authService.currentUser?.username ?? 'User',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
