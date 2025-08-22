@@ -12,6 +12,7 @@ import 'screens/auth/totp_verify_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/sessions_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/admin/users_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -167,6 +168,10 @@ class BrxApp extends StatelessWidget {
         GoRoute(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
+        ),
+        GoRoute(
+          path: '/admin/users',
+          builder: (context, state) => const UsersScreen(),
         ),
       ],
     );

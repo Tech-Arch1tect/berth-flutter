@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'role.dart';
 
 part 'user.g.dart';
 
@@ -12,9 +13,10 @@ class User {
   @JsonKey(name: 'totp_enabled')
   final bool totpEnabled;
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  final String? createdAt;
   @JsonKey(name: 'updated_at')
-  final String updatedAt;
+  final String? updatedAt;
+  final List<Role>? roles;
 
   User({
     required this.id,
@@ -22,9 +24,16 @@ class User {
     required this.email,
     this.emailVerifiedAt,
     required this.totpEnabled,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.roles,
   });
+  
+  bool hasRole(String roleName) {
+    return roles?.any((role) => role.name == roleName) ?? false;
+  }
+  
+  bool get isAdmin => hasRole('admin');
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);

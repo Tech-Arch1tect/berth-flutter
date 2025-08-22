@@ -80,6 +80,20 @@ class AppDrawer extends StatelessWidget {
               }
             },
           ),
+          if (authService.currentUser?.isAdmin == true) ...[
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('User Management'),
+              selected: currentRoute == '/admin/users',
+              onTap: () {
+                Navigator.pop(context);
+                if (currentRoute != '/admin/users') {
+                  context.go('/admin/users');
+                }
+              },
+            ),
+          ],
           const Divider(),
           ListTile(
             leading: const Icon(Icons.person),

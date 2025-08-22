@@ -33,12 +33,10 @@ class AuthService extends ChangeNotifier {
     _setLoading(true);
     
     try {
-      
       final response = await _apiClient.post('/api/v1/auth/login', body: {
         'username': username,
         'password': password,
       });
-      
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
