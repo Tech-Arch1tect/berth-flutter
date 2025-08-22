@@ -93,6 +93,17 @@ class AppDrawer extends StatelessWidget {
                 }
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text('Role Management'),
+              selected: currentRoute == '/admin/roles',
+              onTap: () {
+                Navigator.pop(context);
+                if (currentRoute != '/admin/roles') {
+                  context.go('/admin/roles');
+                }
+              },
+            ),
           ],
           const Divider(),
           ListTile(
