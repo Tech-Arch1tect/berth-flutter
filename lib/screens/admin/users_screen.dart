@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
 import '../../services/api_client.dart';
 import '../../models/user.dart';
 import '../../widgets/app_drawer.dart';
+import 'user_roles_screen.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -31,7 +31,6 @@ class _UsersScreenState extends State<UsersScreen> {
         error = null;
       });
       
-      final authService = context.read<AuthService>();
       final apiClient = context.read<ApiClient>();
       final response = await apiClient.get('/api/v1/admin/users');
       
@@ -262,11 +261,16 @@ class _UsersScreenState extends State<UsersScreen> {
             ],
           ),
           trailing: IconButton(
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(Icons.manage_accounts),
+            tooltip: 'Manage Roles',
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('User editing - TODO: implement'),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserRolesScreen(
+                    userId: user.id,
+                    username: user.username,
+                  ),
                 ),
               );
             },
