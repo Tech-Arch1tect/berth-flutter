@@ -14,6 +14,7 @@ import 'screens/sessions_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
+import 'screens/admin/servers_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -177,6 +178,10 @@ class BrxApp extends StatelessWidget {
         GoRoute(
           path: '/admin/roles',
           builder: (context, state) => const RolesScreen(),
+        ),
+        GoRoute(
+          path: '/admin/servers',
+          builder: (context, state) => const ServersScreen(),
         ),
       ],
     );

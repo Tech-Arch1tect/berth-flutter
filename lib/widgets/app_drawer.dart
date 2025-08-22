@@ -104,6 +104,17 @@ class AppDrawer extends StatelessWidget {
                 }
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.dns),
+              title: const Text('Server Management'),
+              selected: currentRoute == '/admin/servers',
+              onTap: () {
+                Navigator.pop(context);
+                if (currentRoute != '/admin/servers') {
+                  context.go('/admin/servers');
+                }
+              },
+            ),
           ],
           const Divider(),
           ListTile(
