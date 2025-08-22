@@ -80,9 +80,6 @@ class ApiClient {
     final url = '$baseUrl$endpoint';
     final requestHeaders = _getHeaders(headers);
     
-    if (body != null) {
-    }
-    
     final response = await _client.post(
       Uri.parse(url),
       headers: requestHeaders,
@@ -98,6 +95,54 @@ class ApiClient {
           Uri.parse(url),
           headers: newHeaders,
           body: body != null ? json.encode(body) : null,
+        );
+      }
+    }
+    
+    return response;
+  }
+
+  Future<http.Response> put(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+    final url = '$baseUrl$endpoint';
+    final requestHeaders = _getHeaders(headers);
+    
+    final response = await _client.put(
+      Uri.parse(url),
+      headers: requestHeaders,
+      body: body != null ? json.encode(body) : null,
+    );
+    
+    if (response.statusCode == 401 && _onTokenRefresh != null) {
+      final refreshSuccess = await _onTokenRefresh!();
+      if (refreshSuccess) {
+        final newHeaders = _getHeaders(headers);
+        return await _client.put(
+          Uri.parse(url),
+          headers: newHeaders,
+          body: body != null ? json.encode(body) : null,
+        );
+      }
+    }
+    
+    return response;
+  }
+
+  Future<http.Response> delete(String endpoint, {Map<String, String>? headers}) async {
+    final url = '$baseUrl$endpoint';
+    final requestHeaders = _getHeaders(headers);
+    
+    final response = await _client.delete(
+      Uri.parse(url),
+      headers: requestHeaders,
+    );
+    
+    if (response.statusCode == 401 && _onTokenRefresh != null) {
+      final refreshSuccess = await _onTokenRefresh!();
+      if (refreshSuccess) {
+        final newHeaders = _getHeaders(headers);
+        return await _client.delete(
+          Uri.parse(url),
+          headers: newHeaders,
         );
       }
     }
