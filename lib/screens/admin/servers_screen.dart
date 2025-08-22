@@ -66,17 +66,6 @@ class _ServersScreenState extends State<ServersScreen> {
 
     if (confirmed == true) {
       final serverId = server.id;
-      if (serverId == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Cannot delete server: ID is missing'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        }
-        return;
-      }
       
       try {
         await _serverService.deleteServer(serverId);
@@ -101,17 +90,6 @@ class _ServersScreenState extends State<ServersScreen> {
 
   Future<void> _testConnection(Server server) async {
     final serverId = server.id;
-    if (serverId == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Cannot test connection: Server ID is missing'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-      return;
-    }
 
     try {
       final success = await _serverService.testConnection(serverId);
