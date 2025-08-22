@@ -11,8 +11,6 @@ class Server {
   final int port;
   @JsonKey(name: 'use_https')
   final bool useHttps;
-  @JsonKey(name: 'access_token')
-  final String accessToken;
   @JsonKey(name: 'is_active')
   final bool isActive;
   @JsonKey(name: 'created_at')
@@ -26,7 +24,6 @@ class Server {
     required this.host,
     this.port = 8080,
     this.useHttps = false,
-    required this.accessToken,
     this.isActive = true,
     this.createdAt,
     this.updatedAt,
@@ -46,7 +43,6 @@ class Server {
     String? host,
     int? port,
     bool? useHttps,
-    String? accessToken,
     bool? isActive,
     String? createdAt,
     String? updatedAt,
@@ -57,10 +53,39 @@ class Server {
       host: host ?? this.host,
       port: port ?? this.port,
       useHttps: useHttps ?? this.useHttps,
-      accessToken: accessToken ?? this.accessToken,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+}
+
+class ServerInput {
+  final int? id;
+  final String name;
+  final String host;
+  final int port;
+  final bool useHttps;
+  final String accessToken;
+  final bool isActive;
+
+  ServerInput({
+    this.id,
+    required this.name,
+    required this.host,
+    this.port = 8080,
+    this.useHttps = false,
+    required this.accessToken,
+    this.isActive = true,
+  });
+
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
+    'name': name,
+    'host': host,
+    'port': port,
+    'use_https': useHttps,
+    'access_token': accessToken,
+    'is_active': isActive,
+  };
 }

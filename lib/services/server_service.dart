@@ -30,10 +30,10 @@ class ServerService {
     }
   }
 
-  Future<Server> createServer(Server server) async {
+  Future<Server> createServer(ServerInput serverInput) async {
     final response = await _apiClient.post(
       '/api/v1/admin/servers',
-      body: server.toJson(),
+      body: serverInput.toJson(),
     );
     
     if (response.statusCode == 201) {
@@ -45,10 +45,10 @@ class ServerService {
     }
   }
 
-  Future<Server> updateServer(int id, Server server) async {
+  Future<Server> updateServer(int id, ServerInput serverInput) async {
     final response = await _apiClient.put(
       '/api/v1/admin/servers/$id',
-      body: server.toJson(),
+      body: serverInput.toJson(),
     );
     
     if (response.statusCode == 200) {

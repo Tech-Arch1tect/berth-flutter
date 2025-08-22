@@ -442,7 +442,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
     _nameController = TextEditingController(text: server?.name ?? '');
     _hostController = TextEditingController(text: server?.host ?? '');
     _portController = TextEditingController(text: (server?.port ?? 8080).toString());
-    _accessTokenController = TextEditingController(text: server?.accessToken ?? '');
+    _accessTokenController = TextEditingController();
     _useHttps = server?.useHttps ?? false;
     _isActive = server?.isActive ?? true;
   }
@@ -465,8 +465,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
 
     try {
       if (widget.server == null) {
-        final server = Server(
-          id: 0,
+        final serverInput = ServerInput(
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
           port: int.parse(_portController.text.trim()),
@@ -474,9 +473,9 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
         );
-        await _serverService.createServer(server);
+        await _serverService.createServer(serverInput);
       } else {
-        final server = Server(
+        final serverInput = ServerInput(
           id: widget.server!.id,
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
@@ -485,7 +484,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
         );
-        await _serverService.updateServer(widget.server!.id, server);
+        await _serverService.updateServer(widget.server!.id, serverInput);
       }
 
       if (mounted) {
@@ -586,6 +585,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
                       ? 'Bearer token for authentication'
                       : 'Leave empty to keep existing token',
                     border: const OutlineInputBorder(),
+                    helperText: 'Token is encrypted and not visible after saving',
                   ),
                   obscureText: true,
                   validator: (value) {
