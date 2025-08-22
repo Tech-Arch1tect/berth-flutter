@@ -4,7 +4,8 @@ part 'server.g.dart';
 
 @JsonSerializable()
 class Server {
-  final int? id;
+  @JsonKey(name: 'ID')
+  final int id;
   final String name;
   final String host;
   final int port;
@@ -20,7 +21,7 @@ class Server {
   final String? updatedAt;
 
   Server({
-    this.id,
+    required this.id,
     required this.name,
     required this.host,
     this.port = 8080,

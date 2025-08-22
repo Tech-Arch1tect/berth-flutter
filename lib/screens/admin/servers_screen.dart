@@ -486,24 +486,28 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
     });
 
     try {
-      final server = Server(
-        id: widget.server?.id,
-        name: _nameController.text.trim(),
-        host: _hostController.text.trim(),
-        port: int.parse(_portController.text.trim()),
-        useHttps: _useHttps,
-        accessToken: _accessTokenController.text.trim(),
-        isActive: _isActive,
-      );
-
       if (widget.server == null) {
+        final server = Server(
+          id: 0,
+          name: _nameController.text.trim(),
+          host: _hostController.text.trim(),
+          port: int.parse(_portController.text.trim()),
+          useHttps: _useHttps,
+          accessToken: _accessTokenController.text.trim(),
+          isActive: _isActive,
+        );
         await _serverService.createServer(server);
       } else {
-        final serverId = widget.server!.id;
-        if (serverId == null) {
-          throw Exception('Server ID is required for updates');
-        }
-        await _serverService.updateServer(serverId, server);
+        final server = Server(
+          id: widget.server!.id,
+          name: _nameController.text.trim(),
+          host: _hostController.text.trim(),
+          port: int.parse(_portController.text.trim()),
+          useHttps: _useHttps,
+          accessToken: _accessTokenController.text.trim(),
+          isActive: _isActive,
+        );
+        await _serverService.updateServer(widget.server!.id, server);
       }
 
       if (mounted) {

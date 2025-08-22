@@ -7,7 +7,7 @@ part of 'server.dart';
 // **************************************************************************
 
 Server _$ServerFromJson(Map<String, dynamic> json) => Server(
-  id: (json['id'] as num?)?.toInt(),
+  id: (json['ID'] as num).toInt(),
   name: json['name'] as String,
   host: json['host'] as String,
   port: (json['port'] as num?)?.toInt() ?? 8080,
@@ -19,7 +19,7 @@ Server _$ServerFromJson(Map<String, dynamic> json) => Server(
 );
 
 Map<String, dynamic> _$ServerToJson(Server instance) => <String, dynamic>{
-  'id': instance.id,
+  'ID': instance.id,
   'name': instance.name,
   'host': instance.host,
   'port': instance.port,
