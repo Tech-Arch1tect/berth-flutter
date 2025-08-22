@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/dashboard_server_list.dart';
 import '../theme/app_theme.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -121,6 +122,11 @@ class DashboardScreen extends StatelessWidget {
             
             const SizedBox(height: 24),
             
+            // Servers Section
+            const DashboardServerList(),
+            
+            const SizedBox(height: 24),
+            
             // Quick Actions Grid
             Text(
               'Quick Actions',
@@ -161,6 +167,8 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
+            
+            const SizedBox(height: 24),
             
             // Account Overview
             Text(

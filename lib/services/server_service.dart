@@ -19,6 +19,18 @@ class ServerService {
     }
   }
 
+  Future<List<Server>> getUserServers() async {
+    final response = await _apiClient.get('/api/v1/servers');
+    
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> serverList = data['servers'];
+      return serverList.map((json) => Server.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load servers: ${response.statusCode}');
+    }
+  }
+
   Future<Server> getServer(int id) async {
     final response = await _apiClient.get('/api/v1/admin/servers/$id');
     
