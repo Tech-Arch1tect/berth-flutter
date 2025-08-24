@@ -56,6 +56,52 @@ class RoleService {
     }
   }
 
+  Future<Role> createRole({
+    required String name,
+    required String description,
+  }) async {
+    final response = await _apiClient.post('/api/v1/admin/roles', body: {
+      'name': name,
+      'description': description,
+    });
+
+    if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+      return Role.fromJson(data);
+    } else {
+      final error = json.decode(response.body);
+      throw Exception('Failed to create role: ${error['error'] ?? 'Unknown error'}');
+    }
+  }
+
+  Future<Role> updateRole({
+    required int roleId,
+    required String name,
+    required String description,
+  }) async {
+    final response = await _apiClient.put('/api/v1/admin/roles/$roleId', body: {
+      'name': name,
+      'description': description,
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Role.fromJson(data);
+    } else {
+      final error = json.decode(response.body);
+      throw Exception('Failed to update role: ${error['error'] ?? 'Unknown error'}');
+    }
+  }
+
+  Future<void> deleteRole(int roleId) async {
+    final response = await _apiClient.delete('/api/v1/admin/roles/$roleId');
+
+    if (response.statusCode != 200) {
+      final error = json.decode(response.body);
+      throw Exception('Failed to delete role: ${error['error'] ?? 'Unknown error'}');
+    }
+  }
+
   Map<int, Map<int, bool>> _parsePermissionMatrix(dynamic matrix) {
     final result = <int, Map<int, bool>>{};
     if (matrix is Map) {

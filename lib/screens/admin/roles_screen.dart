@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/role.dart';
 import '../../services/role_service.dart';
 import '../../widgets/app_drawer.dart';
+import '../../widgets/role_form_dialog.dart';
 
 class RolesScreen extends StatefulWidget {
   const RolesScreen({super.key});
@@ -42,6 +43,97 @@ class _RolesScreenState extends State<RolesScreen> {
     }
   }
 
+  Future<void> _showCreateDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => RoleFormDialog(
+        onSave: (name, description) async {
+          await roleService.createRole(name: name, description: description);
+        },
+      ),
+    );
+
+    if (result == true) {
+      _loadRoles();
+    }
+  }
+
+  Future<void> _showEditDialog(Role role) async {
+    if (role.isAdmin) return;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => RoleFormDialog(
+        role: role,
+        onSave: (name, description) async {
+          await roleService.updateRole(
+            roleId: role.id,
+            name: name,
+            description: description,
+          );
+        },
+      ),
+    );
+
+    if (result == true) {
+      _loadRoles();
+    }
+  }
+
+  Future<void> _confirmDelete(Role role) async {
+    if (role.isAdmin) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Role'),
+        content: Text('Are you sure you want to delete the role "${role.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _deleteRole(role);
+    }
+  }
+
+  Future<void> _deleteRole(Role role) async {
+    try {
+      await roleService.deleteRole(role.id);
+      _loadRoles();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Role "${role.name}" deleted successfully'),
+            backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +141,10 @@ class _RolesScreenState extends State<RolesScreen> {
         title: const Text('Role Management'),
       ),
       drawer: const AppDrawer(currentRoute: '/admin/roles'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showCreateDialog,
+        child: const Icon(Icons.add),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -265,8 +361,36 @@ class _RolesScreenState extends State<RolesScreen> {
               ),
               const SizedBox(height: 16),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  if (role.isAdmin)
+                    Expanded(
+                      child: Text(
+                        'Admin users have full access to all servers. This role cannot be modified or deleted.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    )
+                  else
+                    Row(
+                      children: [
+                        TextButton.icon(
+                          onPressed: () => _showEditDialog(role),
+                          icon: const Icon(Icons.edit, size: 16),
+                          label: const Text('Edit'),
+                        ),
+                        TextButton.icon(
+                          onPressed: () => _confirmDelete(role),
+                          icon: const Icon(Icons.delete, size: 16),
+                          label: const Text('Delete'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ],
+                    ),
                   if (!role.isAdmin)
                     OutlinedButton.icon(
                       onPressed: () {
@@ -274,14 +398,6 @@ class _RolesScreenState extends State<RolesScreen> {
                       },
                       icon: const Icon(Icons.security),
                       label: const Text('Server Permissions'),
-                    ),
-                  if (role.isAdmin)
-                    Text(
-                      'Admin users have full access to all servers',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontStyle: FontStyle.italic,
-                      ),
                     ),
                 ],
               ),
