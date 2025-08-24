@@ -10,12 +10,15 @@ import 'screens/auth/register_screen.dart';
 import 'screens/auth/totp_setup_screen.dart';
 import 'screens/auth/totp_verify_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/server_stacks_screen.dart';
 import 'screens/sessions_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
 import 'screens/admin/servers_screen.dart';
 import 'screens/admin/role_server_permissions_screen.dart';
+import 'services/stack_service.dart';
+import 'services/server_service.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -34,12 +37,16 @@ class _AppInitializerState extends State<AppInitializer> {
   final _configService = ConfigService();
   late final ApiClient _apiClient;
   late final AuthService _authService;
+  late final StackService _stackService;
+  late final ServerService _serverService;
 
   @override
   void initState() {
     super.initState();
     _apiClient = ApiClient();
     _authService = AuthService(_apiClient);
+    _stackService = StackService(_apiClient);
+    _serverService = ServerService(_apiClient);
     _initialize();
   }
 
@@ -73,6 +80,8 @@ class _AppInitializerState extends State<AppInitializer> {
       configService: _configService,
       apiClient: _apiClient,
       authService: _authService,
+      stackService: _stackService,
+      serverService: _serverService,
     );
   }
 }
@@ -81,12 +90,16 @@ class BrxApp extends StatelessWidget {
   final ConfigService configService;
   final ApiClient apiClient;
   final AuthService authService;
+  final StackService stackService;
+  final ServerService serverService;
   
   const BrxApp({
     super.key, 
     required this.configService,
     required this.apiClient,
     required this.authService,
+    required this.stackService,
+    required this.serverService,
   });
 
   @override
@@ -96,6 +109,8 @@ class BrxApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: configService),
         Provider.value(value: apiClient),
         ChangeNotifierProvider.value(value: authService),
+        Provider.value(value: stackService),
+        Provider.value(value: serverService),
       ],
       child: MaterialApp.router(
         title: 'BRX Mobile',
@@ -163,6 +178,20 @@ class BrxApp extends StatelessWidget {
         GoRoute(
           path: '/dashboard',
           builder: (context, state) => const DashboardScreen(),
+        ),
+        GoRoute(
+          path: '/servers/:id/stacks',
+          builder: (context, state) {
+            final serverIdStr = state.pathParameters['id'];
+            final serverId = int.tryParse(serverIdStr ?? '');
+            if (serverId == null) {
+              return const DashboardScreen(); // Fallback to dashboard
+            }
+            return ServerStacksScreen(
+              serverId: serverId,
+              stackService: context.read<StackService>(),
+            );
+          },
         ),
         GoRoute(
           path: '/sessions',

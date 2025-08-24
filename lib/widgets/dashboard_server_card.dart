@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/server.dart';
 
 class DashboardServerCard extends StatelessWidget {
@@ -14,7 +15,10 @@ class DashboardServerCard extends StatelessWidget {
     return Card(
       elevation: 1,
       margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
+      child: InkWell(
+        onTap: () => context.go('/servers/${server.id}/stacks'),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
@@ -68,7 +72,14 @@ class DashboardServerCard extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              size: 20,
+            ),
           ],
+        ),
         ),
       ),
     );

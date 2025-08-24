@@ -42,6 +42,16 @@ class ServerService {
     }
   }
 
+  Future<Server> getUserServer(int id) async {
+    final servers = await getUserServers();
+    
+    try {
+      return servers.firstWhere((server) => server.id == id);
+    } catch (e) {
+      throw Exception('Server not found or access denied');
+    }
+  }
+
   Future<Server> createServer(ServerInput serverInput) async {
     final response = await _apiClient.post(
       '/api/v1/admin/servers',
