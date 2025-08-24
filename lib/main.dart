@@ -15,6 +15,7 @@ import 'screens/profile_screen.dart';
 import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
 import 'screens/admin/servers_screen.dart';
+import 'screens/admin/role_server_permissions_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -182,6 +183,16 @@ class BrxApp extends StatelessWidget {
         GoRoute(
           path: '/admin/servers',
           builder: (context, state) => const ServersScreen(),
+        ),
+        GoRoute(
+          path: '/admin/roles/:roleId/server-permissions',
+          builder: (context, state) {
+            final roleId = int.tryParse(state.pathParameters['roleId']!);
+            if (roleId == null) {
+              return const RolesScreen();
+            }
+            return RoleServerPermissionsScreen(roleId: roleId);
+          },
         ),
       ],
     );

@@ -1,59 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/api_client.dart';
+import 'package:go_router/go_router.dart';
+import '../../models/role.dart';
+import '../../services/role_service.dart';
 import '../../widgets/app_drawer.dart';
-
-class Permission {
-  final int id;
-  final String name;
-  final String resource;
-  final String action;
-  final String description;
-
-  Permission({
-    required this.id,
-    required this.name,
-    required this.resource,
-    required this.action,
-    required this.description,
-  });
-
-  factory Permission.fromJson(Map<String, dynamic> json) {
-    return Permission(
-      id: json['id'],
-      name: json['name'],
-      resource: json['resource'],
-      action: json['action'],
-      description: json['description'],
-    );
-  }
-}
-
-class RoleWithPermissions {
-  final int id;
-  final String name;
-  final String description;
-  final List<Permission> permissions;
-
-  RoleWithPermissions({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.permissions,
-  });
-
-  factory RoleWithPermissions.fromJson(Map<String, dynamic> json) {
-    return RoleWithPermissions(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      permissions: (json['permissions'] as List<dynamic>?)
-          ?.map((p) => Permission.fromJson(p))
-          .toList() ?? [],
-    );
-  }
-}
 
 class RolesScreen extends StatefulWidget {
   const RolesScreen({super.key});
@@ -63,13 +13,15 @@ class RolesScreen extends StatefulWidget {
 }
 
 class _RolesScreenState extends State<RolesScreen> {
-  List<RoleWithPermissions> roles = [];
+  List<Role> roles = [];
   bool isLoading = true;
   String? error;
+  late RoleService roleService;
 
   @override
   void initState() {
     super.initState();
+    roleService = RoleService(context.read());
     _loadRoles();
   }
 
@@ -80,18 +32,9 @@ class _RolesScreenState extends State<RolesScreen> {
         error = null;
       });
 
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.get('/api/v1/admin/roles');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        final List<dynamic> rolesJson = data['roles'] ?? [];
-        roles = rolesJson.map((json) => RoleWithPermissions.fromJson(json)).toList();
-      } else {
-        error = 'Failed to load roles (${response.statusCode})';
-      }
+      roles = await roleService.getRoles();
     } catch (e) {
-      error = 'Network error: $e';
+      error = 'Failed to load roles: $e';
     } finally {
       setState(() {
         isLoading = false;
@@ -153,7 +96,7 @@ class _RolesScreenState extends State<RolesScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'View system roles and their permissions',
+                          'View system roles and manage server permissions',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                           ),
@@ -253,84 +196,97 @@ class _RolesScreenState extends State<RolesScreen> {
       children: roles.map((role) => Card(
         elevation: 2,
         margin: const EdgeInsets.only(bottom: 16),
-        child: ExpansionTile(
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.verified_user,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-              size: 20,
-            ),
-          ),
-          title: Text(
-            role.name,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          subtitle: Text(role.description),
-          children: [
-            if (role.permissions.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  'No permissions assigned to this role',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Permissions (${role.permissions.length})',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: role.isAdmin
+                          ? Theme.of(context).colorScheme.errorContainer
+                          : Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: role.permissions.map((permission) => Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondaryContainer,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                    child: Icon(
+                      role.isAdmin ? Icons.admin_panel_settings : Icons.verified_user,
+                      color: role.isAdmin
+                          ? Theme.of(context).colorScheme.onErrorContainer
+                          : Theme.of(context).colorScheme.onPrimaryContainer,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
                             Text(
-                              '${permission.resource}:${permission.action}',
-                              style: TextStyle(
-                                fontSize: 12,
+                              role.name,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSecondaryContainer,
                               ),
                             ),
-                            if (permission.description.isNotEmpty)
-                              Text(
-                                permission.description,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Theme.of(context).colorScheme.onSecondaryContainer.withValues(alpha: 0.7),
+                            if (role.isAdmin) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.error,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Admin',
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onError,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
+                            ],
                           ],
                         ),
-                      )).toList(),
+                        if (role.description.isNotEmpty)
+                          Text(
+                            role.description,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (!role.isAdmin)
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        context.go('/admin/roles/${role.id}/server-permissions');
+                      },
+                      icon: const Icon(Icons.security),
+                      label: const Text('Server Permissions'),
+                    ),
+                  if (role.isAdmin)
+                    Text(
+                      'Admin users have full access to all servers',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       )).toList(),
     );
