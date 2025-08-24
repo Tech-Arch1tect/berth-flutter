@@ -4,9 +4,9 @@ part 'server.g.dart';
 
 @JsonSerializable()
 class Server {
-  @JsonKey(name: 'ID')
   final int id;
   final String name;
+  final String description;
   final String host;
   final int port;
   @JsonKey(name: 'use_https')
@@ -21,6 +21,7 @@ class Server {
   Server({
     required this.id,
     required this.name,
+    this.description = '',
     required this.host,
     this.port = 8080,
     this.useHttps = false,
@@ -40,6 +41,7 @@ class Server {
   Server copyWith({
     int? id,
     String? name,
+    String? description,
     String? host,
     int? port,
     bool? useHttps,
@@ -50,6 +52,7 @@ class Server {
     return Server(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       host: host ?? this.host,
       port: port ?? this.port,
       useHttps: useHttps ?? this.useHttps,

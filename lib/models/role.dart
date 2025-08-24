@@ -7,6 +7,8 @@ class Role {
   final int id;
   final String name;
   final String description;
+  @JsonKey(name: 'is_admin')
+  final bool isAdmin;
   @JsonKey(name: 'created_at')
   final String? createdAt;
   @JsonKey(name: 'updated_at')
@@ -16,6 +18,7 @@ class Role {
     required this.id,
     required this.name,
     required this.description,
+    required this.isAdmin,
     this.createdAt,
     this.updatedAt,
   });
