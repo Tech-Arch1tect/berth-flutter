@@ -11,6 +11,7 @@ import 'screens/auth/totp_setup_screen.dart';
 import 'screens/auth/totp_verify_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/server_stacks_screen.dart';
+import 'screens/stack_details_screen.dart';
 import 'screens/sessions_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/admin/users_screen.dart';
@@ -189,6 +190,24 @@ class BrxApp extends StatelessWidget {
             }
             return ServerStacksScreen(
               serverId: serverId,
+              stackService: context.read<StackService>(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/servers/:serverId/stacks/:stackName',
+          builder: (context, state) {
+            final serverIdStr = state.pathParameters['serverId'];
+            final stackName = state.pathParameters['stackName'];
+            final serverId = int.tryParse(serverIdStr ?? '');
+            
+            if (serverId == null || stackName == null) {
+              return const DashboardScreen(); // Fallback to dashboard
+            }
+            
+            return StackDetailsScreen(
+              serverId: serverId,
+              stackName: stackName,
               stackService: context.read<StackService>(),
             );
           },

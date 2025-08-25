@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' hide Stack;
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../models/stack.dart';
+import '../models/stack.dart' as stack_models;
 import '../models/server.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
@@ -22,7 +22,7 @@ class ServerStacksScreen extends StatefulWidget {
 }
 
 class _ServerStacksScreenState extends State<ServerStacksScreen> {
-  List<Stack>? _stacks;
+  List<stack_models.Stack>? _stacks;
   Server? _server;
   bool _isLoading = true;
   String? _error;
@@ -49,7 +49,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
       ]);
       
       final server = futures[0] as Server;
-      final stacks = futures[1] as List<Stack>;
+      final stacks = futures[1] as List<stack_models.Stack>;
       
       setState(() {
         _server = server;
@@ -238,61 +238,71 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
     );
   }
 
-  Widget _buildStackCard(Stack stack) {
+  Widget _buildStackCard(stack_models.Stack stack) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.storage,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    stack.name,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+      child: InkWell(
+        onTap: () => context.push('/servers/${stack.serverId}/stacks/${stack.name}'),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.storage,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      stack.name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Available',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.green.shade700,
-                      fontWeight: FontWeight.w500,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Available',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 16,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                stack.composeFile,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              stack.composeFile,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Path: ${stack.path}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              const SizedBox(height: 4),
+              Text(
+                'Path: ${stack.path}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
