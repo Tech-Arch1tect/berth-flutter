@@ -14,9 +14,12 @@ class StackService {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> stacksData = data['stacks'] ?? [];
       
-      return stacksData
+      final stacks = stacksData
           .map((stackData) => Stack.fromJson(stackData))
           .toList();
+      
+      stacks.sort((a, b) => a.name.compareTo(b.name));
+      return stacks;
     } else if (response.statusCode == 401) {
       throw Exception('Authentication failed');
     } else {
@@ -29,7 +32,14 @@ class StackService {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
-      return StackDetails.fromJson(data);
+      final stackDetails = StackDetails.fromJson(data);
+      
+      stackDetails.services.sort((a, b) => a.name.compareTo(b.name));
+      for (final service in stackDetails.services) {
+        service.containers.sort((a, b) => a.name.compareTo(b.name));
+      }
+      
+      return stackDetails;
     } else if (response.statusCode == 401) {
       throw Exception('Authentication failed');
     } else if (response.statusCode == 404) {
