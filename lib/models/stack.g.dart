@@ -225,3 +225,36 @@ Map<String, dynamic> _$VolumeToJson(Volume instance) => <String, dynamic>{
   'scope': instance.scope,
   'used_by': instance.usedBy,
 };
+
+EnvironmentVariable _$EnvironmentVariableFromJson(Map<String, dynamic> json) =>
+    EnvironmentVariable(
+      key: json['key'] as String,
+      value: json['value'] as String,
+      isSensitive: json['is_sensitive'] as bool,
+      source: json['source'] as String,
+      isFromContainer: json['is_from_container'] as bool,
+    );
+
+Map<String, dynamic> _$EnvironmentVariableToJson(
+  EnvironmentVariable instance,
+) => <String, dynamic>{
+  'key': instance.key,
+  'value': instance.value,
+  'is_sensitive': instance.isSensitive,
+  'source': instance.source,
+  'is_from_container': instance.isFromContainer,
+};
+
+ServiceEnvironment _$ServiceEnvironmentFromJson(Map<String, dynamic> json) =>
+    ServiceEnvironment(
+      serviceName: json['service_name'] as String?,
+      variables: (json['variables'] as List<dynamic>)
+          .map((e) => EnvironmentVariable.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$ServiceEnvironmentToJson(ServiceEnvironment instance) =>
+    <String, dynamic>{
+      'service_name': instance.serviceName,
+      'variables': instance.variables,
+    };

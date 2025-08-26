@@ -257,3 +257,40 @@ class Volume {
   Map<String, dynamic> toJson() => _$VolumeToJson(this);
 }
 
+@JsonSerializable()
+class EnvironmentVariable {
+  final String key;
+  final String value;
+  @JsonKey(name: 'is_sensitive')
+  final bool isSensitive;
+  final String source;
+  @JsonKey(name: 'is_from_container')
+  final bool isFromContainer;
+
+  EnvironmentVariable({
+    required this.key,
+    required this.value,
+    required this.isSensitive,
+    required this.source,
+    required this.isFromContainer,
+  });
+
+  factory EnvironmentVariable.fromJson(Map<String, dynamic> json) => _$EnvironmentVariableFromJson(json);
+  Map<String, dynamic> toJson() => _$EnvironmentVariableToJson(this);
+}
+
+@JsonSerializable()
+class ServiceEnvironment {
+  @JsonKey(name: 'service_name')
+  final String? serviceName;
+  final List<EnvironmentVariable> variables;
+
+  ServiceEnvironment({
+    this.serviceName,
+    required this.variables,
+  });
+
+  factory ServiceEnvironment.fromJson(Map<String, dynamic> json) => _$ServiceEnvironmentFromJson(json);
+  Map<String, dynamic> toJson() => _$ServiceEnvironmentToJson(this);
+}
+

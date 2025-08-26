@@ -90,4 +90,35 @@ class StackService {
       throw Exception('Failed to fetch stack volumes: ${response.statusCode}');
     }
   }
+
+  Future<Map<String, List<ServiceEnvironment>>> getStackEnvironmentVariables(int serverId, String stackName) async {
+    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/environment');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final Map<String, List<ServiceEnvironment>> environmentData = {};
+      
+      data.forEach((serviceName, serviceEnvList) {
+        if (serviceEnvList is List) {
+          final serviceEnvironments = serviceEnvList
+              .map((envData) => ServiceEnvironment.fromJson(envData))
+              .toList();
+          
+          for (final env in serviceEnvironments) {
+            env.variables.sort((a, b) => a.key.compareTo(b.key));
+          }
+          
+          environmentData[serviceName] = serviceEnvironments;
+        }
+      });
+      
+      return environmentData;
+    } else if (response.statusCode == 401) {
+      throw Exception('Authentication failed');
+    } else if (response.statusCode == 404) {
+      throw Exception('Stack or environment variables not found');
+    } else {
+      throw Exception('Failed to fetch stack environment variables: ${response.statusCode}');
+    }
+  }
 }

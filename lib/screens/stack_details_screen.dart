@@ -11,6 +11,7 @@ import '../services/stack_websocket_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/network_list.dart';
 import '../widgets/volume_list.dart';
+import '../widgets/environment_variable_list.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -33,14 +34,17 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   stack_models.StackDetails? _stackDetails;
   List<stack_models.Network>? _networks;
   List<stack_models.Volume>? _volumes;
+  Map<String, List<stack_models.ServiceEnvironment>>? _environmentVariables;
   Server? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
   bool _isVolumesLoading = false;
+  bool _isEnvironmentLoading = false;
   bool _isSilentRefreshing = false;
   String? _error;
   String? _networksError;
   String? _volumesError;
+  String? _environmentError;
   
   TabController? _tabController;
   
@@ -51,7 +55,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
@@ -69,6 +73,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       _loadNetworks();
     } else if (_tabController!.index == 2 && _volumes == null && !_isVolumesLoading) {
       _loadVolumes();
+    } else if (_tabController!.index == 3 && _environmentVariables == null && !_isEnvironmentLoading) {
+      _loadEnvironmentVariables();
     }
   }
 
@@ -101,6 +107,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         _loadNetworks();
       } else if (_tabController?.index == 2) {
         _loadVolumes();
+      } else if (_tabController?.index == 3) {
+        _loadEnvironmentVariables();
       }
     } catch (e) {
       setState(() {
@@ -155,6 +163,31 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         setState(() {
           _volumesError = e.toString();
           _isVolumesLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadEnvironmentVariables() async {
+    setState(() {
+      _isEnvironmentLoading = true;
+      _environmentError = null;
+    });
+
+    try {
+      final environmentVariables = await widget.stackService.getStackEnvironmentVariables(widget.serverId, widget.stackName);
+      
+      if (mounted) {
+        setState(() {
+          _environmentVariables = environmentVariables;
+          _isEnvironmentLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _environmentError = e.toString();
+          _isEnvironmentLoading = false;
         });
       }
     }
@@ -269,6 +302,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                 _loadNetworks();
               } else if (_tabController?.index == 2) {
                 _loadVolumes();
+              } else if (_tabController?.index == 3) {
+                _loadEnvironmentVariables();
               }
             },
           ),
@@ -287,6 +322,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
             Tab(
               icon: const Icon(Icons.folder),
               text: 'Volumes${_volumes != null ? ' (${_volumes!.length})' : ''}',
+            ),
+            Tab(
+              icon: const Icon(Icons.code),
+              text: 'Environment${_environmentVariables != null ? ' (${_environmentVariables!.values.expand((envs) => envs.expand((env) => env.variables)).length})' : ''}',
             ),
           ],
         ) : null,
@@ -438,6 +477,18 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   volumes: _volumes ?? [],
                   isLoading: _isVolumesLoading,
                   error: _volumesError,
+                ),
+              ),
+              
+              // Environment Variables Tab
+              RefreshIndicator(
+                onRefresh: () async {
+                  await _loadEnvironmentVariables();
+                },
+                child: EnvironmentVariableList(
+                  environmentData: _environmentVariables,
+                  isLoading: _isEnvironmentLoading,
+                  error: _environmentError,
                 ),
               ),
             ],
