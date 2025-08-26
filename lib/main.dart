@@ -17,7 +17,7 @@ import 'screens/profile_screen.dart';
 import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
 import 'screens/admin/servers_screen.dart';
-import 'screens/admin/role_server_permissions_screen.dart';
+import 'screens/admin/role_stack_permissions_screen.dart';
 import 'services/stack_service.dart';
 import 'services/server_service.dart';
 import 'theme/app_theme.dart';
@@ -239,7 +239,7 @@ class BrxApp extends StatelessWidget {
             if (roleId == null) {
               return const RolesScreen();
             }
-            return RoleServerPermissionsScreen(roleId: roleId);
+            return RoleStackPermissionsScreen(roleId: roleId);
           },
         ),
       ],
