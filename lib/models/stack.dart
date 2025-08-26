@@ -294,3 +294,45 @@ class ServiceEnvironment {
   Map<String, dynamic> toJson() => _$ServiceEnvironmentToJson(this);
 }
 
+@JsonSerializable()
+class ContainerStats {
+  final String name;
+  @JsonKey(name: 'service_name')
+  final String serviceName;
+  @JsonKey(name: 'cpu_percent')
+  final double cpuPercent;
+  @JsonKey(name: 'memory_usage')
+  final int memoryUsage;
+  @JsonKey(name: 'memory_limit')
+  final int memoryLimit;
+  @JsonKey(name: 'memory_percent')
+  final double memoryPercent;
+
+  ContainerStats({
+    required this.name,
+    required this.serviceName,
+    required this.cpuPercent,
+    required this.memoryUsage,
+    required this.memoryLimit,
+    required this.memoryPercent,
+  });
+
+  factory ContainerStats.fromJson(Map<String, dynamic> json) => _$ContainerStatsFromJson(json);
+  Map<String, dynamic> toJson() => _$ContainerStatsToJson(this);
+}
+
+@JsonSerializable()
+class StackStats {
+  @JsonKey(name: 'stack_name')
+  final String stackName;
+  final List<ContainerStats> containers;
+
+  StackStats({
+    required this.stackName,
+    required this.containers,
+  });
+
+  factory StackStats.fromJson(Map<String, dynamic> json) => _$StackStatsFromJson(json);
+  Map<String, dynamic> toJson() => _$StackStatsToJson(this);
+}
+

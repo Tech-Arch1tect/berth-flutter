@@ -121,4 +121,19 @@ class StackService {
       throw Exception('Failed to fetch stack environment variables: ${response.statusCode}');
     }
   }
+
+  Future<StackStats> getStackStats(int serverId, String stackName) async {
+    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/stats');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return StackStats.fromJson(data);
+    } else if (response.statusCode == 401) {
+      throw Exception('Authentication failed');
+    } else if (response.statusCode == 404) {
+      throw Exception('Stack or stats not found');
+    } else {
+      throw Exception('Failed to fetch stack stats: ${response.statusCode}');
+    }
+  }
 }

@@ -258,3 +258,36 @@ Map<String, dynamic> _$ServiceEnvironmentToJson(ServiceEnvironment instance) =>
       'service_name': instance.serviceName,
       'variables': instance.variables,
     };
+
+ContainerStats _$ContainerStatsFromJson(Map<String, dynamic> json) =>
+    ContainerStats(
+      name: json['name'] as String,
+      serviceName: json['service_name'] as String,
+      cpuPercent: (json['cpu_percent'] as num).toDouble(),
+      memoryUsage: (json['memory_usage'] as num).toInt(),
+      memoryLimit: (json['memory_limit'] as num).toInt(),
+      memoryPercent: (json['memory_percent'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$ContainerStatsToJson(ContainerStats instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'service_name': instance.serviceName,
+      'cpu_percent': instance.cpuPercent,
+      'memory_usage': instance.memoryUsage,
+      'memory_limit': instance.memoryLimit,
+      'memory_percent': instance.memoryPercent,
+    };
+
+StackStats _$StackStatsFromJson(Map<String, dynamic> json) => StackStats(
+  stackName: json['stack_name'] as String,
+  containers: (json['containers'] as List<dynamic>)
+      .map((e) => ContainerStats.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$StackStatsToJson(StackStats instance) =>
+    <String, dynamic>{
+      'stack_name': instance.stackName,
+      'containers': instance.containers,
+    };

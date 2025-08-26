@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/stack.dart' as stack_models;
@@ -12,6 +13,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/network_list.dart';
 import '../widgets/volume_list.dart';
 import '../widgets/environment_variable_list.dart';
+import '../widgets/stack_stats_list.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -35,27 +37,33 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   List<stack_models.Network>? _networks;
   List<stack_models.Volume>? _volumes;
   Map<String, List<stack_models.ServiceEnvironment>>? _environmentVariables;
+  stack_models.StackStats? _stackStats;
   Server? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
   bool _isVolumesLoading = false;
   bool _isEnvironmentLoading = false;
+  bool _isStatsLoading = false;
+  bool _isStatsRefreshing = false;
   bool _isSilentRefreshing = false;
   String? _error;
   String? _networksError;
   String? _volumesError;
   String? _environmentError;
+  String? _statsError;
   
   TabController? _tabController;
   
   StackWebSocketService? _wsService;
   WebSocketConnectionStatus _wsStatus = WebSocketConnectionStatus.disconnected;
   String? _wsError;
+  
+  Timer? _statsTimer;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
@@ -65,6 +73,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   void dispose() {
     _tabController?.dispose();
     _wsService?.dispose();
+    _statsTimer?.cancel();
     super.dispose();
   }
   
@@ -75,6 +84,15 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       _loadVolumes();
     } else if (_tabController!.index == 3 && _environmentVariables == null && !_isEnvironmentLoading) {
       _loadEnvironmentVariables();
+    } else if (_tabController!.index == 4) {
+      // Stats tab - load data and start timer for auto-refresh
+      if (_stackStats == null && !_isStatsLoading) {
+        _loadStats();
+      }
+      _startStatsTimer();
+    } else {
+      // Stop stats timer when not on stats tab
+      _stopStatsTimer();
     }
   }
 
@@ -193,6 +211,57 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     }
   }
 
+  Future<void> _loadStats({bool silent = false}) async {
+    setState(() {
+      if (silent) {
+        _isStatsRefreshing = true;
+      } else {
+        _isStatsLoading = true;
+        _statsError = null;
+      }
+    });
+
+    try {
+      final stackStats = await widget.stackService.getStackStats(widget.serverId, widget.stackName);
+      
+      if (mounted) {
+        setState(() {
+          _stackStats = stackStats;
+          if (silent) {
+            _isStatsRefreshing = false;
+          } else {
+            _isStatsLoading = false;
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          if (silent) {
+            _isStatsRefreshing = false;
+          } else {
+            _statsError = e.toString();
+            _isStatsLoading = false;
+          }
+        });
+      }
+    }
+  }
+
+  void _startStatsTimer() {
+    _stopStatsTimer(); // Stop any existing timer
+    _statsTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted && _tabController?.index == 4) {
+        _loadStats(silent: true);
+      }
+    });
+  }
+
+  void _stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
   Future<void> _refreshDataSilently() async {
     if (mounted) {
       setState(() {
@@ -304,6 +373,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                 _loadVolumes();
               } else if (_tabController?.index == 3) {
                 _loadEnvironmentVariables();
+              } else if (_tabController?.index == 4) {
+                _loadStats();
               }
             },
           ),
@@ -326,6 +397,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
             Tab(
               icon: const Icon(Icons.code),
               text: 'Environment${_environmentVariables != null ? ' (${_environmentVariables!.values.expand((envs) => envs.expand((env) => env.variables)).length})' : ''}',
+            ),
+            Tab(
+              icon: const Icon(Icons.analytics),
+              text: 'Stats${_stackStats != null ? ' (${_stackStats!.containers.length})' : ''}',
             ),
           ],
         ) : null,
@@ -489,6 +564,17 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   environmentData: _environmentVariables,
                   isLoading: _isEnvironmentLoading,
                   error: _environmentError,
+                ),
+              ),
+              // Stats Tab
+              RefreshIndicator(
+                onRefresh: () async {
+                  await _loadStats();
+                },
+                child: StackStatsList(
+                  containers: _stackStats?.containers,
+                  isLoading: _isStatsLoading || _isStatsRefreshing,
+                  error: _statsError,
                 ),
               ),
             ],
