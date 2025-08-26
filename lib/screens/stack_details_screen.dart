@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/stack.dart' as stack_models;
 import '../models/server.dart';
+import '../models/websocket_message.dart';
+import '../services/api_client.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
+import '../services/websocket_service.dart';
+import '../services/stack_websocket_service.dart';
 import '../widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -27,12 +31,24 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
   stack_models.StackDetails? _stackDetails;
   Server? _server;
   bool _isLoading = true;
+  bool _isSilentRefreshing = false;
   String? _error;
+  
+  StackWebSocketService? _wsService;
+  WebSocketConnectionStatus _wsStatus = WebSocketConnectionStatus.disconnected;
+  String? _wsError;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _initWebSocket();
+  }
+
+  @override
+  void dispose() {
+    _wsService?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -66,12 +82,107 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
     }
   }
 
+  Future<void> _refreshDataSilently() async {
+    if (mounted) {
+      setState(() {
+        _isSilentRefreshing = true;
+      });
+    }
+    
+    try {
+      final serverService = context.read<ServerService>();
+      
+      final futures = await Future.wait([
+        serverService.getUserServer(widget.serverId),
+        widget.stackService.getStackDetails(widget.serverId, widget.stackName),
+      ]);
+      
+      final server = futures[0] as Server;
+      final stackDetails = futures[1] as stack_models.StackDetails;
+      
+      if (mounted) {
+        setState(() {
+          _server = server;
+          _stackDetails = stackDetails;
+          _isSilentRefreshing = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isSilentRefreshing = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _initWebSocket() async {
+    try {
+      final apiClient = context.read<ApiClient>();
+      final webSocketService = WebSocketService(apiClient);
+      
+      _wsService = StackWebSocketService(
+        webSocketService,
+        widget.serverId,
+        widget.stackName,
+      );
+
+      _wsService!.connectionStatus.listen((status) {
+        if (mounted) {
+          setState(() {
+            _wsStatus = status;
+          });
+          
+          if (status == WebSocketConnectionStatus.connected) {
+            _refreshDataSilently();
+          }
+        }
+      });
+
+      _wsService!.errors.listen((error) {
+        if (mounted) {
+          setState(() {
+            _wsError = error.toString();
+          });
+        }
+      });
+
+      _wsService!.refreshEvents.listen((_) {
+        if (mounted) {
+          _refreshDataSilently();
+        }
+      });
+
+      await _wsService!.connect();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _wsError = 'WebSocket initialization failed: $e';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.stackName),
+        title: Row(
+          children: [
+            Expanded(child: Text(widget.stackName)),
+            _buildConnectionStatusIcon(),
+          ],
+        ),
         actions: [
+          if (_isSilentRefreshing)
+            Container(
+              width: 24,
+              height: 24,
+              margin: const EdgeInsets.only(right: 16),
+              child: const CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadData,
@@ -531,6 +642,44 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
           color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.w500,
         ),
+      ),
+    );
+  }
+
+  Widget _buildConnectionStatusIcon() {
+    IconData icon;
+    Color color;
+    String tooltip;
+
+    switch (_wsStatus) {
+      case WebSocketConnectionStatus.connected:
+        icon = Icons.cloud_done;
+        color = Colors.green;
+        tooltip = 'Live updates active';
+        break;
+      case WebSocketConnectionStatus.connecting:
+        icon = Icons.cloud_sync;
+        color = Colors.orange;
+        tooltip = 'Connecting to live updates';
+        break;
+      case WebSocketConnectionStatus.error:
+        icon = Icons.cloud_off;
+        color = Colors.red;
+        tooltip = _wsError ?? 'Connection error';
+        break;
+      case WebSocketConnectionStatus.disconnected:
+        icon = Icons.cloud_off;
+        color = Colors.grey;
+        tooltip = 'Live updates disconnected';
+        break;
+    }
+
+    return Tooltip(
+      message: tooltip,
+      child: Icon(
+        icon,
+        color: color,
+        size: 20,
       ),
     );
   }

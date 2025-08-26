@@ -53,6 +53,9 @@ dependencies:
   
   # QR code generation
   qr_flutter: ^4.1.0
+  
+  # WebSocket support
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_test:

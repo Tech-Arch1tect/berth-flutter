@@ -33,6 +33,8 @@ class ApiClient {
     return _baseUrl!;
   }
 
+  String? get authToken => _authToken;
+
   Map<String, String> _getHeaders([Map<String, String>? additionalHeaders]) {
     final headers = <String, String>{
       ...AppConfig.defaultHeaders,
