@@ -86,3 +86,72 @@ Map<String, dynamic> _$PortToJson(Port instance) => <String, dynamic>{
   'public': instance.publicPort,
   'type': instance.type,
 };
+
+NetworkIPAMConfig _$NetworkIPAMConfigFromJson(Map<String, dynamic> json) =>
+    NetworkIPAMConfig(
+      subnet: json['subnet'] as String?,
+      gateway: json['gateway'] as String?,
+    );
+
+Map<String, dynamic> _$NetworkIPAMConfigToJson(NetworkIPAMConfig instance) =>
+    <String, dynamic>{'subnet': instance.subnet, 'gateway': instance.gateway};
+
+NetworkIPAM _$NetworkIPAMFromJson(Map<String, dynamic> json) => NetworkIPAM(
+  driver: json['driver'] as String?,
+  config: (json['config'] as List<dynamic>?)
+      ?.map((e) => NetworkIPAMConfig.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$NetworkIPAMToJson(NetworkIPAM instance) =>
+    <String, dynamic>{'driver': instance.driver, 'config': instance.config};
+
+NetworkEndpoint _$NetworkEndpointFromJson(Map<String, dynamic> json) =>
+    NetworkEndpoint(
+      name: json['name'] as String,
+      endpointId: json['endpoint_id'] as String?,
+      macAddress: json['mac_address'] as String?,
+      ipv4Address: json['ipv4_address'] as String?,
+      ipv6Address: json['ipv6_address'] as String?,
+    );
+
+Map<String, dynamic> _$NetworkEndpointToJson(NetworkEndpoint instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'endpoint_id': instance.endpointId,
+      'mac_address': instance.macAddress,
+      'ipv4_address': instance.ipv4Address,
+      'ipv6_address': instance.ipv6Address,
+    };
+
+Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
+  name: json['name'] as String,
+  driver: json['driver'] as String?,
+  external: json['external'] as bool?,
+  labels: (json['labels'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+  options: (json['options'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+  ipam: json['ipam'] == null
+      ? null
+      : NetworkIPAM.fromJson(json['ipam'] as Map<String, dynamic>),
+  containers: (json['containers'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, NetworkEndpoint.fromJson(e as Map<String, dynamic>)),
+  ),
+  exists: json['exists'] as bool,
+  created: json['created'] as String?,
+);
+
+Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
+  'name': instance.name,
+  'driver': instance.driver,
+  'external': instance.external,
+  'labels': instance.labels,
+  'options': instance.options,
+  'ipam': instance.ipam,
+  'containers': instance.containers,
+  'exists': instance.exists,
+  'created': instance.created,
+};

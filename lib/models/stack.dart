@@ -102,3 +102,83 @@ class Port {
   Map<String, dynamic> toJson() => _$PortToJson(this);
 }
 
+@JsonSerializable()
+class NetworkIPAMConfig {
+  final String? subnet;
+  final String? gateway;
+
+  NetworkIPAMConfig({
+    this.subnet,
+    this.gateway,
+  });
+
+  factory NetworkIPAMConfig.fromJson(Map<String, dynamic> json) => _$NetworkIPAMConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$NetworkIPAMConfigToJson(this);
+}
+
+@JsonSerializable()
+class NetworkIPAM {
+  final String? driver;
+  final List<NetworkIPAMConfig>? config;
+
+  NetworkIPAM({
+    this.driver,
+    this.config,
+  });
+
+  factory NetworkIPAM.fromJson(Map<String, dynamic> json) => _$NetworkIPAMFromJson(json);
+  Map<String, dynamic> toJson() => _$NetworkIPAMToJson(this);
+}
+
+@JsonSerializable()
+class NetworkEndpoint {
+  final String name;
+  @JsonKey(name: 'endpoint_id')
+  final String? endpointId;
+  @JsonKey(name: 'mac_address')
+  final String? macAddress;
+  @JsonKey(name: 'ipv4_address')
+  final String? ipv4Address;
+  @JsonKey(name: 'ipv6_address')
+  final String? ipv6Address;
+
+  NetworkEndpoint({
+    required this.name,
+    this.endpointId,
+    this.macAddress,
+    this.ipv4Address,
+    this.ipv6Address,
+  });
+
+  factory NetworkEndpoint.fromJson(Map<String, dynamic> json) => _$NetworkEndpointFromJson(json);
+  Map<String, dynamic> toJson() => _$NetworkEndpointToJson(this);
+}
+
+@JsonSerializable()
+class Network {
+  final String name;
+  final String? driver;
+  final bool? external;
+  final Map<String, String>? labels;
+  final Map<String, String>? options;
+  final NetworkIPAM? ipam;
+  final Map<String, NetworkEndpoint>? containers;
+  final bool exists;
+  final String? created;
+
+  Network({
+    required this.name,
+    this.driver,
+    this.external,
+    this.labels,
+    this.options,
+    this.ipam,
+    this.containers,
+    required this.exists,
+    this.created,
+  });
+
+  factory Network.fromJson(Map<String, dynamic> json) => _$NetworkFromJson(json);
+  Map<String, dynamic> toJson() => _$NetworkToJson(this);
+}
+

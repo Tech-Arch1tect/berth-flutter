@@ -9,6 +9,7 @@ import '../services/server_service.dart';
 import '../services/websocket_service.dart';
 import '../services/stack_websocket_service.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/network_list.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -27,12 +28,17 @@ class StackDetailsScreen extends StatefulWidget {
   State<StackDetailsScreen> createState() => _StackDetailsScreenState();
 }
 
-class _StackDetailsScreenState extends State<StackDetailsScreen> {
+class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTickerProviderStateMixin {
   stack_models.StackDetails? _stackDetails;
+  List<stack_models.Network>? _networks;
   Server? _server;
   bool _isLoading = true;
+  bool _isNetworksLoading = false;
   bool _isSilentRefreshing = false;
   String? _error;
+  String? _networksError;
+  
+  TabController? _tabController;
   
   StackWebSocketService? _wsService;
   WebSocketConnectionStatus _wsStatus = WebSocketConnectionStatus.disconnected;
@@ -41,14 +47,23 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
   }
 
   @override
   void dispose() {
+    _tabController?.dispose();
     _wsService?.dispose();
     super.dispose();
+  }
+  
+  void _onTabChanged() {
+    if (_tabController!.index == 1 && _networks == null && !_isNetworksLoading) {
+      _loadNetworks();
+    }
   }
 
   Future<void> _loadData() async {
@@ -74,11 +89,41 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
         _stackDetails = stackDetails;
         _isLoading = false;
       });
+
+      // If networks tab is active, also load networks
+      if (_tabController?.index == 1) {
+        _loadNetworks();
+      }
     } catch (e) {
       setState(() {
         _error = e.toString();
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _loadNetworks() async {
+    setState(() {
+      _isNetworksLoading = true;
+      _networksError = null;
+    });
+
+    try {
+      final networks = await widget.stackService.getStackNetworks(widget.serverId, widget.stackName);
+      
+      if (mounted) {
+        setState(() {
+          _networks = networks;
+          _isNetworksLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _networksError = e.toString();
+          _isNetworksLoading = false;
+        });
+      }
     }
   }
 
@@ -185,9 +230,27 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
             ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
+            onPressed: () {
+              _loadData();
+              if (_tabController?.index == 1) {
+                _loadNetworks();
+              }
+            },
           ),
         ],
+        bottom: _stackDetails != null ? TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.apps),
+              text: 'Services (${_stackDetails?.services.length ?? 0})',
+            ),
+            Tab(
+              icon: const Icon(Icons.hub),
+              text: 'Networks${_networks != null ? ' (${_networks!.length})' : ''}',
+            ),
+          ],
+        ) : null,
       ),
       drawer: const AppDrawer(currentRoute: '/servers/stacks'),
       body: _buildBody(),
@@ -258,54 +321,78 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: _loadData,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Breadcrumb
-          _buildBreadcrumb(),
-          const SizedBox(height: 16),
-
-          // Stack Overview Card
-          _buildStackOverviewCard(),
-          const SizedBox(height: 16),
-
-          // Services Section
-          if (_stackDetails!.services.isNotEmpty) ...[
-            Text(
-              'Services & Containers',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            ..._stackDetails!.services.map((service) => _buildServiceCard(service)),
-          ] else ...[
-            Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.inventory_2_outlined,
-                    size: 48,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'No services found',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'This stack doesn\'t contain any services.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+    return Column(
+      children: [
+        // Breadcrumb and Stack Overview (always visible)
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildBreadcrumb(),
+              const SizedBox(height: 16),
+              _buildStackOverviewCard(),
+            ],
+          ),
+        ),
+        
+        // Tab content
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              // Services Tab
+              RefreshIndicator(
+                onRefresh: _loadData,
+                child: _stackDetails!.services.isNotEmpty
+                    ? ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: _stackDetails!.services.map((service) => _buildServiceCard(service)).toList(),
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.inventory_2_outlined,
+                                  size: 48,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'No services found',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'This stack doesn\'t contain any services.',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
               ),
-            ),
-          ],
-        ],
-      ),
+              
+              // Networks Tab
+              RefreshIndicator(
+                onRefresh: () async {
+                  await _loadNetworks();
+                },
+                child: NetworkList(
+                  networks: _networks ?? [],
+                  isLoading: _isNetworksLoading,
+                  error: _networksError,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
