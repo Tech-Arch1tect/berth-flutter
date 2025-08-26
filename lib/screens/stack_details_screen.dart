@@ -10,6 +10,7 @@ import '../services/websocket_service.dart';
 import '../services/stack_websocket_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/network_list.dart';
+import '../widgets/volume_list.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -31,12 +32,15 @@ class StackDetailsScreen extends StatefulWidget {
 class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTickerProviderStateMixin {
   stack_models.StackDetails? _stackDetails;
   List<stack_models.Network>? _networks;
+  List<stack_models.Volume>? _volumes;
   Server? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
+  bool _isVolumesLoading = false;
   bool _isSilentRefreshing = false;
   String? _error;
   String? _networksError;
+  String? _volumesError;
   
   TabController? _tabController;
   
@@ -47,7 +51,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
@@ -63,6 +67,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   void _onTabChanged() {
     if (_tabController!.index == 1 && _networks == null && !_isNetworksLoading) {
       _loadNetworks();
+    } else if (_tabController!.index == 2 && _volumes == null && !_isVolumesLoading) {
+      _loadVolumes();
     }
   }
 
@@ -93,6 +99,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       // If networks tab is active, also load networks
       if (_tabController?.index == 1) {
         _loadNetworks();
+      } else if (_tabController?.index == 2) {
+        _loadVolumes();
       }
     } catch (e) {
       setState(() {
@@ -122,6 +130,31 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         setState(() {
           _networksError = e.toString();
           _isNetworksLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadVolumes() async {
+    setState(() {
+      _isVolumesLoading = true;
+      _volumesError = null;
+    });
+
+    try {
+      final volumes = await widget.stackService.getStackVolumes(widget.serverId, widget.stackName);
+      
+      if (mounted) {
+        setState(() {
+          _volumes = volumes;
+          _isVolumesLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _volumesError = e.toString();
+          _isVolumesLoading = false;
         });
       }
     }
@@ -234,6 +267,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
               _loadData();
               if (_tabController?.index == 1) {
                 _loadNetworks();
+              } else if (_tabController?.index == 2) {
+                _loadVolumes();
               }
             },
           ),
@@ -248,6 +283,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
             Tab(
               icon: const Icon(Icons.hub),
               text: 'Networks${_networks != null ? ' (${_networks!.length})' : ''}',
+            ),
+            Tab(
+              icon: const Icon(Icons.folder),
+              text: 'Volumes${_volumes != null ? ' (${_volumes!.length})' : ''}',
             ),
           ],
         ) : null,
@@ -387,6 +426,18 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   networks: _networks ?? [],
                   isLoading: _isNetworksLoading,
                   error: _networksError,
+                ),
+              ),
+              
+              // Volumes Tab
+              RefreshIndicator(
+                onRefresh: () async {
+                  await _loadVolumes();
+                },
+                child: VolumeList(
+                  volumes: _volumes ?? [],
+                  isLoading: _isVolumesLoading,
+                  error: _volumesError,
                 ),
               ),
             ],

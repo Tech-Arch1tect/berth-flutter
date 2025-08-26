@@ -155,3 +155,73 @@ Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
   'exists': instance.exists,
   'created': instance.created,
 };
+
+VolumeMount _$VolumeMountFromJson(Map<String, dynamic> json) => VolumeMount(
+  type: json['type'] as String,
+  source: json['source'] as String,
+  target: json['target'] as String,
+  readOnly: json['read_only'] as bool?,
+  bindOptions: (json['bind_options'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+  tmpfsOptions: (json['tmpfs_options'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+);
+
+Map<String, dynamic> _$VolumeMountToJson(VolumeMount instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'source': instance.source,
+      'target': instance.target,
+      'read_only': instance.readOnly,
+      'bind_options': instance.bindOptions,
+      'tmpfs_options': instance.tmpfsOptions,
+    };
+
+VolumeUsage _$VolumeUsageFromJson(Map<String, dynamic> json) => VolumeUsage(
+  containerName: json['container_name'] as String,
+  serviceName: json['service_name'] as String,
+  mounts: (json['mounts'] as List<dynamic>)
+      .map((e) => VolumeMount.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$VolumeUsageToJson(VolumeUsage instance) =>
+    <String, dynamic>{
+      'container_name': instance.containerName,
+      'service_name': instance.serviceName,
+      'mounts': instance.mounts,
+    };
+
+Volume _$VolumeFromJson(Map<String, dynamic> json) => Volume(
+  name: json['name'] as String,
+  driver: json['driver'] as String?,
+  external: json['external'] as bool?,
+  labels: (json['labels'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+  driverOpts: (json['driver_opts'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
+  exists: json['exists'] as bool,
+  created: json['created'] as String?,
+  mountpoint: json['mountpoint'] as String?,
+  scope: json['scope'] as String?,
+  usedBy: (json['used_by'] as List<dynamic>?)
+      ?.map((e) => VolumeUsage.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$VolumeToJson(Volume instance) => <String, dynamic>{
+  'name': instance.name,
+  'driver': instance.driver,
+  'external': instance.external,
+  'labels': instance.labels,
+  'driver_opts': instance.driverOpts,
+  'exists': instance.exists,
+  'created': instance.created,
+  'mountpoint': instance.mountpoint,
+  'scope': instance.scope,
+  'used_by': instance.usedBy,
+};

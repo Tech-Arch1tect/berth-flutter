@@ -69,4 +69,25 @@ class StackService {
       throw Exception('Failed to fetch stack networks: ${response.statusCode}');
     }
   }
+
+  Future<List<Volume>> getStackVolumes(int serverId, String stackName) async {
+    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/volumes');
+
+    if (response.statusCode == 200) {
+      final List<dynamic> volumesData = json.decode(response.body);
+      
+      final volumes = volumesData
+          .map((volumeData) => Volume.fromJson(volumeData))
+          .toList();
+      
+      volumes.sort((a, b) => a.name.compareTo(b.name));
+      return volumes;
+    } else if (response.statusCode == 401) {
+      throw Exception('Authentication failed');
+    } else if (response.statusCode == 404) {
+      throw Exception('Stack or volumes not found');
+    } else {
+      throw Exception('Failed to fetch stack volumes: ${response.statusCode}');
+    }
+  }
 }

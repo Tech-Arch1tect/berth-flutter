@@ -182,3 +182,78 @@ class Network {
   Map<String, dynamic> toJson() => _$NetworkToJson(this);
 }
 
+@JsonSerializable()
+class VolumeMount {
+  final String type;
+  final String source;
+  final String target;
+  @JsonKey(name: 'read_only')
+  final bool? readOnly;
+  @JsonKey(name: 'bind_options')
+  final Map<String, String>? bindOptions;
+  @JsonKey(name: 'tmpfs_options')
+  final Map<String, String>? tmpfsOptions;
+
+  VolumeMount({
+    required this.type,
+    required this.source,
+    required this.target,
+    this.readOnly,
+    this.bindOptions,
+    this.tmpfsOptions,
+  });
+
+  factory VolumeMount.fromJson(Map<String, dynamic> json) => _$VolumeMountFromJson(json);
+  Map<String, dynamic> toJson() => _$VolumeMountToJson(this);
+}
+
+@JsonSerializable()
+class VolumeUsage {
+  @JsonKey(name: 'container_name')
+  final String containerName;
+  @JsonKey(name: 'service_name')
+  final String serviceName;
+  final List<VolumeMount> mounts;
+
+  VolumeUsage({
+    required this.containerName,
+    required this.serviceName,
+    required this.mounts,
+  });
+
+  factory VolumeUsage.fromJson(Map<String, dynamic> json) => _$VolumeUsageFromJson(json);
+  Map<String, dynamic> toJson() => _$VolumeUsageToJson(this);
+}
+
+@JsonSerializable()
+class Volume {
+  final String name;
+  final String? driver;
+  final bool? external;
+  final Map<String, String>? labels;
+  @JsonKey(name: 'driver_opts')
+  final Map<String, String>? driverOpts;
+  final bool exists;
+  final String? created;
+  final String? mountpoint;
+  final String? scope;
+  @JsonKey(name: 'used_by')
+  final List<VolumeUsage>? usedBy;
+
+  Volume({
+    required this.name,
+    this.driver,
+    this.external,
+    this.labels,
+    this.driverOpts,
+    required this.exists,
+    this.created,
+    this.mountpoint,
+    this.scope,
+    this.usedBy,
+  });
+
+  factory Volume.fromJson(Map<String, dynamic> json) => _$VolumeFromJson(json);
+  Map<String, dynamic> toJson() => _$VolumeToJson(this);
+}
+
