@@ -301,20 +301,65 @@ class ContainerStats {
   final String serviceName;
   @JsonKey(name: 'cpu_percent')
   final double cpuPercent;
+  @JsonKey(name: 'cpu_user_time')
+  final int cpuUserTime;
+  @JsonKey(name: 'cpu_system_time')
+  final int cpuSystemTime;
   @JsonKey(name: 'memory_usage')
   final int memoryUsage;
   @JsonKey(name: 'memory_limit')
   final int memoryLimit;
   @JsonKey(name: 'memory_percent')
   final double memoryPercent;
+  @JsonKey(name: 'memory_rss')
+  final int memoryRss;
+  @JsonKey(name: 'memory_cache')
+  final int memoryCache;
+  @JsonKey(name: 'memory_swap')
+  final int memorySwap;
+  @JsonKey(name: 'page_faults')
+  final int pageFaults;
+  @JsonKey(name: 'page_major_faults')
+  final int pageMajorFaults;
+  @JsonKey(name: 'network_rx_bytes')
+  final int networkRxBytes;
+  @JsonKey(name: 'network_tx_bytes')
+  final int networkTxBytes;
+  @JsonKey(name: 'network_rx_packets')
+  final int networkRxPackets;
+  @JsonKey(name: 'network_tx_packets')
+  final int networkTxPackets;
+  @JsonKey(name: 'block_read_bytes')
+  final int blockReadBytes;
+  @JsonKey(name: 'block_write_bytes')
+  final int blockWriteBytes;
+  @JsonKey(name: 'block_read_ops')
+  final int blockReadOps;
+  @JsonKey(name: 'block_write_ops')
+  final int blockWriteOps;
 
   ContainerStats({
     required this.name,
     required this.serviceName,
     required this.cpuPercent,
+    required this.cpuUserTime,
+    required this.cpuSystemTime,
     required this.memoryUsage,
     required this.memoryLimit,
     required this.memoryPercent,
+    required this.memoryRss,
+    required this.memoryCache,
+    required this.memorySwap,
+    required this.pageFaults,
+    required this.pageMajorFaults,
+    required this.networkRxBytes,
+    required this.networkTxBytes,
+    required this.networkRxPackets,
+    required this.networkTxPackets,
+    required this.blockReadBytes,
+    required this.blockWriteBytes,
+    required this.blockReadOps,
+    required this.blockWriteOps,
   });
 
   factory ContainerStats.fromJson(Map<String, dynamic> json) => _$ContainerStatsFromJson(json);

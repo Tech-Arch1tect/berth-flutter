@@ -15,7 +15,10 @@ class StackStatsList extends StatelessWidget {
 
   String _formatBytes(int bytes) {
     if (bytes == 0) return '0 B';
-    const suffixes = ['B', 'KB', 'MB', 'GB'];
+    
+    if (bytes >= 9223372036854775807) return 'Unlimited';
+    
+    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
     int i = 0;
     double size = bytes.toDouble();
     
@@ -25,6 +28,13 @@ class StackStatsList extends StatelessWidget {
     }
     
     return '${size.toStringAsFixed(1)} ${suffixes[i]}';
+  }
+
+  String _formatNumber(int number) {
+    return number.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
   String _formatPercent(double percent) {
@@ -175,19 +185,26 @@ class StackStatsList extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       
-                      // CPU Usage
+                      // CPU Section
+                      Text(
+                        'CPU Statistics',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'CPU Usage',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           Text(
                             _formatPercent(container.cpuPercent),
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontFamily: 'monospace',
+                            ),
                           ),
                         ],
                       ),
@@ -199,21 +216,71 @@ class StackStatsList extends StatelessWidget {
                           Theme.of(context).colorScheme.primary,
                         ),
                       ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'User Time',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  '${container.cpuUserTime}ms',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'System Time',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  '${container.cpuSystemTime}ms',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       
-                      // Memory Usage
+                      // Memory Section
+                      Text(
+                        'Memory Statistics',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Memory Usage',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           Text(
-                            '${_formatBytes(container.memoryUsage)} / ${_formatBytes(container.memoryLimit)}',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            _formatBytes(container.memoryUsage),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontFamily: 'monospace',
+                            ),
                           ),
                         ],
                       ),
@@ -227,10 +294,286 @@ class StackStatsList extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '${_formatPercent(container.memoryPercent)} used',
+                        '${_formatPercent(container.memoryPercent)} used (${_formatBytes(container.memoryLimit)} limit)',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'RSS',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.memoryRss),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Cache',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.memoryCache),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Swap',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.memorySwap),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Page Faults',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatNumber(container.pageFaults),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Network Section
+                      Text(
+                        'Network Statistics',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'RX Bytes',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.networkRxBytes),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'TX Bytes',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.networkTxBytes),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'RX Packets',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatNumber(container.networkRxPackets),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'TX Packets',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatNumber(container.networkTxPackets),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Block I/O Section
+                      Text(
+                        'Block I/O Statistics',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Read Bytes',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.blockReadBytes),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Write Bytes',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatBytes(container.blockWriteBytes),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Read Ops',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatNumber(container.blockReadOps),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Write Ops',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                Text(
+                                  _formatNumber(container.blockWriteOps),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
