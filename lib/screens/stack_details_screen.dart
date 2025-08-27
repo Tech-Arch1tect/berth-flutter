@@ -16,8 +16,10 @@ import '../widgets/environment_variable_list.dart';
 import '../widgets/stack_stats_list.dart';
 import '../widgets/logs_viewer.dart';
 import '../widgets/operations_modal.dart';
+import '../widgets/service_quick_actions.dart';
 import '../services/logs_service.dart';
 import '../services/operations_service.dart';
+import '../models/operation.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -63,6 +65,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   String? _wsError;
   
   Timer? _statsTimer;
+  
+  OperationsService? _operationsService;
+  bool _isQuickOperationRunning = false;
+  String? _runningQuickOperation;
 
   @override
   void initState() {
@@ -78,6 +84,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     _tabController?.dispose();
     _wsService?.dispose();
     _statsTimer?.cancel();
+    _operationsService?.disconnect();
     super.dispose();
   }
   
@@ -286,6 +293,86 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         operationsService: operationsService,
       ),
     );
+  }
+
+  Future<void> _handleQuickOperation(OperationRequest request) async {
+    if (_isQuickOperationRunning) return;
+    
+    final apiClient = context.read<ApiClient>();
+    _operationsService ??= OperationsService(apiClient);
+    
+    setState(() {
+      _isQuickOperationRunning = true;
+      _runningQuickOperation = '${request.command}:${request.services.first}';
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Starting ${request.command} operation for ${request.services.first}...'),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+    
+    try {
+      if (!_operationsService!.isConnected) {
+        await _operationsService!.connect(widget.serverId, widget.stackName);
+      }
+      
+      if (!_operationsService!.isConnected) {
+        throw Exception('Unable to connect to operations service');
+      }
+      
+      await _operationsService!.startOperation(request);
+      
+      _operationsService!.messages.listen(
+        (message) {
+          if (message.type == 'complete' && mounted) {
+            setState(() {
+              _isQuickOperationRunning = false;
+              _runningQuickOperation = null;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${request.command.toUpperCase()} operation completed successfully'),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+            
+            _refreshDataSilently();
+          } else if (message.type == 'error' && mounted) {
+            setState(() {
+              _isQuickOperationRunning = false;
+              _runningQuickOperation = null;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Operation failed: ${message.data ?? 'Unknown error'}'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                duration: const Duration(seconds: 5),
+              ),
+            );
+          }
+        },
+      );
+      
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isQuickOperationRunning = false;
+          _runningQuickOperation = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Operation failed: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _refreshDataSilently() async {
@@ -784,6 +871,17 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   ),
                 ],
               ],
+            ),
+          ),
+          
+          // Quick Actions
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: ServiceQuickActions(
+              service: service,
+              onQuickOperation: _handleQuickOperation,
+              isOperationRunning: _isQuickOperationRunning,
+              runningOperation: _runningQuickOperation,
             ),
           ),
           
