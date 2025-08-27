@@ -14,6 +14,8 @@ import '../widgets/network_list.dart';
 import '../widgets/volume_list.dart';
 import '../widgets/environment_variable_list.dart';
 import '../widgets/stack_stats_list.dart';
+import '../widgets/logs_viewer.dart';
+import '../services/logs_service.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -63,7 +65,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
     _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
@@ -90,6 +92,11 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         _loadStats();
       }
       _startStatsTimer();
+    } else if (_tabController!.index == 5) {
+      // Logs tab - load stats for container selection
+      if (_stackStats == null && !_isStatsLoading) {
+        _loadStats();
+      }
     } else {
       // Stop stats timer when not on stats tab
       _stopStatsTimer();
@@ -375,6 +382,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                 _loadEnvironmentVariables();
               } else if (_tabController?.index == 4) {
                 _loadStats();
+              } else if (_tabController?.index == 5) {
+                _loadStats();
               }
             },
           ),
@@ -401,6 +410,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
             Tab(
               icon: const Icon(Icons.analytics),
               text: 'Stats${_stackStats != null ? ' (${_stackStats!.containers.length})' : ''}',
+            ),
+            Tab(
+              icon: const Icon(Icons.terminal),
+              text: 'Logs',
             ),
           ],
         ) : null,
@@ -575,6 +588,22 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   containers: _stackStats?.containers,
                   isLoading: _isStatsLoading || _isStatsRefreshing,
                   error: _statsError,
+                ),
+              ),
+              
+              // Logs Tab
+              RefreshIndicator(
+                onRefresh: () async {
+                  // Logs viewer manages its own refresh
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: LogsViewer(
+                    serverId: widget.serverId,
+                    stackName: widget.stackName,
+                    logsService: LogsService(context.read<ApiClient>()),
+                    containers: _stackStats?.containers,
+                  ),
                 ),
               ),
             ],
