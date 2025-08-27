@@ -127,6 +127,16 @@ class StackQuickActions extends StatelessWidget {
         ],
 
         
+        _buildActionButton(
+          context: context,
+          command: 'pull',
+          label: 'Pull',
+          icon: Icons.cloud_download,
+          color: const Color(0xFF607D8B),
+          tooltip: 'Pull latest images for stack',
+        ),
+
+        
         if (stackState != StackState.allNotCreated && 
             services.any((s) => s.containers.any((c) => c.state != 'not created'))) ...[
           _buildActionButton(
@@ -216,6 +226,8 @@ class StackQuickActions extends StatelessWidget {
         return 'Stopping...';
       case 'restart':
         return 'Restarting...';
+      case 'pull':
+        return 'Pulling...';
       case 'down':
         return 'Removing...';
       default:

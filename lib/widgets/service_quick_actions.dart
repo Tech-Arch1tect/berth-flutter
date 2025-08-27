@@ -122,6 +122,16 @@ class ServiceQuickActions extends StatelessWidget {
         ],
 
         
+        _buildActionButton(
+          context: context,
+          command: 'pull',
+          label: 'Pull',
+          icon: Icons.cloud_download,
+          color: const Color(0xFF607D8B),
+          tooltip: 'Pull latest images for ${service.name}',
+        ),
+
+        
         if (serviceState != ServiceState.allNotCreated && 
             service.containers.any((c) => c.state != 'not created')) ...[
           _buildActionButton(
@@ -211,6 +221,8 @@ class ServiceQuickActions extends StatelessWidget {
         return 'Stopping...';
       case 'restart':
         return 'Restarting...';
+      case 'pull':
+        return 'Pulling...';
       case 'down':
         return 'Removing...';
       default:
