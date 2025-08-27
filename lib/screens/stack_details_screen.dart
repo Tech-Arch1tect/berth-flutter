@@ -17,6 +17,7 @@ import '../widgets/stack_stats_list.dart';
 import '../widgets/logs_viewer.dart';
 import '../widgets/operations_modal.dart';
 import '../widgets/service_quick_actions.dart';
+import '../widgets/stack_quick_actions.dart';
 import '../services/logs_service.dart';
 import '../services/operations_service.dart';
 import '../models/operation.dart';
@@ -301,14 +302,23 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     final apiClient = context.read<ApiClient>();
     _operationsService ??= OperationsService(apiClient);
     
+    final isStackOperation = request.services.isEmpty;
+    final operationKey = isStackOperation 
+        ? 'stack:${request.command}'
+        : '${request.command}:${request.services.first}';
+    
     setState(() {
       _isQuickOperationRunning = true;
-      _runningQuickOperation = '${request.command}:${request.services.first}';
+      _runningQuickOperation = operationKey;
     });
+    
+    final targetName = isStackOperation 
+        ? 'stack ${widget.stackName}'
+        : request.services.first;
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Starting ${request.command} operation for ${request.services.first}...'),
+        content: Text('Starting ${request.command} operation for $targetName...'),
         backgroundColor: Theme.of(context).colorScheme.secondary,
         duration: const Duration(seconds: 2),
       ),
@@ -333,9 +343,13 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
               _runningQuickOperation = null;
             });
             
+            final completionTargetName = isStackOperation 
+                ? 'stack ${widget.stackName}'
+                : request.services.first;
+                
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('${request.command.toUpperCase()} operation completed successfully'),
+                content: Text('${request.command.toUpperCase()} operation completed successfully for $completionTargetName'),
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 duration: const Duration(seconds: 3),
               ),
@@ -622,8 +636,21 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                 onRefresh: _loadData,
                 child: _stackDetails!.services.isNotEmpty
                     ? ListView(
-                        padding: const EdgeInsets.all(16),
-                        children: _stackDetails!.services.map((service) => _buildServiceCard(service)).toList(),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        children: [
+                          // Stack-level Quick Actions
+                          Card(
+                            child: StackQuickActions(
+                              services: _stackDetails!.services,
+                              onQuickOperation: _handleQuickOperation,
+                              isOperationRunning: _isQuickOperationRunning,
+                              runningOperation: _runningQuickOperation,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Individual Service Cards
+                          ..._stackDetails!.services.map((service) => _buildServiceCard(service)),
+                        ],
                       )
                     : ListView(
                         padding: const EdgeInsets.all(16),
