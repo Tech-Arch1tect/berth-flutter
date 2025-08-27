@@ -15,7 +15,9 @@ import '../widgets/volume_list.dart';
 import '../widgets/environment_variable_list.dart';
 import '../widgets/stack_stats_list.dart';
 import '../widgets/logs_viewer.dart';
+import '../widgets/operations_modal.dart';
 import '../services/logs_service.dart';
+import '../services/operations_service.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -269,6 +271,23 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     _statsTimer = null;
   }
 
+  void _showOperationsModal() {
+    if (_stackDetails == null) return;
+    
+    final apiClient = context.read<ApiClient>();
+    final operationsService = OperationsService(apiClient);
+    
+    showDialog(
+      context: context,
+      builder: (context) => OperationsModal(
+        serverId: widget.serverId,
+        stackName: widget.stackName,
+        services: _stackDetails!.services,
+        operationsService: operationsService,
+      ),
+    );
+  }
+
   Future<void> _refreshDataSilently() async {
     if (mounted) {
       setState(() {
@@ -386,6 +405,11 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                 _loadStats();
               }
             },
+          ),
+          IconButton(
+            icon: const Icon(Icons.play_arrow),
+            tooltip: 'Operations',
+            onPressed: _stackDetails?.services.isEmpty == true ? null : _showOperationsModal,
           ),
         ],
         bottom: _stackDetails != null ? TabBar(
