@@ -152,6 +152,37 @@ class ApiClient {
     return response;
   }
 
+  Future<http.Response> deleteWithBody(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+    final url = '$baseUrl$endpoint';
+    final requestHeaders = _getHeaders(headers);
+    
+    final request = http.Request('DELETE', Uri.parse(url));
+    request.headers.addAll(requestHeaders);
+    if (body != null) {
+      request.body = json.encode(body);
+    }
+    
+    final streamResponse = await _client.send(request);
+    final response = await http.Response.fromStream(streamResponse);
+    
+    if (response.statusCode == 401 && _onTokenRefresh != null) {
+      final refreshSuccess = await _onTokenRefresh!();
+      if (refreshSuccess) {
+        final newHeaders = _getHeaders(headers);
+        final retryRequest = http.Request('DELETE', Uri.parse(url));
+        retryRequest.headers.addAll(newHeaders);
+        if (body != null) {
+          retryRequest.body = json.encode(body);
+        }
+        
+        final retryStreamResponse = await _client.send(retryRequest);
+        return await http.Response.fromStream(retryStreamResponse);
+      }
+    }
+    
+    return response;
+  }
+
   void dispose() {
     _client.close();
   }

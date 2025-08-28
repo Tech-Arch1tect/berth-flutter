@@ -19,6 +19,7 @@ import '../widgets/operations_modal.dart';
 import '../widgets/service_quick_actions.dart';
 import '../widgets/stack_quick_actions.dart';
 import '../widgets/terminal_modal.dart';
+import '../widgets/file_manager.dart';
 import '../services/logs_service.dart';
 import '../services/operations_service.dart';
 import '../models/operation.dart';
@@ -75,7 +76,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
     _tabController!.addListener(_onTabChanged);
     _loadData();
     _initWebSocket();
@@ -563,6 +564,10 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
               text: 'Stats${_stackStats != null ? ' (${_stackStats!.containers.length})' : ''}',
             ),
             Tab(
+              icon: const Icon(Icons.description),
+              text: 'Files',
+            ),
+            Tab(
               icon: const Icon(Icons.terminal),
               text: 'Logs',
             ),
@@ -753,6 +758,12 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   isLoading: _isStatsLoading || _isStatsRefreshing,
                   error: _statsError,
                 ),
+              ),
+              
+              // Files Tab
+              FileManager(
+                serverId: widget.serverId,
+                stackName: widget.stackName,
               ),
               
               // Logs Tab

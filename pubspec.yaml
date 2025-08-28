@@ -59,6 +59,11 @@ dependencies:
   
   # Terminal emulator for Flutter
   xterm: ^4.0.0
+  
+  # File system access and downloads
+  path_provider: ^2.1.4
+  permission_handler: ^11.3.1
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:
