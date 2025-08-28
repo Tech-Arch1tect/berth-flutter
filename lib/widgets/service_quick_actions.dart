@@ -7,6 +7,7 @@ class ServiceQuickActions extends StatelessWidget {
   final Function(OperationRequest) onQuickOperation;
   final bool isOperationRunning;
   final String? runningOperation;
+  final VoidCallback? onOpenTerminal;
 
   const ServiceQuickActions({
     super.key,
@@ -14,6 +15,7 @@ class ServiceQuickActions extends StatelessWidget {
     required this.onQuickOperation,
     this.isOperationRunning = false,
     this.runningOperation,
+    this.onOpenTerminal,
   });
 
   ServiceState _getServiceState() {
@@ -73,6 +75,10 @@ class ServiceQuickActions extends StatelessWidget {
       spacing: 4,
       runSpacing: 4,
       children: [
+        // Terminal button (only show if running containers and callback provided)
+        if (onOpenTerminal != null && (serviceState == ServiceState.allRunning || serviceState == ServiceState.mixedRunning)) ...[
+          _buildTerminalButton(context),
+        ],
         
         _buildActionButton(
           context: context,
@@ -144,6 +150,47 @@ class ServiceQuickActions extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildTerminalButton(BuildContext context) {
+    final color = const Color(0xFF1976D2); // Blue color for terminal
+    
+    return Tooltip(
+      message: 'Open terminal for ${service.name}',
+      child: Material(
+        color: color.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.1),
+        borderRadius: BorderRadius.circular(6),
+        child: InkWell(
+          onTap: isOperationRunning ? null : onOpenTerminal,
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.terminal,
+                  size: 12,
+                  color: Theme.of(context).brightness == Brightness.dark
+                    ? color.withValues(alpha: 0.9)
+                    : Color.fromARGB(255, (color.r * 0.7).round(), (color.g * 0.7).round(), (color.b * 0.7).round()),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Terminal',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.dark
+                      ? color.withValues(alpha: 0.9)
+                      : Color.fromARGB(255, (color.r * 0.7).round(), (color.g * 0.7).round(), (color.b * 0.7).round()),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

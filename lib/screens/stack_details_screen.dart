@@ -18,6 +18,7 @@ import '../widgets/logs_viewer.dart';
 import '../widgets/operations_modal.dart';
 import '../widgets/service_quick_actions.dart';
 import '../widgets/stack_quick_actions.dart';
+import '../widgets/terminal_modal.dart';
 import '../services/logs_service.dart';
 import '../services/operations_service.dart';
 import '../models/operation.dart';
@@ -386,6 +387,31 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
           ),
         );
       }
+    }
+  }
+
+  void _handleOpenTerminal(stack_models.ComposeService service) {
+    if (_server != null && _stackDetails != null) {
+      // Find the first running container for this service
+      final runningContainer = service.containers
+          .firstWhere((container) => container.state == 'running');
+      
+      // Create Stack object from StackDetails
+      final stack = stack_models.Stack(
+        name: _stackDetails!.name,
+        path: _stackDetails!.path,
+        composeFile: _stackDetails!.composeFile,
+        serverId: _stackDetails!.serverId,
+        serverName: _stackDetails!.serverName,
+      );
+      
+      TerminalModal.show(
+        context: context,
+        server: _server!,
+        stack: stack,
+        serviceName: service.name,
+        containerName: runningContainer.name,
+      );
     }
   }
 
@@ -909,6 +935,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
               onQuickOperation: _handleQuickOperation,
               isOperationRunning: _isQuickOperationRunning,
               runningOperation: _runningQuickOperation,
+              onOpenTerminal: () => _handleOpenTerminal(service),
             ),
           ),
           

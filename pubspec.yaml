@@ -56,6 +56,9 @@ dependencies:
   
   # WebSocket support
   web_socket_channel: ^3.0.3
+  
+  # Terminal emulator for Flutter
+  xterm: ^4.0.0
 
 dev_dependencies:
   flutter_test:
