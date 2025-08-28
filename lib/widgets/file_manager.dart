@@ -848,6 +848,14 @@ class _FileManagerState extends State<FileManager> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
+            leading: const Icon(Icons.upload_file),
+            title: const Text('Upload File'),
+            onTap: () {
+              Navigator.pop(context);
+              _showUploadDialog();
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.note_add),
             title: const Text('New File'),
             onTap: () {
@@ -866,6 +874,166 @@ class _FileManagerState extends State<FileManager> {
         ],
       ),
     );
+  }
+
+  void _showUploadDialog() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.any,
+      );
+
+      if (result != null && result.files.isNotEmpty && mounted) {
+        // Show upload confirmation dialog
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Upload Files'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Upload ${result.files.length} file${result.files.length > 1 ? 's' : ''} to:'),
+                const SizedBox(height: 8),
+                Text(
+                  _currentPath.isEmpty ? 'Root directory' : _currentPath,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: result.files.map((file) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Text(
+                          '• ${file.name}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _uploadFiles(result.files);
+                },
+                child: const Text('Upload'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      _showErrorMessage('Failed to select files: $e');
+    }
+  }
+
+  Future<void> _uploadFiles(List<PlatformFile> files) async {
+    int successCount = 0;
+    int errorCount = 0;
+
+    // Show progress dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Uploading Files'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text('Uploading files... (0/${files.length})'),
+          ],
+        ),
+      ),
+    );
+
+    for (int i = 0; i < files.length; i++) {
+      final file = files[i];
+      try {
+        if (file.path != null) {
+          final ioFile = File(file.path!);
+          final uploadPath = _currentPath.isEmpty ? '' : _currentPath;
+          
+          await _filesService.uploadFile(
+            widget.serverId,
+            widget.stackName,
+            uploadPath,
+            ioFile,
+            file.name,
+          );
+          successCount++;
+        }
+      } catch (e) {
+        errorCount++;
+        debugPrint('Failed to upload ${file.name}: $e');
+      }
+
+      // Update progress dialog
+      if (mounted) {
+        // Find the dialog and update its content
+        Navigator.of(context, rootNavigator: true).pop();
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('Uploading Files'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text('Uploading files... (${i + 1}/${files.length})'),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    // Close progress dialog
+    if (mounted) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+
+    // Show result
+    if (mounted) {
+      if (errorCount == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Successfully uploaded $successCount file${successCount > 1 ? 's' : ''}')),
+        );
+      } else if (successCount == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to upload all files'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Uploaded $successCount file${successCount > 1 ? 's' : ''}, failed: $errorCount'),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+          ),
+        );
+      }
+
+      // Refresh the directory listing
+      _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
+    }
   }
 
   void _showCreateFileDialog() {

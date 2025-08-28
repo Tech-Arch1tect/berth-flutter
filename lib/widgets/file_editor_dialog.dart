@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import '../models/file.dart';
 import '../services/files_service.dart';
 
@@ -131,6 +132,14 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
     }
   }
 
+  String _getFileType() {
+    final extension = widget.fileEntry.name.split('.').last.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(extension)) {
+      return 'image';
+    }
+    return 'other';
+  }
+
   Widget _buildContent() {
     if (_isLoading) {
       return const SizedBox(
@@ -173,6 +182,62 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
     }
 
+    // Handle image files
+    if (_fileContent?.encoding == 'base64' && _getFileType() == 'image') {
+      return Container(
+        height: 400,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: InteractiveViewer(
+            panEnabled: true,
+            boundaryMargin: const EdgeInsets.all(20),
+            minScale: 0.5,
+            maxScale: 4.0,
+            child: Center(
+              child: Image.memory(
+                base64Decode(_fileContent!.content),
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.broken_image,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Failed to load image',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'The image file may be corrupted or in an unsupported format.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Handle other binary files
     if (_fileContent?.encoding == 'base64') {
       return SizedBox(
         height: 200,
@@ -202,6 +267,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
     }
 
+    // Handle text files
     return SizedBox(
       height: 400,
       width: double.maxFinite,

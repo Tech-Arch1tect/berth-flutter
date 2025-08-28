@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import '../models/file.dart';
 import 'api_client.dart';
@@ -125,21 +126,18 @@ class FilesService {
     }
   }
 
-  Future<FileInfo> getFileInfo(int serverId, String stackName, String path) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/files/info?path=${Uri.encodeComponent(path)}');
+  Future<void> uploadFile(int serverId, String stackName, String path, File file, String filename) async {
+    final response = await _apiClient.postMultipart('/api/v1/servers/$serverId/stacks/$stackName/files/upload?path=${Uri.encodeComponent(path)}', file, filename);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return FileInfo.fromJson(data);
+      return;
     } else if (response.statusCode == 401) {
       throw Exception('Authentication failed');
     } else if (response.statusCode == 403) {
       throw Exception('Access denied - insufficient permissions');
-    } else if (response.statusCode == 404) {
-      throw Exception('File not found');
     } else {
       final Map<String, dynamic> errorData = json.decode(response.body);
-      throw Exception(errorData['error'] ?? 'Failed to get file info: ${response.statusCode}');
+      throw Exception(errorData['error'] ?? 'Failed to upload file: ${response.statusCode}');
     }
   }
 

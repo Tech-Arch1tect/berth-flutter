@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
 
@@ -174,6 +175,33 @@ class ApiClient {
         if (body != null) {
           retryRequest.body = json.encode(body);
         }
+        
+        final retryStreamResponse = await _client.send(retryRequest);
+        return await http.Response.fromStream(retryStreamResponse);
+      }
+    }
+    
+    return response;
+  }
+
+  Future<http.Response> postMultipart(String endpoint, File file, String filename, {Map<String, String>? headers}) async {
+    final url = '$baseUrl$endpoint';
+    final requestHeaders = _getHeaders(headers);
+    
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll(requestHeaders);
+    request.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
+    
+    final streamResponse = await _client.send(request);
+    final response = await http.Response.fromStream(streamResponse);
+    
+    if (response.statusCode == 401 && _onTokenRefresh != null) {
+      final refreshSuccess = await _onTokenRefresh!();
+      if (refreshSuccess) {
+        final newHeaders = _getHeaders(headers);
+        final retryRequest = http.MultipartRequest('POST', Uri.parse(url));
+        retryRequest.headers.addAll(newHeaders);
+        retryRequest.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
         
         final retryStreamResponse = await _client.send(retryRequest);
         return await http.Response.fromStream(retryStreamResponse);
