@@ -1,10 +1,10 @@
 class AppConfig {
-  static const String appName = 'BRX Starter Flutter App';
+  static const String appName = 'Berth';
   static const String appVersion = '1.0.0';
   
   static const String mobileAppHeader = 'X-Mobile-App';
-  static const String mobileAppIdentifier = 'brx-flutter';
-  static const String userAgent = 'BRX-Flutter-Mobile-App/1.0';
+  static const String mobileAppIdentifier = 'berth-flutter';
+  static const String userAgent = 'Berth-Flutter-Mobile-App/1.0';
   
   static const int apiTimeoutSeconds = 30;
   static const int refreshTokenTimeoutSeconds = 10;

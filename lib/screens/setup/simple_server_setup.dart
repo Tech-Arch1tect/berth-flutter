@@ -54,7 +54,7 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Enter BRX Server URL',
+              'Enter Berth Server URL',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),

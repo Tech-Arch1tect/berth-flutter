@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 32),
               
               const Text(
-                'BRX Mobile',
+                'Berth Mobile',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,

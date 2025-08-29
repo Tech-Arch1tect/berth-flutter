@@ -158,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               
               Text(
-                'Join BRX Mobile today',
+                'Join Berth Mobile today',
                 style: TextStyle(
                   fontSize: 16,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,

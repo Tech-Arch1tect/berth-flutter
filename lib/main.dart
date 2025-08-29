@@ -81,7 +81,7 @@ class _AppInitializerState extends State<AppInitializer> {
       );
     }
 
-    return BrxApp(
+    return BerthApp(
       configService: _configService,
       apiClient: _apiClient,
       authService: _authService,
@@ -91,14 +91,14 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 }
 
-class BrxApp extends StatelessWidget {
+class BerthApp extends StatelessWidget {
   final ConfigService configService;
   final ApiClient apiClient;
   final AuthService authService;
   final StackService stackService;
   final ServerService serverService;
   
-  const BrxApp({
+  const BerthApp({
     super.key, 
     required this.configService,
     required this.apiClient,
@@ -118,7 +118,7 @@ class BrxApp extends StatelessWidget {
         Provider.value(value: serverService),
       ],
       child: MaterialApp.router(
-        title: 'BRX Mobile',
+        title: 'Berth Mobile',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,

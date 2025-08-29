@@ -1,4 +1,4 @@
-package com.example.brx_starter_flutter_app
+package com.berth.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
