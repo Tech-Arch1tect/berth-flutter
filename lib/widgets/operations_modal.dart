@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/operation.dart';
 import '../models/stack.dart' as stack_models;
 import '../services/operations_service.dart';
+import '../theme/app_theme.dart';
 import 'operation_builder.dart';
 import 'operation_logs.dart';
 
@@ -92,11 +93,11 @@ class _OperationsModalState extends State<OperationsModal>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(error),
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).colorScheme.error,
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
           label: 'Dismiss',
-          textColor: Colors.white,
+          textColor: Theme.of(context).colorScheme.onError,
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
@@ -235,14 +236,14 @@ class _OperationsModalState extends State<OperationsModal>
 
   Widget _buildConnectionStatus() {
     if (_isConnecting) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: SizedBox(
           width: 20,
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            color: Colors.orange,
+            color: Theme.of(context).colorScheme.warning,
           ),
         ),
       );
@@ -254,15 +255,15 @@ class _OperationsModalState extends State<OperationsModal>
 
     if (widget.operationsService.isConnected) {
       icon = Icons.cloud_done;
-      color = Colors.green;
+      color = Theme.of(context).colorScheme.success;
       tooltip = 'Connected';
     } else if (_error != null) {
       icon = Icons.cloud_off;
-      color = Colors.red;
+      color = Theme.of(context).colorScheme.error;
       tooltip = 'Error: $_error';
     } else {
       icon = Icons.cloud_off;
-      color = Colors.grey;
+      color = Theme.of(context).colorScheme.onSurfaceVariant;
       tooltip = 'Disconnected';
     }
 

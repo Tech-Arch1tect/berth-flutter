@@ -113,19 +113,19 @@ class _OperationBuilderState extends State<OperationBuilder>
     
     switch (preset.variant) {
       case OperationVariant.success:
-        backgroundColor = Colors.green.withValues(alpha: 0.1);
-        textColor = Colors.green.shade700;
-        borderColor = Colors.green.shade300;
+        backgroundColor = Theme.of(context).colorScheme.success.withValues(alpha: 0.1);
+        textColor = Theme.of(context).colorScheme.success;
+        borderColor = Theme.of(context).colorScheme.success.withValues(alpha: 0.3);
         break;
       case OperationVariant.danger:
-        backgroundColor = Colors.red.withValues(alpha: 0.1);
-        textColor = Colors.red.shade700;
-        borderColor = Colors.red.shade300;
+        backgroundColor = Theme.of(context).colorScheme.error.withValues(alpha: 0.1);
+        textColor = Theme.of(context).colorScheme.error;
+        borderColor = Theme.of(context).colorScheme.error.withValues(alpha: 0.3);
         break;
       case OperationVariant.warning:
-        backgroundColor = Colors.orange.withValues(alpha: 0.1);
-        textColor = Colors.orange.shade700;
-        borderColor = Colors.orange.shade300;
+        backgroundColor = Theme.of(context).colorScheme.warning.withValues(alpha: 0.1);
+        textColor = Theme.of(context).colorScheme.warning;
+        borderColor = Theme.of(context).colorScheme.warning.withValues(alpha: 0.3);
         break;
       case OperationVariant.primary:
         backgroundColor = Theme.of(context).colorScheme.primary.withValues(alpha: 0.1);

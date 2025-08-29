@@ -170,13 +170,13 @@ class _OperationLogsState extends State<OperationLogs> {
           Icon(
             success ? Icons.check_circle : Icons.error,
             size: 16,
-            color: success ? Colors.green : Colors.red,
+            color: success ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.error,
           ),
           const SizedBox(width: 8),
           Text(
             success ? 'Completed' : 'Failed',
             style: TextStyle(
-              color: success ? Colors.green : Colors.red,
+              color: success ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.error,
               fontWeight: FontWeight.w600,
             ),
           ),
