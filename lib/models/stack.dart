@@ -55,11 +55,27 @@ class ComposeService {
   final String name;
   final String? image;
   final List<Container> containers;
+  @JsonKey(name: 'depends_on')
+  final List<String>? dependsOn;
+  final List<String>? profiles;
+  final List<String>? command;
+  final String? user;
+  @JsonKey(name: 'working_dir')
+  final String? workingDir;
+  final String? restart;
+  final int? scale;
 
   ComposeService({
     required this.name,
     this.image,
     required this.containers,
+    this.dependsOn,
+    this.profiles,
+    this.command,
+    this.user,
+    this.workingDir,
+    this.restart,
+    this.scale,
   });
 
   factory ComposeService.fromJson(Map<String, dynamic> json) => _$ComposeServiceFromJson(json);
@@ -72,12 +88,42 @@ class Container {
   final String image;
   final String state;
   final List<Port>? ports;
+  final String? created;
+  final String? started;
+  final String? finished;
+  @JsonKey(name: 'exit_code')
+  final int? exitCode;
+  @JsonKey(name: 'restart_policy')
+  final RestartPolicy? restartPolicy;
+  @JsonKey(name: 'resource_limits')
+  final ResourceLimits? resourceLimits;
+  final HealthStatus? health;
+  final List<String>? command;
+  @JsonKey(name: 'working_dir')
+  final String? workingDir;
+  final String? user;
+  final Map<String, String>? labels;
+  final List<ContainerNetwork>? networks;
+  final List<ContainerMount>? mounts;
 
   Container({
     required this.name,
     required this.image,
     required this.state,
     this.ports,
+    this.created,
+    this.started,
+    this.finished,
+    this.exitCode,
+    this.restartPolicy,
+    this.resourceLimits,
+    this.health,
+    this.command,
+    this.workingDir,
+    this.user,
+    this.labels,
+    this.networks,
+    this.mounts,
   });
 
   factory Container.fromJson(Map<String, dynamic> json) => _$ContainerFromJson(json);
@@ -379,5 +425,129 @@ class StackStats {
 
   factory StackStats.fromJson(Map<String, dynamic> json) => _$StackStatsFromJson(json);
   Map<String, dynamic> toJson() => _$StackStatsToJson(this);
+}
+
+@JsonSerializable()
+class RestartPolicy {
+  final String name;
+  @JsonKey(name: 'maximum_retry_count')
+  final int? maximumRetryCount;
+
+  RestartPolicy({
+    required this.name,
+    this.maximumRetryCount,
+  });
+
+  factory RestartPolicy.fromJson(Map<String, dynamic> json) => _$RestartPolicyFromJson(json);
+  Map<String, dynamic> toJson() => _$RestartPolicyToJson(this);
+}
+
+@JsonSerializable()
+class ResourceLimits {
+  @JsonKey(name: 'cpu_shares')
+  final int? cpuShares;
+  final int? memory;
+  @JsonKey(name: 'memory_swap')
+  final int? memorySwap;
+  @JsonKey(name: 'cpu_quota')
+  final int? cpuQuota;
+  @JsonKey(name: 'cpu_period')
+  final int? cpuPeriod;
+
+  ResourceLimits({
+    this.cpuShares,
+    this.memory,
+    this.memorySwap,
+    this.cpuQuota,
+    this.cpuPeriod,
+  });
+
+  factory ResourceLimits.fromJson(Map<String, dynamic> json) => _$ResourceLimitsFromJson(json);
+  Map<String, dynamic> toJson() => _$ResourceLimitsToJson(this);
+}
+
+@JsonSerializable()
+class HealthLog {
+  final String start;
+  final String? end;
+  @JsonKey(name: 'exit_code')
+  final int exitCode;
+  final String output;
+
+  HealthLog({
+    required this.start,
+    this.end,
+    required this.exitCode,
+    required this.output,
+  });
+
+  factory HealthLog.fromJson(Map<String, dynamic> json) => _$HealthLogFromJson(json);
+  Map<String, dynamic> toJson() => _$HealthLogToJson(this);
+}
+
+@JsonSerializable()
+class HealthStatus {
+  final String status;
+  @JsonKey(name: 'failing_streak')
+  final int? failingStreak;
+  final List<HealthLog>? log;
+
+  HealthStatus({
+    required this.status,
+    this.failingStreak,
+    this.log,
+  });
+
+  factory HealthStatus.fromJson(Map<String, dynamic> json) => _$HealthStatusFromJson(json);
+  Map<String, dynamic> toJson() => _$HealthStatusToJson(this);
+}
+
+@JsonSerializable()
+class ContainerNetwork {
+  final String name;
+  @JsonKey(name: 'network_id')
+  final String? networkId;
+  @JsonKey(name: 'ip_address')
+  final String? ipAddress;
+  final String? gateway;
+  @JsonKey(name: 'mac_address')
+  final String? macAddress;
+  final List<String>? aliases;
+
+  ContainerNetwork({
+    required this.name,
+    this.networkId,
+    this.ipAddress,
+    this.gateway,
+    this.macAddress,
+    this.aliases,
+  });
+
+  factory ContainerNetwork.fromJson(Map<String, dynamic> json) => _$ContainerNetworkFromJson(json);
+  Map<String, dynamic> toJson() => _$ContainerNetworkToJson(this);
+}
+
+@JsonSerializable()
+class ContainerMount {
+  final String type;
+  final String source;
+  final String destination;
+  final String? driver;
+  final String? mode;
+  final bool rw;
+  final String? propagation;
+
+  ContainerMount({
+    required this.type,
+    required this.source,
+    required this.destination,
+    this.driver,
+    this.mode,
+    required this.rw,
+    this.propagation,
+  });
+
+  factory ContainerMount.fromJson(Map<String, dynamic> json) => _$ContainerMountFromJson(json);
+  Map<String, dynamic> toJson() => _$ContainerMountToJson(this);
 }
 

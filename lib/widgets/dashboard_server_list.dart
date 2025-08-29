@@ -4,6 +4,7 @@ import '../models/server.dart';
 import '../services/server_service.dart';
 import '../services/api_client.dart';
 import 'dashboard_server_card.dart';
+import '../theme/app_theme.dart';
 
 class DashboardServerList extends StatefulWidget {
   const DashboardServerList({super.key});
@@ -54,7 +55,7 @@ class _DashboardServerListState extends State<DashboardServerList> {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,14 +81,14 @@ class _DashboardServerListState extends State<DashboardServerList> {
             if (_isLoading)
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(AppSpacing.lg),
                   child: CircularProgressIndicator(),
                 ),
               )
             else if (_error != null)
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Column(
                     children: [
                       Icon(
@@ -109,7 +110,7 @@ class _DashboardServerListState extends State<DashboardServerList> {
             else if (_servers.isEmpty)
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Column(
                     children: [
                       Icon(

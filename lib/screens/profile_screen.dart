@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
-import '../widgets/app_drawer.dart';
 import '../theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -15,35 +14,36 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
       ),
-      drawer: const AppDrawer(currentRoute: '/profile'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppTheme.spacing.screenPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header
             _buildProfileHeader(context, authService),
             
-            const SizedBox(height: 32),
+            AppTheme.spacing.verticalXL,
             
-            // Account Information
             _buildSectionHeader(context, 'Account Information'),
-            const SizedBox(height: 16),
+            AppTheme.spacing.verticalLG,
             _buildAccountInfoSection(context, authService),
             
-            const SizedBox(height: 32),
+            AppTheme.spacing.verticalXL,
             
-            // Security Settings
             _buildSectionHeader(context, 'Security'),
-            const SizedBox(height: 16),
+            AppTheme.spacing.verticalLG,
             _buildSecuritySection(context, authService),
             
-            const SizedBox(height: 32),
+            AppTheme.spacing.verticalXL,
             
-            // App Settings
             _buildSectionHeader(context, 'Preferences'),
-            const SizedBox(height: 16),
+            AppTheme.spacing.verticalLG,
             _buildPreferencesSection(context),
           ],
         ),
@@ -54,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildProfileHeader(BuildContext context, AuthService authService) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(16),

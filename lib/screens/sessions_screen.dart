@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/session.dart';
 import '../services/auth_service.dart';
-import '../widgets/app_drawer.dart';
 import '../theme/app_theme.dart';
 
 class SessionsScreen extends StatefulWidget {
@@ -194,7 +193,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
       child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.all(AppSpacing.lg),
         leading: CircleAvatar(
           backgroundColor: _getSessionColor(context, session).withValues(alpha: 0.2),
           child: Icon(
@@ -332,6 +331,12 @@ class _SessionsScreenState extends State<SessionsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Active Sessions'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
         actions: [
           if (_sessions.where((s) => !s.current).isNotEmpty)
             TextButton.icon(
@@ -349,7 +354,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
           ),
         ],
       ),
-      drawer: const AppDrawer(currentRoute: '/sessions'),
       body: _buildBody(),
     );
   }

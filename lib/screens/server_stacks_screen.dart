@@ -4,8 +4,8 @@ import '../models/stack.dart' as stack_models;
 import '../models/server.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
-import '../widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
+import '../theme/app_theme.dart';
 
 class ServerStacksScreen extends StatefulWidget {
   final int serverId;
@@ -42,7 +42,6 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
     try {
       final serverService = context.read<ServerService>();
       
-      // Load server info and stacks concurrently
       final futures = await Future.wait([
         serverService.getUserServer(widget.serverId),
         widget.stackService.getServerStacks(widget.serverId),
@@ -69,6 +68,12 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_server?.name ?? 'Server Stacks'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -76,7 +81,6 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
           ),
         ],
       ),
-      drawer: const AppDrawer(currentRoute: '/servers/stacks'),
       body: _buildBody(),
     );
   }
@@ -121,12 +125,11 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
 
     return Column(
       children: [
-        // Server Info Card
         if (_server != null)
           Card(
-            margin: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(AppSpacing.lg),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   Container(
@@ -182,7 +185,6 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
             ),
           ),
 
-        // Stacks Content
         Expanded(
           child: _stacks == null || _stacks!.isEmpty
             ? _buildEmptyState()
@@ -228,7 +230,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
     return RefreshIndicator(
       onRefresh: _loadData,
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         itemCount: _stacks!.length,
         itemBuilder: (context, index) {
           final stack = _stacks![index];
@@ -245,7 +247,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
         onTap: () => context.push('/servers/${stack.serverId}/stacks/${stack.name}'),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

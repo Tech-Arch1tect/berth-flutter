@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/stack.dart' hide Container;
+import '../theme/app_theme.dart';
 
 class EnvironmentVariableCard extends StatelessWidget {
   final String serviceName;
@@ -125,7 +126,7 @@ class EnvironmentVariableCard extends StatelessWidget {
   Widget _buildVariableItem(BuildContext context, EnvironmentVariable variable, Color color) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
+import '../../theme/app_theme.dart';
 
 class TOTPVerifyScreen extends StatefulWidget {
   final String temporaryToken;
@@ -77,11 +78,11 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: AppTheme.spacing.screenPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
+              AppTheme.spacing.verticalXL,
               
               Container(
                 alignment: Alignment.center,
@@ -100,7 +101,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                 ),
               ),
               
-              const SizedBox(height: 24),
+              AppTheme.spacing.verticalXL,
               
               const Text(
                 'Enter Authentication Code',
@@ -111,7 +112,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                 textAlign: TextAlign.center,
               ),
               
-              const SizedBox(height: 8),
+              AppTheme.spacing.verticalSM,
               
               Text(
                 'Please enter the 6-digit code from your authenticator app',
@@ -122,7 +123,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                 textAlign: TextAlign.center,
               ),
               
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.xxl + AppSpacing.xxl),
               
               Form(
                 key: _formKey,
@@ -162,7 +163,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                     
                     if (_errorMessage != null)
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.errorContainer,
                           border: Border.all(color: Theme.of(context).colorScheme.error),
@@ -232,7 +233,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
               const SizedBox(height: 24),
               
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer,
                   border: Border.all(color: Theme.of(context).colorScheme.primary),
@@ -259,7 +260,7 @@ class _TOTPVerifyScreenState extends State<TOTPVerifyScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    AppTheme.spacing.verticalSM,
                     Text(
                       'Open your authenticator app (Google Authenticator, Authy, etc.) and enter the 6-digit code that\'s currently displayed for this account.',
                       style: TextStyle(

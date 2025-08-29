@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/stack.dart' hide Container;
+import '../theme/app_theme.dart';
 
 class VolumeCard extends StatelessWidget {
   final Volume volume;
@@ -109,7 +110,7 @@ class VolumeCard extends StatelessWidget {
 
   Widget _buildVolumeInfo(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
@@ -147,7 +148,7 @@ class VolumeCard extends StatelessWidget {
         return Container(
           width: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
@@ -233,7 +234,7 @@ class VolumeCard extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.md),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -306,9 +307,9 @@ class VolumeCard extends StatelessWidget {
 
   String _getDisplayName(String name) {
     if (name.startsWith('bind:')) {
-      return name.substring(5); // Remove 'bind:' prefix
+      return name.substring(5);
     } else if (name.startsWith('tmpfs:')) {
-      return name.substring(6); // Remove 'tmpfs:' prefix
+      return name.substring(6);
     }
     return name;
   }

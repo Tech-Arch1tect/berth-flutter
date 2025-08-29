@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/api_client.dart';
 import '../../models/user.dart';
-import '../../widgets/app_drawer.dart';
+import '../../theme/app_theme.dart';
 import 'user_roles_screen.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -55,16 +55,21 @@ class _UsersScreenState extends State<UsersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Management'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
       ),
-      drawer: const AppDrawer(currentRoute: '/admin/users'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -79,7 +84,7 @@ class _UsersScreenState extends State<UsersScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -135,7 +140,7 @@ class _UsersScreenState extends State<UsersScreen> {
       return const Card(
         elevation: 2,
         child: Padding(
-          padding: EdgeInsets.all(48),
+          padding: EdgeInsets.all(AppSpacing.xxl),
           child: Center(child: CircularProgressIndicator()),
         ),
       );
@@ -145,7 +150,7 @@ class _UsersScreenState extends State<UsersScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -178,7 +183,7 @@ class _UsersScreenState extends State<UsersScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -205,7 +210,7 @@ class _UsersScreenState extends State<UsersScreen> {
         elevation: 2,
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: const EdgeInsets.all(AppSpacing.lg),
           leading: CircleAvatar(
             radius: 24,
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,

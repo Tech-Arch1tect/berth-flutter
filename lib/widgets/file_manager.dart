@@ -8,6 +8,7 @@ import '../models/file.dart';
 import '../services/files_service.dart';
 import '../services/api_client.dart';
 import 'file_editor_dialog.dart';
+import '../theme/app_theme.dart';
 
 class FileManager extends StatefulWidget {
   final int serverId;
@@ -86,10 +87,9 @@ class _FileManagerState extends State<FileManager> {
     final segments = _currentPath.isEmpty ? <String>[] : _currentPath.split('/').where((s) => s.isNotEmpty).toList();
     
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Wrap(
         children: [
-          // Root
           TextButton.icon(
             onPressed: _navigateToRoot,
             icon: const Icon(Icons.home, size: 16),
@@ -98,8 +98,6 @@ class _FileManagerState extends State<FileManager> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             ),
           ),
-          
-          // Path segments
           ...segments.asMap().entries.map((entry) {
             final index = entry.key;
             final segment = entry.value;
@@ -367,7 +365,7 @@ class _FileManagerState extends State<FileManager> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Text(
               'Choose download location for ${entry.name}',
               style: Theme.of(context).textTheme.titleMedium,
@@ -408,7 +406,6 @@ class _FileManagerState extends State<FileManager> {
 
   Future<void> _downloadToDownloads(FileEntry entry) async {
     try {
-      // Request storage permission for Android
       if (Platform.isAndroid) {
         bool hasPermission = await _requestStoragePermission();
         if (!hasPermission) return;
@@ -422,7 +419,6 @@ class _FileManagerState extends State<FileManager> {
 
   Future<void> _downloadToCustomLocation(FileEntry entry) async {
     try {
-      // Use file picker to let user choose location
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
       
       if (selectedDirectory != null) {
@@ -446,13 +442,10 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<bool> _requestStoragePermission() async {
-    // Check if we need to request permission
     if (await Permission.storage.isGranted || 
         await Permission.manageExternalStorage.isGranted) {
       return true;
     }
-    
-    // Request storage permission
     final storageStatus = await Permission.storage.request();
     if (storageStatus.isGranted) {
       return true;
@@ -478,12 +471,10 @@ class _FileManagerState extends State<FileManager> {
 
   Future<Directory> _getDownloadsDirectory() async {
     if (Platform.isAndroid) {
-      // Try to use the system Downloads directory
       final downloadsDir = Directory('/storage/emulated/0/Download');
       if (await downloadsDir.exists()) {
         return downloadsDir;
       } else {
-        // Fallback to external storage if Downloads folder doesn't exist
         final externalDir = await getExternalStorageDirectory();
         if (externalDir != null) {
           final appDownloads = Directory('${externalDir.path}/Download');
@@ -522,14 +513,12 @@ class _FileManagerState extends State<FileManager> {
     Future<Directory> Function() getDirectory, 
     String locationName
   ) async {
-    // Show downloading message
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Downloading ${entry.name}...')),
       );
     }
 
-    // Download the file
     final fileBytes = await _filesService.downloadFile(
       widget.serverId,
       widget.stackName,
@@ -537,14 +526,10 @@ class _FileManagerState extends State<FileManager> {
       entry.name,
     );
 
-    // Get the save directory
     final saveDir = await getDirectory();
 
-    // Create the file path, handle duplicates
     String fileName = entry.name;
     String filePath = '${saveDir.path}/$fileName';
-    
-    // Handle duplicate files by adding a number suffix
     int counter = 1;
     while (await File(filePath).exists()) {
       final nameWithoutExt = fileName.contains('.') 
@@ -557,8 +542,6 @@ class _FileManagerState extends State<FileManager> {
       filePath = '${saveDir.path}/$fileName';
       counter++;
     }
-    
-    // Write the file
     final file = File(filePath);
     await file.writeAsBytes(fileBytes);
 
@@ -741,7 +724,6 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<void> _renameItem(FileEntry entry, String newName) async {
-    // Build the new path
     final pathSegments = entry.path.split('/');
     pathSegments[pathSegments.length - 1] = newName;
     final newPath = pathSegments.join('/');
@@ -758,7 +740,6 @@ class _FileManagerState extends State<FileManager> {
           SnackBar(content: Text('${entry.name} renamed to $newName')),
         );
         
-        // Refresh the directory listing
         _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
       }
     } catch (e) {
@@ -774,13 +755,10 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<void> _copyItem(FileEntry entry, String destinationPath, String newName) async {
-    // Build the target path
     String targetPath;
     if (destinationPath.isEmpty) {
-      // Copy to current directory
       targetPath = _currentPath.isEmpty ? newName : '$_currentPath/$newName';
     } else {
-      // Copy to specified path
       targetPath = destinationPath.endsWith('/') 
         ? '$destinationPath$newName' 
         : '$destinationPath/$newName';
@@ -798,7 +776,6 @@ class _FileManagerState extends State<FileManager> {
           SnackBar(content: Text('${entry.name} copied to $newName')),
         );
         
-        // Refresh the directory listing
         _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
       }
     } catch (e) {
@@ -826,7 +803,6 @@ class _FileManagerState extends State<FileManager> {
           SnackBar(content: Text('${entry.name} deleted successfully')),
         );
         
-        // Refresh the directory listing
         _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
       }
     } catch (e) {
@@ -884,7 +860,6 @@ class _FileManagerState extends State<FileManager> {
       );
 
       if (result != null && result.files.isNotEmpty && mounted) {
-        // Show upload confirmation dialog
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -944,7 +919,6 @@ class _FileManagerState extends State<FileManager> {
     int successCount = 0;
     int errorCount = 0;
 
-    // Show progress dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -982,9 +956,7 @@ class _FileManagerState extends State<FileManager> {
         debugPrint('Failed to upload ${file.name}: $e');
       }
 
-      // Update progress dialog
       if (mounted) {
-        // Find the dialog and update its content
         Navigator.of(context, rootNavigator: true).pop();
         showDialog(
           context: context,
@@ -1004,12 +976,10 @@ class _FileManagerState extends State<FileManager> {
       }
     }
 
-    // Close progress dialog
     if (mounted) {
       Navigator.of(context, rootNavigator: true).pop();
     }
 
-    // Show result
     if (mounted) {
       if (errorCount == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1031,7 +1001,6 @@ class _FileManagerState extends State<FileManager> {
         );
       }
 
-      // Refresh the directory listing
       _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
     }
   }
@@ -1125,7 +1094,6 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<void> _createNewFile(String fileName) async {
-    // Build the file path
     final filePath = _currentPath.isEmpty ? fileName : '$_currentPath/$fileName';
     
     try {
@@ -1140,7 +1108,6 @@ class _FileManagerState extends State<FileManager> {
           SnackBar(content: Text('File $fileName created successfully')),
         );
         
-        // Refresh the directory listing
         _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
       }
     } catch (e) {
@@ -1156,7 +1123,6 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<void> _createNewDirectory(String dirName) async {
-    // Build the directory path
     final dirPath = _currentPath.isEmpty ? dirName : '$_currentPath/$dirName';
     
     try {
@@ -1171,7 +1137,6 @@ class _FileManagerState extends State<FileManager> {
           SnackBar(content: Text('Directory $dirName created successfully')),
         );
         
-        // Refresh the directory listing
         _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
       }
     } catch (e) {
@@ -1191,7 +1156,6 @@ class _FileManagerState extends State<FileManager> {
     return Scaffold(
       body: Column(
         children: [
-          // Navigation bar
           Container(
             decoration: BoxDecoration(
               border: Border(
@@ -1217,8 +1181,6 @@ class _FileManagerState extends State<FileManager> {
               ],
             ),
           ),
-          
-          // File list
           Expanded(child: _buildFileList()),
         ],
       ),

@@ -50,7 +50,7 @@ class _OperationLogsState extends State<OperationLogs> {
       children: [
         
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
             border: Border(
@@ -65,8 +65,6 @@ class _OperationLogsState extends State<OperationLogs> {
               
               _buildStatusIndicator(),
               const SizedBox(width: 16),
-              
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,8 +88,6 @@ class _OperationLogsState extends State<OperationLogs> {
                   ],
                 ),
               ),
-              
-              
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -110,8 +106,6 @@ class _OperationLogsState extends State<OperationLogs> {
                       });
                     },
                   ),
-                  
-                  
                   IconButton(
                     icon: const Icon(Icons.clear_all),
                     tooltip: 'Clear logs',
@@ -124,8 +118,6 @@ class _OperationLogsState extends State<OperationLogs> {
             ],
           ),
         ),
-        
-        
         Expanded(
           child: widget.operationStatus.logs.isEmpty
             ? _buildEmptyState()
@@ -246,7 +238,7 @@ class _OperationLogsState extends State<OperationLogs> {
       color: Theme.of(context).colorScheme.surface,
       child: ListView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         itemCount: widget.operationStatus.logs.length,
         itemBuilder: (context, index) {
           final log = widget.operationStatus.logs[index];
@@ -261,10 +253,8 @@ class _OperationLogsState extends State<OperationLogs> {
     Color backgroundColor;
     IconData? icon;
 
-    
     switch (log.type.toLowerCase()) {
       case 'stderr':
-        
         if (_isActualError(log)) {
           textColor = Theme.of(context).colorScheme.error;
           backgroundColor = Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.3);
@@ -293,7 +283,6 @@ class _OperationLogsState extends State<OperationLogs> {
         break;
       case 'stdout':
       default:
-        
         if (_isDockerComposeInfo(log)) {
           textColor = Theme.of(context).colorScheme.primary;
           backgroundColor = Theme.of(context).colorScheme.primary.withValues(alpha: 0.05);
@@ -320,9 +309,7 @@ class _OperationLogsState extends State<OperationLogs> {
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          
-          Text(
+        children: [Text(
             _formatTimestamp(log.timestamp ?? ''),
             style: TextStyle(
               fontFamily: 'monospace',
@@ -331,8 +318,6 @@ class _OperationLogsState extends State<OperationLogs> {
             ),
           ),
           const SizedBox(width: 12),
-          
-          
           if (icon != null) ...[
             Icon(
               icon,
@@ -341,8 +326,6 @@ class _OperationLogsState extends State<OperationLogs> {
             ),
             const SizedBox(width: 8),
           ],
-          
-          
           Expanded(
             child: SelectableText(
               _getLogDisplayText(log),
@@ -374,8 +357,6 @@ class _OperationLogsState extends State<OperationLogs> {
 
   bool _isActualError(StreamMessage log) {
     final data = log.data?.toLowerCase() ?? '';
-    
-    
     final errorPatterns = [
       'error',
       'failed',
@@ -397,8 +378,6 @@ class _OperationLogsState extends State<OperationLogs> {
 
   bool _isDockerComposeInfo(StreamMessage log) {
     final data = log.data?.toLowerCase() ?? '';
-    
-    
     final infoPatterns = [
       RegExp(r'container .+ (running|created|started|stopped)'),
       RegExp(r'network .+ (created|removed)'),

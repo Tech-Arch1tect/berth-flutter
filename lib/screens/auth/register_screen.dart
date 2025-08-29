@@ -97,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               
               if (configService.serverUrl != null)
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.successContainer,
                     border: Border.all(color: Theme.of(context).colorScheme.success),
@@ -251,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     
                     if (_errorMessage != null)
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.errorContainer,
                           border: Border.all(color: Theme.of(context).colorScheme.error),
@@ -280,7 +280,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     
                     if (_successMessage != null)
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.successContainer,
                           border: Border.all(color: Theme.of(context).colorScheme.success),

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../services/api_client.dart';
 import '../../models/user.dart';
 import '../../models/role.dart';
-import '../../widgets/app_drawer.dart';
+import '../../theme/app_theme.dart';
 
 class UserRolesScreen extends StatefulWidget {
   final int userId;
@@ -182,7 +182,6 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
           tooltip: 'Back to Users',
         ),
       ),
-      drawer: const AppDrawer(currentRoute: '/admin/users'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -190,7 +189,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -205,7 +204,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -259,7 +258,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
     return const Card(
       elevation: 2,
       child: Padding(
-        padding: EdgeInsets.all(48),
+        padding: EdgeInsets.all(AppSpacing.xxl),
         child: Center(child: CircularProgressIndicator()),
       ),
     );
@@ -269,7 +268,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(48),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -313,7 +312,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
           elevation: 2,
           child: userRoles.isEmpty
               ? const Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(AppSpacing.xl),
                   child: Center(
                     child: Text(
                       'No roles assigned',
@@ -323,7 +322,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
                 )
               : Column(
                   children: userRoles.map((role) => ListTile(
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(AppSpacing.lg),
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -376,7 +375,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
           elevation: 2,
           child: availableRoles.isEmpty
               ? const Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(AppSpacing.xl),
                   child: Center(
                     child: Text(
                       'All roles assigned',
@@ -386,7 +385,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
                 )
               : Column(
                   children: availableRoles.map((role) => ListTile(
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(AppSpacing.lg),
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(

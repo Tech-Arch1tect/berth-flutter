@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/server.dart';
+import '../theme/app_theme.dart';
 
 class DashboardServerCard extends StatelessWidget {
   final Server server;
@@ -16,10 +17,10 @@ class DashboardServerCard extends StatelessWidget {
       elevation: 1,
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
-        onTap: () => context.go('/servers/${server.id}/stacks'),
+        onTap: () => context.push('/servers/${server.id}/stacks'),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Row(
           children: [
             Container(

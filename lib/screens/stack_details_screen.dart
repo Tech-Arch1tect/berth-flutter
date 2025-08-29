@@ -9,20 +9,20 @@ import '../services/stack_service.dart';
 import '../services/server_service.dart';
 import '../services/websocket_service.dart';
 import '../services/stack_websocket_service.dart';
-import '../widgets/app_drawer.dart';
+import '../widgets/service_card.dart';
 import '../widgets/network_list.dart';
 import '../widgets/volume_list.dart';
 import '../widgets/environment_variable_list.dart';
 import '../widgets/stack_stats_list.dart';
 import '../widgets/logs_viewer.dart';
 import '../widgets/operations_modal.dart';
-import '../widgets/service_quick_actions.dart';
 import '../widgets/stack_quick_actions.dart';
 import '../widgets/terminal_modal.dart';
 import '../widgets/file_manager.dart';
 import '../services/logs_service.dart';
 import '../services/operations_service.dart';
 import '../models/operation.dart';
+import '../theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
 class StackDetailsScreen extends StatefulWidget {
@@ -99,18 +99,15 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     } else if (_tabController!.index == 3 && _environmentVariables == null && !_isEnvironmentLoading) {
       _loadEnvironmentVariables();
     } else if (_tabController!.index == 4) {
-      // Stats tab - load data and start timer for auto-refresh
       if (_stackStats == null && !_isStatsLoading) {
         _loadStats();
       }
       _startStatsTimer();
     } else if (_tabController!.index == 5) {
-      // Logs tab - load stats for container selection
       if (_stackStats == null && !_isStatsLoading) {
         _loadStats();
       }
     } else {
-      // Stop stats timer when not on stats tab
       _stopStatsTimer();
     }
   }
@@ -124,7 +121,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     try {
       final serverService = context.read<ServerService>();
       
-      // Load server info and stack details concurrently
       final futures = await Future.wait([
         serverService.getUserServer(widget.serverId),
         widget.stackService.getStackDetails(widget.serverId, widget.stackName),
@@ -139,7 +135,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         _isLoading = false;
       });
 
-      // If networks tab is active, also load networks
       if (_tabController?.index == 1) {
         _loadNetworks();
       } else if (_tabController?.index == 2) {
@@ -268,7 +263,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   }
 
   void _startStatsTimer() {
-    _stopStatsTimer(); // Stop any existing timer
+    _stopStatsTimer();
     _statsTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       if (mounted && _tabController?.index == 4) {
         _loadStats(silent: true);
@@ -296,6 +291,31 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         operationsService: operationsService,
       ),
     );
+  }
+
+  void _handleServiceTap(stack_models.ComposeService service) {
+  }
+
+  void _handleOpenTerminal(stack_models.ComposeService service) {
+    if (_server != null && _stackDetails != null) {
+      final runningContainer = service.containers
+          .firstWhere((container) => container.state == 'running');
+      final stack = stack_models.Stack(
+        name: _stackDetails!.name,
+        path: _stackDetails!.path,
+        composeFile: _stackDetails!.composeFile,
+        serverId: _stackDetails!.serverId,
+        serverName: _stackDetails!.serverName,
+      );
+      
+      TerminalModal.show(
+        context: context,
+        server: _server!,
+        stack: stack,
+        serviceName: service.name,
+        containerName: runningContainer.name,
+      );
+    }
   }
 
   Future<void> _handleQuickOperation(OperationRequest request) async {
@@ -391,31 +411,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     }
   }
 
-  void _handleOpenTerminal(stack_models.ComposeService service) {
-    if (_server != null && _stackDetails != null) {
-      // Find the first running container for this service
-      final runningContainer = service.containers
-          .firstWhere((container) => container.state == 'running');
-      
-      // Create Stack object from StackDetails
-      final stack = stack_models.Stack(
-        name: _stackDetails!.name,
-        path: _stackDetails!.path,
-        composeFile: _stackDetails!.composeFile,
-        serverId: _stackDetails!.serverId,
-        serverName: _stackDetails!.serverName,
-      );
-      
-      TerminalModal.show(
-        context: context,
-        server: _server!,
-        stack: stack,
-        serviceName: service.name,
-        containerName: runningContainer.name,
-      );
-    }
-  }
-
   Future<void> _refreshDataSilently() async {
     if (mounted) {
       setState(() {
@@ -507,6 +502,12 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
             _buildConnectionStatusIcon(),
           ],
         ),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
         actions: [
           if (_isSilentRefreshing)
             Container(
@@ -574,7 +575,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
           ],
         ) : null,
       ),
-      drawer: const AppDrawer(currentRoute: '/servers/stacks'),
       body: _buildBody(),
     );
   }
@@ -645,31 +645,22 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
     return Column(
       children: [
-        // Breadcrumb and Stack Overview (always visible)
         Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildBreadcrumb(),
-              const SizedBox(height: 16),
-              _buildStackOverviewCard(),
-            ],
-          ),
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
+          child: _buildBreadcrumb(),
         ),
-        
-        // Tab content
         Expanded(
           child: TabBarView(
             controller: _tabController,
             children: [
-              // Services Tab
               RefreshIndicator(
                 onRefresh: _loadData,
                 child: _stackDetails!.services.isNotEmpty
                     ? ListView(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
                         children: [
-                          // Stack-level Quick Actions
+                          _buildStackOverviewCard(),
+                          const SizedBox(height: 12),
                           Card(
                             child: StackQuickActions(
                               services: _stackDetails!.services,
@@ -678,14 +669,24 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                               runningOperation: _runningQuickOperation,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          // Individual Service Cards
-                          ..._stackDetails!.services.map((service) => _buildServiceCard(service)),
+                          const SizedBox(height: 12),
+                          ..._stackDetails!.services.map((service) => ServiceCard(
+                            service: service,
+                            onQuickOperation: _handleQuickOperation,
+                            isOperationRunning: _isQuickOperationRunning,
+                            runningOperation: _runningQuickOperation,
+                            onOpenTerminal: () => _handleOpenTerminal(service),
+                            onTap: () => _handleServiceTap(service),
+                            showDetails: false,
+                          )),
                         ],
                       )
                     : ListView(
-                        padding: const EdgeInsets.all(16),
+                        padding: AppTheme.spacing.itemPadding,
                         children: [
+                          _buildStackOverviewCard(),
+                          const SizedBox(height: 24),
+                          
                           Center(
                             child: Column(
                               children: [
@@ -712,8 +713,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                         ],
                       ),
               ),
-              
-              // Networks Tab
               RefreshIndicator(
                 onRefresh: () async {
                   await _loadNetworks();
@@ -724,8 +723,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   error: _networksError,
                 ),
               ),
-              
-              // Volumes Tab
               RefreshIndicator(
                 onRefresh: () async {
                   await _loadVolumes();
@@ -736,8 +733,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   error: _volumesError,
                 ),
               ),
-              
-              // Environment Variables Tab
               RefreshIndicator(
                 onRefresh: () async {
                   await _loadEnvironmentVariables();
@@ -748,7 +743,6 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   error: _environmentError,
                 ),
               ),
-              // Stats Tab
               RefreshIndicator(
                 onRefresh: () async {
                   await _loadStats();
@@ -759,20 +753,15 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
                   error: _statsError,
                 ),
               ),
-              
-              // Files Tab
               FileManager(
                 serverId: widget.serverId,
                 stackName: widget.stackName,
               ),
-              
-              // Logs Tab
               RefreshIndicator(
                 onRefresh: () async {
-                  // Logs viewer manages its own refresh
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.spacing.cardPadding,
                   child: LogsViewer(
                     serverId: widget.serverId,
                     stackName: widget.stackName,
@@ -827,315 +816,56 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(AppSpacing.sm + AppSpacing.xs),
+        child: Row(
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.storage,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 24,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    stackDetails.name,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ],
+            Icon(
+              Icons.layers_rounded,
+              color: Theme.of(context).colorScheme.primary,
+              size: 20,
             ),
-            const SizedBox(height: 16),
-            _buildOverviewItem('Compose File', stackDetails.composeFile),
-            _buildOverviewItem('Path', stackDetails.path),
-            _buildOverviewItem('Services Count', stackDetails.services.length.toString()),
-            _buildOverviewItem('Total Containers', totalContainers.toString()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOverviewItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServiceCard(stack_models.ComposeService service) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Service Header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.apps,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    service.name,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                if (service.image != null) ...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      service.image!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace',
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          
-          // Quick Actions
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: ServiceQuickActions(
-              service: service,
-              onQuickOperation: _handleQuickOperation,
-              isOperationRunning: _isQuickOperationRunning,
-              runningOperation: _runningQuickOperation,
-              onOpenTerminal: () => _handleOpenTerminal(service),
-            ),
-          ),
-          
-          // Containers
-          if (service.containers.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: service.containers.map((container) => _buildContainerRow(container)).toList(),
-              ),
-            ),
-          ] else ...[
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const SizedBox(width: 12),
+            Expanded(
               child: Text(
-                'No containers found for this service',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                stackDetails.name,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
+            _buildCompactStat('Services', stackDetails.services.length.toString()),
+            const SizedBox(width: 12),
+            _buildCompactStat('Containers', totalContainers.toString()),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContainerRow(stack_models.Container container) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  container.name,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              _buildContainerStatusChip(container.state),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(
-                Icons.image,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  container.image,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontFamily: 'monospace',
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (container.ports != null && container.ports!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.settings_ethernet,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: container.ports!.map((port) => _buildPortChip(port)).toList(),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContainerStatusChip(String state) {
-    Color backgroundColor;
-    Color textColor;
-    IconData icon;
-
-    switch (state.toLowerCase()) {
-      case 'running':
-        backgroundColor = Colors.green.withValues(alpha: 0.1);
-        textColor = Colors.green.shade700;
-        icon = Icons.play_circle_filled;
-        break;
-      case 'stopped':
-        backgroundColor = Colors.red.withValues(alpha: 0.1);
-        textColor = Colors.red.shade700;
-        icon = Icons.stop_circle;
-        break;
-      case 'paused':
-        backgroundColor = Colors.orange.withValues(alpha: 0.1);
-        textColor = Colors.orange.shade700;
-        icon = Icons.pause_circle;
-        break;
-      case 'restarting':
-        backgroundColor = Colors.blue.withValues(alpha: 0.1);
-        textColor = Colors.blue.shade700;
-        icon = Icons.refresh;
-        break;
-      case 'not created':
-        backgroundColor = Colors.grey.withValues(alpha: 0.1);
-        textColor = Colors.grey.shade700;
-        icon = Icons.radio_button_unchecked;
-        break;
-      case 'exited':
-        backgroundColor = Colors.orange.withValues(alpha: 0.1);
-        textColor = Colors.orange.shade700;
-        icon = Icons.exit_to_app;
-        break;
-      default:
-        backgroundColor = Colors.grey.withValues(alpha: 0.1);
-        textColor = Colors.grey.shade700;
-        icon = Icons.help_outline;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 14,
-            color: textColor,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            state,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPortChip(stack_models.Port port) {
-    final portText = port.publicPort != null 
-        ? '${port.publicPort}:${port.privatePort}/${port.type}'
-        : '${port.privatePort}/${port.type}';
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        portText,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          fontFamily: 'monospace',
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );
   }
+
+  Widget _buildCompactStat(String label, String value) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
 
   Widget _buildConnectionStatusIcon() {
     IconData icon;

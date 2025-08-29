@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../models/server.dart';
 import '../../services/server_service.dart';
 import '../../services/api_client.dart';
-import '../../widgets/app_drawer.dart';
+import '../../theme/app_theme.dart';
 
 class ServersScreen extends StatefulWidget {
   const ServersScreen({super.key});
@@ -137,8 +137,13 @@ class _ServersScreenState extends State<ServersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Server Management'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
       ),
-      drawer: const AppDrawer(currentRoute: '/admin/servers'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showServerForm(),
         child: const Icon(Icons.add),
@@ -150,7 +155,7 @@ class _ServersScreenState extends State<ServersScreen> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -165,7 +170,7 @@ class _ServersScreenState extends State<ServersScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -221,7 +226,7 @@ class _ServersScreenState extends State<ServersScreen> {
       return const Card(
         elevation: 2,
         child: Padding(
-          padding: EdgeInsets.all(48),
+          padding: EdgeInsets.all(AppSpacing.xxl),
           child: Center(child: CircularProgressIndicator()),
         ),
       );
@@ -231,7 +236,7 @@ class _ServersScreenState extends State<ServersScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -264,7 +269,7 @@ class _ServersScreenState extends State<ServersScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -298,7 +303,7 @@ class _ServersScreenState extends State<ServersScreen> {
         elevation: 2,
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: const EdgeInsets.all(AppSpacing.lg),
           leading: CircleAvatar(
             radius: 24,
             backgroundColor: server.isActive 

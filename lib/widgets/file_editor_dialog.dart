@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../models/file.dart';
 import '../services/files_service.dart';
+import '../theme/app_theme.dart';
 
 class FileEditorDialog extends StatefulWidget {
   final int serverId;
@@ -182,7 +183,6 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
     }
 
-    // Handle image files
     if (_fileContent?.encoding == 'base64' && _getFileType() == 'image') {
       return Container(
         height: 400,
@@ -195,7 +195,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
           borderRadius: BorderRadius.circular(8),
           child: InteractiveViewer(
             panEnabled: true,
-            boundaryMargin: const EdgeInsets.all(20),
+            boundaryMargin: const EdgeInsets.all(AppSpacing.lg),
             minScale: 0.5,
             maxScale: 4.0,
             child: Center(
@@ -237,7 +237,6 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
     }
 
-    // Handle other binary files
     if (_fileContent?.encoding == 'base64') {
       return SizedBox(
         height: 200,
@@ -267,7 +266,6 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
     }
 
-    // Handle text files
     return SizedBox(
       height: 400,
       width: double.maxFinite,
@@ -312,9 +310,8 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // File info
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
@@ -352,11 +349,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            
-            // File content
             _buildContent(),
-            
-            // Changes indicator
             if (_hasChanges && !widget.readOnly) ...[
               const SizedBox(height: 8),
               Container(

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../services/auth_service.dart';
+import '../../theme/app_theme.dart';
 
 class TOTPSetupScreen extends StatefulWidget {
   const TOTPSetupScreen({super.key});
@@ -191,7 +192,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                               ),
                               const SizedBox(height: 16),
                               Container(
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(AppSpacing.lg),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surface,
                                   border: Border.all(color: Theme.of(context).colorScheme.outline),
@@ -216,7 +217,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                               ),
                               const SizedBox(height: 8),
                               Container(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(AppSpacing.md),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(4),
@@ -293,7 +294,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                 
                                 if (_errorMessage != null)
                                   Container(
-                                    padding: const EdgeInsets.all(12),
+                                    padding: const EdgeInsets.all(AppSpacing.md),
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).colorScheme.errorContainer,
                                       border: Border.all(color: Theme.of(context).colorScheme.error),
@@ -373,7 +374,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                         const SizedBox(height: 24),
                         
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.tertiaryContainer,
                             border: Border.all(color: Theme.of(context).colorScheme.tertiary),

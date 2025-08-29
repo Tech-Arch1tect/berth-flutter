@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/role_service.dart';
 import '../../models/permission.dart';
-import '../../widgets/app_drawer.dart';
+import '../../theme/app_theme.dart';
 
 class RoleStackPermissionsScreen extends StatefulWidget {
   final int roleId;
@@ -235,6 +235,12 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(data?.role.name != null ? '${data!.role.name} Stack Permissions' : 'Stack Permissions'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -247,7 +253,6 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
           ),
         ],
       ),
-      drawer: const AppDrawer(currentRoute: '/admin/roles'),
       body: _buildBody(),
     );
   }
@@ -314,7 +319,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -329,7 +334,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
@@ -434,7 +439,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -523,7 +528,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -618,8 +623,8 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
       color: Colors.black54,
       child: Center(
         child: Container(
-          margin: const EdgeInsets.all(20),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
@@ -786,8 +791,8 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
       color: Colors.black54,
       child: Center(
         child: Container(
-          margin: const EdgeInsets.all(20),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
@@ -823,7 +828,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
               
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
@@ -874,7 +879,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
               if (availablePermissions.isEmpty) ...[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300),
                     borderRadius: BorderRadius.circular(8),

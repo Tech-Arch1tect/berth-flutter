@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/role.dart';
 import '../../services/role_service.dart';
-import '../../widgets/app_drawer.dart';
 import '../../widgets/role_form_dialog.dart';
+import '../../theme/app_theme.dart';
 
 class RolesScreen extends StatefulWidget {
   const RolesScreen({super.key});
@@ -139,8 +139,13 @@ class _RolesScreenState extends State<RolesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Role Management'),
+        leading: Navigator.canPop(context) 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
       ),
-      drawer: const AppDrawer(currentRoute: '/admin/roles'),
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateDialog,
         child: const Icon(Icons.add),
@@ -152,7 +157,7 @@ class _RolesScreenState extends State<RolesScreen> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -167,7 +172,7 @@ class _RolesScreenState extends State<RolesScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -223,7 +228,7 @@ class _RolesScreenState extends State<RolesScreen> {
       return const Card(
         elevation: 2,
         child: Padding(
-          padding: EdgeInsets.all(48),
+          padding: EdgeInsets.all(AppSpacing.xxl),
           child: Center(child: CircularProgressIndicator()),
         ),
       );
@@ -233,7 +238,7 @@ class _RolesScreenState extends State<RolesScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -266,7 +271,7 @@ class _RolesScreenState extends State<RolesScreen> {
       return Card(
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -293,7 +298,7 @@ class _RolesScreenState extends State<RolesScreen> {
         elevation: 2,
         margin: const EdgeInsets.only(bottom: 16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -394,7 +399,7 @@ class _RolesScreenState extends State<RolesScreen> {
                   if (!role.isAdmin)
                     OutlinedButton.icon(
                       onPressed: () {
-                        context.go('/admin/roles/${role.id}/server-permissions');
+                        context.push('/admin/roles/${role.id}/server-permissions');
                       },
                       icon: const Icon(Icons.security),
                       label: const Text('Server Permissions'),

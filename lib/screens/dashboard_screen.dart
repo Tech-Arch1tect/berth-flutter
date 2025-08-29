@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
-import '../widgets/app_drawer.dart';
 import '../widgets/dashboard_server_list.dart';
 import '../theme/app_theme.dart';
 
@@ -72,16 +71,14 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const AppDrawer(currentRoute: '/dashboard'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppTheme.spacing.screenPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome Section
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -109,7 +106,7 @@ class DashboardScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppTheme.spacing.verticalSM,
                   Text(
                     'Have a productive day!',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -120,27 +117,25 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 24),
+            AppTheme.spacing.verticalXL,
             
-            // Servers Section
             const DashboardServerList(),
             
-            const SizedBox(height: 24),
+            AppTheme.spacing.verticalXL,
             
-            // Quick Actions Grid
             Text(
               'Quick Actions',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacing.verticalLG,
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+              crossAxisSpacing: AppSpacing.lg,
+              mainAxisSpacing: AppSpacing.lg,
               childAspectRatio: 1.2,
               children: [
                 _buildQuickActionCard(
@@ -168,20 +163,19 @@ class DashboardScreen extends StatelessWidget {
               ],
             ),
             
-            const SizedBox(height: 24),
+            AppTheme.spacing.verticalXL,
             
-            // Account Overview
             Text(
               'Account Overview',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            AppTheme.spacing.verticalLG,
             Card(
               elevation: 2,
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: AppTheme.spacing.cardPadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -196,7 +190,7 @@ class DashboardScreen extends StatelessWidget {
                             size: 28,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        AppTheme.spacing.horizontalLG,
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,9 +212,9 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    AppTheme.spacing.verticalXL,
                     const Divider(),
-                    const SizedBox(height: 16),
+                    AppTheme.spacing.verticalLG,
                     Row(
                       children: [
                         Expanded(
@@ -231,7 +225,7 @@ class DashboardScreen extends StatelessWidget {
                             Icons.badge,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppTheme.spacing.horizontalMD,
                         Expanded(
                           child: _buildInfoChip(
                             context,
@@ -267,12 +261,12 @@ class DashboardScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppTheme.spacing.cardPadding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: AppTheme.spacing.itemPadding,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -283,7 +277,7 @@ class DashboardScreen extends StatelessWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppTheme.spacing.verticalMD,
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -310,7 +304,7 @@ class DashboardScreen extends StatelessWidget {
 
   Widget _buildInfoChip(BuildContext context, String label, String value, IconData icon, {Color? color}) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppTheme.spacing.itemPadding,
       decoration: BoxDecoration(
         color: (color ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -322,7 +316,7 @@ class DashboardScreen extends StatelessWidget {
             color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
             size: 20,
           ),
-          const SizedBox(height: 8),
+          AppTheme.spacing.verticalSM,
           Text(
             label,
             style: TextStyle(

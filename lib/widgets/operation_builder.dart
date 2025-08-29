@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/operation.dart';
 import '../models/stack.dart' as stack_models;
 import '../services/operations_service.dart';
+import '../theme/app_theme.dart';
 
 class OperationBuilder extends StatefulWidget {
   final List<stack_models.ComposeService> services;
@@ -22,8 +23,6 @@ class OperationBuilder extends StatefulWidget {
 class _OperationBuilderState extends State<OperationBuilder>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
-  
   String _selectedCommand = 'up';
   final Set<String> _selectedOptions = {};
   final Set<String> _selectedServices = {};
@@ -64,7 +63,7 @@ class _OperationBuilderState extends State<OperationBuilder>
       children: [
         
         Container(
-          margin: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(8),
@@ -85,8 +84,6 @@ class _OperationBuilderState extends State<OperationBuilder>
             ],
           ),
         ),
-        
-        
         Expanded(
           child: TabBarView(
             controller: _tabController,
@@ -104,7 +101,7 @@ class _OperationBuilderState extends State<OperationBuilder>
     final presets = OperationsService.getDefaultPresets();
     
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       children: presets.map((preset) => _buildPresetCard(preset)).toList(),
     );
   }
@@ -154,7 +151,7 @@ class _OperationBuilderState extends State<OperationBuilder>
         borderRadius: BorderRadius.circular(12),
         onTap: widget.isRunning ? null : () => _runPreset(preset),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
               _getPresetIcon(preset.icon, textColor),
@@ -255,7 +252,7 @@ class _OperationBuilderState extends State<OperationBuilder>
 
   Widget _buildCustomTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -294,7 +291,7 @@ class _OperationBuilderState extends State<OperationBuilder>
                 if (selected) {
                   setState(() {
                     _selectedCommand = command;
-                    _selectedOptions.clear(); 
+                    _selectedOptions.clear();
                   });
                 }
               },

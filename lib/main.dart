@@ -14,10 +14,14 @@ import 'screens/server_stacks_screen.dart';
 import 'screens/stack_details_screen.dart';
 import 'screens/sessions_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/account_screen.dart';
+import 'screens/admin_screen.dart';
+import 'screens/more_screen.dart';
 import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
 import 'screens/admin/servers_screen.dart';
 import 'screens/admin/role_stack_permissions_screen.dart';
+import 'widgets/navigation_shell.dart';
 import 'services/stack_service.dart';
 import 'services/server_service.dart';
 import 'theme/app_theme.dart';
@@ -178,7 +182,10 @@ class BrxApp extends StatelessWidget {
         ),
         GoRoute(
           path: '/dashboard',
-          builder: (context, state) => const DashboardScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/dashboard',
+            child: DashboardScreen(),
+          ),
         ),
         GoRoute(
           path: '/servers/:id/stacks',
@@ -186,11 +193,17 @@ class BrxApp extends StatelessWidget {
             final serverIdStr = state.pathParameters['id'];
             final serverId = int.tryParse(serverIdStr ?? '');
             if (serverId == null) {
-              return const DashboardScreen(); // Fallback to dashboard
+              return const NavigationShell(
+                currentRoute: '/dashboard',
+                child: DashboardScreen(),
+              );
             }
-            return ServerStacksScreen(
-              serverId: serverId,
-              stackService: context.read<StackService>(),
+            return NavigationShell(
+              currentRoute: '/servers/$serverId/stacks',
+              child: ServerStacksScreen(
+                serverId: serverId,
+                stackService: context.read<StackService>(),
+              ),
             );
           },
         ),
@@ -202,44 +215,97 @@ class BrxApp extends StatelessWidget {
             final serverId = int.tryParse(serverIdStr ?? '');
             
             if (serverId == null || stackName == null) {
-              return const DashboardScreen(); // Fallback to dashboard
+              return const NavigationShell(
+                currentRoute: '/dashboard',
+                child: DashboardScreen(),
+              );
             }
             
-            return StackDetailsScreen(
-              serverId: serverId,
-              stackName: stackName,
-              stackService: context.read<StackService>(),
+            return NavigationShell(
+              currentRoute: '/servers/$serverId/stacks/$stackName',
+              child: StackDetailsScreen(
+                serverId: serverId,
+                stackName: stackName,
+                stackService: context.read<StackService>(),
+              ),
             );
           },
         ),
+        // Account tab routes
+        GoRoute(
+          path: '/account',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/account',
+            child: AccountScreen(),
+          ),
+        ),
         GoRoute(
           path: '/sessions',
-          builder: (context, state) => const SessionsScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/sessions',
+            child: SessionsScreen(),
+          ),
         ),
         GoRoute(
           path: '/profile',
-          builder: (context, state) => const ProfileScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/profile',
+            child: ProfileScreen(),
+          ),
+        ),
+
+        // Admin tab routes
+        GoRoute(
+          path: '/admin',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin',
+            child: AdminScreen(),
+          ),
         ),
         GoRoute(
           path: '/admin/users',
-          builder: (context, state) => const UsersScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin/users',
+            child: UsersScreen(),
+          ),
         ),
         GoRoute(
           path: '/admin/roles',
-          builder: (context, state) => const RolesScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin/roles',
+            child: RolesScreen(),
+          ),
         ),
         GoRoute(
           path: '/admin/servers',
-          builder: (context, state) => const ServersScreen(),
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin/servers',
+            child: ServersScreen(),
+          ),
+        ),
+
+        // More tab route
+        GoRoute(
+          path: '/more',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/more',
+            child: MoreScreen(),
+          ),
         ),
         GoRoute(
           path: '/admin/roles/:roleId/server-permissions',
           builder: (context, state) {
             final roleId = int.tryParse(state.pathParameters['roleId']!);
             if (roleId == null) {
-              return const RolesScreen();
+              return const NavigationShell(
+                currentRoute: '/admin/roles',
+                child: RolesScreen(),
+              );
             }
-            return RoleStackPermissionsScreen(roleId: roleId);
+            return NavigationShell(
+              currentRoute: '/admin/roles/$roleId/server-permissions',
+              child: RoleStackPermissionsScreen(roleId: roleId),
+            );
           },
         ),
       ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/log.dart' as log_models;
 import '../models/stack.dart' as stack_models;
 import '../services/logs_service.dart';
+import '../theme/app_theme.dart';
 
 class LogsViewer extends StatefulWidget {
   final int serverId;
@@ -124,13 +125,9 @@ class _LogsViewerState extends State<LogsViewer> {
   }
 
   String? _extractLogTimestamp(String message) {
-    // Try to extract timestamp from common log formats
     final patterns = [
-      // YYYY/MM/DD HH:MM:SS format (nginx, many services)
       RegExp(r'(\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})'),
-      // ISO format with T separator
       RegExp(r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?)'),
-      // Simple HH:MM:SS at start
       RegExp(r'^(\d{2}:\d{2}:\d{2})'),
     ];
 
@@ -144,13 +141,9 @@ class _LogsViewerState extends State<LogsViewer> {
   }
 
   String _cleanLogMessage(String message) {
-    // Remove extracted timestamp from message to avoid duplication
     final patterns = [
-      // YYYY/MM/DD HH:MM:SS format (nginx, many services)
       RegExp(r'\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} '),
-      // ISO format with T separator
       RegExp(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})? '),
-      // Simple HH:MM:SS at start
       RegExp(r'^\d{2}:\d{2}:\d{2} '),
     ];
 
@@ -167,7 +160,7 @@ class _LogsViewerState extends State<LogsViewer> {
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheetState) => Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,8 +170,6 @@ class _LogsViewerState extends State<LogsViewer> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 24),
-              
-              // Search field
               TextField(
                 decoration: const InputDecoration(
                   labelText: 'Search logs',
@@ -187,18 +178,16 @@ class _LogsViewerState extends State<LogsViewer> {
                 ),
                 onChanged: (value) {
                   setState(() => _searchTerm = value);
-                  setSheetState(() {}); // Update the sheet UI
+                  setSheetState(() {});
                 },
               ),
               const SizedBox(height: 16),
-              
-              // Toggles
               SwitchListTile(
                 title: const Text('Show timestamps'),
                 value: _showTimestamps,
                 onChanged: (value) {
                   setState(() => _showTimestamps = value);
-                  setSheetState(() {}); // Update the sheet UI
+                  setSheetState(() {});
                   _loadLogs();
                 },
               ),
@@ -207,7 +196,7 @@ class _LogsViewerState extends State<LogsViewer> {
                 value: _autoRefresh,
                 onChanged: (value) {
                   setState(() => _autoRefresh = value);
-                  setSheetState(() {}); // Update the sheet UI
+                  setSheetState(() {});
                   if (_autoRefresh) {
                     _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
                       _loadLogs();
@@ -219,8 +208,6 @@ class _LogsViewerState extends State<LogsViewer> {
               ),
               
               const SizedBox(height: 24),
-              
-              // Close button
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -278,7 +265,6 @@ class _LogsViewerState extends State<LogsViewer> {
 
     return CustomScrollView(
       slivers: [
-        // Compact Controls Bar
         SliverToBoxAdapter(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -288,10 +274,8 @@ class _LogsViewerState extends State<LogsViewer> {
             ),
             child: Column(
               children: [
-                // Top row: Main controls
                 Row(
                   children: [
-                    // Lines dropdown (compact)
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
@@ -315,8 +299,6 @@ class _LogsViewerState extends State<LogsViewer> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    
-                    // Since dropdown (compact)
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
@@ -342,8 +324,6 @@ class _LogsViewerState extends State<LogsViewer> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    
-                    // Level filter
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
@@ -369,8 +349,6 @@ class _LogsViewerState extends State<LogsViewer> {
                     ),
                     
                     const Spacer(),
-                    
-                    // Refresh button
                     IconButton(
                       onPressed: _isLoading ? null : _loadLogs,
                       icon: _isLoading 
@@ -382,8 +360,6 @@ class _LogsViewerState extends State<LogsViewer> {
                         : const Icon(Icons.refresh),
                       tooltip: 'Refresh logs',
                     ),
-                    
-                    // Settings button
                     IconButton(
                       onPressed: () => _showSettingsSheet(context),
                       icon: const Icon(Icons.tune),
@@ -391,8 +367,6 @@ class _LogsViewerState extends State<LogsViewer> {
                     ),
                   ],
                 ),
-                
-                // Container selector (if available)
                 if (widget.containers != null && widget.containers!.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Container(
@@ -436,15 +410,13 @@ class _LogsViewerState extends State<LogsViewer> {
         ),
         
         const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        
-        // Logs Display - Takes remaining space and allows scrolling
         SliverFillRemaining(
           child: Card(
             child: Column(
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: const BorderRadius.only(
@@ -498,7 +470,6 @@ class _LogsViewerState extends State<LogsViewer> {
                             ),
                         ],
                       ),
-                      // Filter status bar
                       if (_searchTerm.isNotEmpty || _levelFilter != 'all' || _since.isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 8),
