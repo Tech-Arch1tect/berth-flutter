@@ -264,7 +264,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
   void _startStatsTimer() {
     _stopStatsTimer();
-    _statsTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    _statsTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted && _tabController?.index == 4) {
         _loadStats(silent: true);
       }

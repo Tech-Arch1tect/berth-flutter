@@ -38,6 +38,7 @@ class StackStatsList extends StatelessWidget {
   }
 
   String _formatPercent(double percent) {
+    if (percent < 0) return 'Calculating...';
     return '${percent.toStringAsFixed(1)}%';
   }
 
@@ -137,7 +138,7 @@ class StackStatsList extends StatelessWidget {
                 ),
               const SizedBox(width: 8),
               Text(
-                'Real-time resource usage • Updates every 5 seconds',
+                'Real-time resource usage • Updates every 1 second',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -210,10 +211,12 @@ class StackStatsList extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       LinearProgressIndicator(
-                        value: (container.cpuPercent / 100).clamp(0.0, 1.0),
+                        value: container.cpuPercent < 0 ? null : (container.cpuPercent / 100).clamp(0.0, 1.0),
                         backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).colorScheme.primary,
+                          container.cpuPercent < 0 
+                            ? Theme.of(context).colorScheme.outline
+                            : Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 8),
