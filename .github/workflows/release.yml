@@ -21,6 +21,9 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
@@ -29,8 +32,25 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.35.2'
           cache: true
+          cache-key: "flutter-:os:-stable-:arch:-v3.35.2"
+          pub-cache-key: "flutter-pub-:os:-stable-:arch:-v3.35.2"
+
+      - name: Precache Flutter artifacts
+        run: flutter precache --android --linux --macos
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+            ~/.cache/flutter
+          key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            flutter-deps-${{ runner.os }}-
+            flutter-deps-
 
       - name: Flutter pub get
         run: flutter pub get
@@ -69,8 +89,25 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.35.2'
           cache: true
+          cache-key: "flutter-:os:-stable-:arch:-v3.35.2"
+          pub-cache-key: "flutter-pub-:os:-stable-:arch:-v3.35.2"
+
+      - name: Precache Flutter artifacts
+        run: flutter precache --android --linux --macos
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+            ~/.cache/flutter
+          key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            flutter-deps-${{ runner.os }}-
+            flutter-deps-
 
       - name: Enable Linux desktop
         run: flutter config --enable-linux-desktop
@@ -106,8 +143,25 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.35.2'
           cache: true
+          cache-key: "flutter-:os:-stable-:arch:-v3.35.2"
+          pub-cache-key: "flutter-pub-:os:-stable-:arch:-v3.35.2"
+
+      - name: Precache Flutter artifacts
+        run: flutter precache --android --linux --macos
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+            ~/.cache/flutter
+          key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            flutter-deps-${{ runner.os }}-
+            flutter-deps-
 
       - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
