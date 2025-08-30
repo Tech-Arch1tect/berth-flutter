@@ -280,7 +280,7 @@ class StackStatsList extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           Text(
-                            _formatBytes(container.memoryUsage),
+                            _formatBytes(container.memoryRss),
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontFamily: 'monospace',
                             ),
