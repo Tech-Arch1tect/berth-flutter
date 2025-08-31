@@ -23,6 +23,8 @@ import 'screens/admin/role_stack_permissions_screen.dart';
 import 'widgets/navigation_shell.dart';
 import 'services/stack_service.dart';
 import 'services/server_service.dart';
+import 'services/maintenance_service.dart';
+import 'screens/server_maintenance_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -43,6 +45,7 @@ class _AppInitializerState extends State<AppInitializer> {
   late final AuthService _authService;
   late final StackService _stackService;
   late final ServerService _serverService;
+  late final MaintenanceService _maintenanceService;
 
   @override
   void initState() {
@@ -51,6 +54,7 @@ class _AppInitializerState extends State<AppInitializer> {
     _authService = AuthService(_apiClient);
     _stackService = StackService(_apiClient);
     _serverService = ServerService(_apiClient);
+    _maintenanceService = MaintenanceService(_apiClient);
     _initialize();
   }
 
@@ -86,6 +90,7 @@ class _AppInitializerState extends State<AppInitializer> {
       authService: _authService,
       stackService: _stackService,
       serverService: _serverService,
+      maintenanceService: _maintenanceService,
     );
   }
 }
@@ -96,6 +101,7 @@ class BerthApp extends StatelessWidget {
   final AuthService authService;
   final StackService stackService;
   final ServerService serverService;
+  final MaintenanceService maintenanceService;
   
   const BerthApp({
     super.key, 
@@ -104,6 +110,7 @@ class BerthApp extends StatelessWidget {
     required this.authService,
     required this.stackService,
     required this.serverService,
+    required this.maintenanceService,
   });
 
   @override
@@ -115,6 +122,7 @@ class BerthApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: authService),
         Provider.value(value: stackService),
         Provider.value(value: serverService),
+        Provider.value(value: maintenanceService),
       ],
       child: MaterialApp.router(
         title: 'Berth Mobile',
@@ -222,6 +230,23 @@ class BerthApp extends StatelessWidget {
                 stackName: stackName,
                 stackService: context.read<StackService>(),
               ),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/servers/:id/maintenance',
+          builder: (context, state) {
+            final serverIdStr = state.pathParameters['id'];
+            final serverId = int.tryParse(serverIdStr ?? '');
+            if (serverId == null) {
+              return const NavigationShell(
+                currentRoute: '/dashboard',
+                child: DashboardScreen(),
+              );
+            }
+            return NavigationShell(
+              currentRoute: '/servers/$serverId/maintenance',
+              child: ServerMaintenanceScreen(serverId: serverId),
             );
           },
         ),

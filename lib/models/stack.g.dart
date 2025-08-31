@@ -1,4 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'stack.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
 
 Stack _$StackFromJson(Map<String, dynamic> json) => Stack(
   name: json['name'] as String,

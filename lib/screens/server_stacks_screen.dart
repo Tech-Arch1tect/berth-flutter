@@ -75,6 +75,12 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
             )
           : null,
         actions: [
+          if (_server != null)
+            IconButton(
+              icon: const Icon(Icons.build),
+              onPressed: () => context.push('/servers/${widget.serverId}/maintenance'),
+              tooltip: 'Docker Maintenance',
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadData,
