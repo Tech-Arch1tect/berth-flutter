@@ -160,6 +160,10 @@ class _LogsViewerState extends State<LogsViewer> {
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheetState) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -270,9 +270,14 @@ class _FileManagerState extends State<FileManager> {
   void _showFileOptions(FileEntry entry) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           if (!entry.isDirectory) ...[
             ListTile(
               leading: const Icon(Icons.visibility),
@@ -324,6 +329,7 @@ class _FileManagerState extends State<FileManager> {
             },
           ),
         ],
+        ),
       ),
     );
   }
@@ -361,9 +367,14 @@ class _FileManagerState extends State<FileManager> {
   void _showDownloadLocationDialog(FileEntry entry) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Text(
@@ -400,6 +411,7 @@ class _FileManagerState extends State<FileManager> {
           ),
           const SizedBox(height: 16),
         ],
+        ),
       ),
     );
   }
@@ -820,9 +832,14 @@ class _FileManagerState extends State<FileManager> {
   void _showCreateMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           ListTile(
             leading: const Icon(Icons.upload_file),
             title: const Text('Upload File'),
@@ -848,6 +865,7 @@ class _FileManagerState extends State<FileManager> {
             },
           ),
         ],
+        ),
       ),
     );
   }
