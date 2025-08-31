@@ -18,25 +18,16 @@ class ServerMaintenanceScreen extends StatefulWidget {
   State<ServerMaintenanceScreen> createState() => _ServerMaintenanceScreenState();
 }
 
-class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen>
-    with SingleTickerProviderStateMixin {
+class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
   MaintenanceInfo? _maintenanceInfo;
   Server? _server;
   bool _isLoading = true;
   String? _error;
-  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
     _loadData();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -87,20 +78,6 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen>
             onPressed: _loadData,
           ),
         ],
-        bottom: _isLoading || _error != null
-            ? null
-            : TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabs: const [
-                  Tab(text: 'Overview'),
-                  Tab(text: 'Images'),
-                  Tab(text: 'Containers'),
-                  Tab(text: 'Volumes'),
-                  Tab(text: 'Networks'),
-                  Tab(text: 'Cleanup'),
-                ],
-              ),
       ),
       body: _buildBody(),
     );
@@ -146,21 +123,6 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen>
       );
     }
 
-    return TabBarView(
-      controller: _tabController,
-      children: [
-        _buildOverviewTab(),
-        _buildImagesTab(),
-        _buildContainersTab(),
-        _buildVolumesTab(),
-        _buildNetworksTab(),
-        _buildCleanupTab(),
-      ],
-    );
-  }
-
-  Widget _buildOverviewTab() {
-    final info = _maintenanceInfo!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -171,8 +133,178 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen>
           _buildDiskUsageCard(),
           const SizedBox(height: AppSpacing.md),
           _buildResourceSummaryCard(),
+          const SizedBox(height: AppSpacing.md),
+          _buildResourceSection('Images', Icons.image, _maintenanceInfo!.imageSummary.images.length, _buildImagesSection),
+          const SizedBox(height: AppSpacing.md),
+          _buildResourceSection('Containers', Icons.view_in_ar, _maintenanceInfo!.containerSummary.containers.length, _buildContainersSection),
+          const SizedBox(height: AppSpacing.md),
+          _buildResourceSection('Volumes', Icons.storage, _maintenanceInfo!.volumeSummary.volumes.length, _buildVolumesSection),
+          const SizedBox(height: AppSpacing.md),
+          _buildResourceSection('Networks', Icons.hub, _maintenanceInfo!.networkSummary.networks.length, _buildNetworksSection),
+          const SizedBox(height: AppSpacing.md),
+          _buildCleanupSection(),
+          const SizedBox(height: AppSpacing.lg),
         ],
       ),
+    );
+  }
+
+  Widget _buildResourceSection(String title, IconData icon, int itemCount, Widget Function() contentBuilder) {
+    return Card(
+      child: ExpansionTile(
+        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          '$itemCount ${itemCount == 1 ? 'item' : 'items'}',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        children: [
+          if (itemCount > 0)
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              child: contentBuilder(),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Text(
+                'No $title found',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCleanupSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.delete_forever,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Docker Cleanup Actions',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Select cleanup operations to free up disk space. Review the statistics before proceeding.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildCleanupOptionsGrid(),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Quick Actions',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            _buildQuickActionsGrid(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImagesSection() {
+    final images = _maintenanceInfo!.imageSummary.images;
+    return Column(
+      children: images.map((image) => _buildResourceCard(
+        title: '${image.repository}:${image.tag}',
+        subtitle: 'ID: ${image.id.substring(0, 12)}',
+        size: image.size,
+        status: image.dangling ? 'Dangling' : (image.unused ? 'Unused' : 'In Use'),
+        statusColor: image.dangling || image.unused
+            ? Theme.of(context).colorScheme.error
+            : Theme.of(context).colorScheme.primary,
+        icon: Icons.image,
+        onDelete: image.dangling || image.unused
+            ? () => _deleteResource('image', image.id)
+            : null,
+      )).toList(),
+    );
+  }
+
+  Widget _buildContainersSection() {
+    final containers = _maintenanceInfo!.containerSummary.containers;
+    return Column(
+      children: containers.map((container) => _buildResourceCard(
+        title: container.name,
+        subtitle: 'Image: ${container.image}',
+        size: container.size,
+        status: container.state,
+        statusColor: container.state == 'running'
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.outline,
+        icon: Icons.view_in_ar,
+        onDelete: container.state != 'running'
+            ? () => _deleteResource('container', container.id)
+            : null,
+      )).toList(),
+    );
+  }
+
+  Widget _buildVolumesSection() {
+    final volumes = _maintenanceInfo!.volumeSummary.volumes;
+    return Column(
+      children: volumes.map((volume) => _buildResourceCard(
+        title: volume.name,
+        subtitle: 'Driver: ${volume.driver}',
+        size: volume.size,
+        status: volume.unused ? 'Unused' : 'In Use',
+        statusColor: volume.unused
+            ? Theme.of(context).colorScheme.error
+            : Theme.of(context).colorScheme.primary,
+        icon: Icons.storage,
+        onDelete: volume.unused
+            ? () => _deleteResource('volume', volume.name)
+            : null,
+      )).toList(),
+    );
+  }
+
+  Widget _buildNetworksSection() {
+    final networks = _maintenanceInfo!.networkSummary.networks;
+    return Column(
+      children: networks.map((network) => _buildResourceCard(
+        title: network.name,
+        subtitle: 'Driver: ${network.driver} • Scope: ${network.scope}',
+        size: null,
+        status: network.unused ? 'Unused' : 'In Use',
+        statusColor: network.unused
+            ? Theme.of(context).colorScheme.error
+            : Theme.of(context).colorScheme.primary,
+        icon: Icons.hub,
+        onDelete: network.unused && !['bridge', 'host', 'none'].contains(network.name)
+            ? () => _deleteResource('network', network.id)
+            : null,
+      )).toList(),
     );
   }
 
@@ -357,160 +489,10 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen>
     );
   }
 
-  Widget _buildImagesTab() {
-    final images = _maintenanceInfo!.imageSummary.images;
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: images.length,
-      itemBuilder: (context, index) {
-        final image = images[index];
-        return _buildResourceCard(
-          title: '${image.repository}:${image.tag}',
-          subtitle: 'ID: ${image.id.substring(0, 12)}',
-          size: image.size,
-          status: image.dangling ? 'Dangling' : image.unused ? 'Unused' : 'In Use',
-          statusColor: image.dangling || image.unused 
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
-          icon: Icons.image,
-          onDelete: image.dangling || image.unused
-              ? () => _deleteResource('image', image.id)
-              : null,
-        );
-      },
-    );
-  }
 
-  Widget _buildContainersTab() {
-    final containers = _maintenanceInfo!.containerSummary.containers;
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: containers.length,
-      itemBuilder: (context, index) {
-        final container = containers[index];
-        return _buildResourceCard(
-          title: container.name,
-          subtitle: 'Image: ${container.image}',
-          size: container.size,
-          status: container.state,
-          statusColor: container.state == 'running'
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.outline,
-          icon: Icons.view_in_ar,
-          onDelete: container.state != 'running'
-              ? () => _deleteResource('container', container.id)
-              : null,
-        );
-      },
-    );
-  }
 
-  Widget _buildVolumesTab() {
-    final volumes = _maintenanceInfo!.volumeSummary.volumes;
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: volumes.length,
-      itemBuilder: (context, index) {
-        final volume = volumes[index];
-        return _buildResourceCard(
-          title: volume.name,
-          subtitle: 'Driver: ${volume.driver}',
-          size: volume.size,
-          status: volume.unused ? 'Unused' : 'In Use',
-          statusColor: volume.unused
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
-          icon: Icons.storage,
-          onDelete: volume.unused
-              ? () => _deleteResource('volume', volume.name)
-              : null,
-        );
-      },
-    );
-  }
 
-  Widget _buildNetworksTab() {
-    final networks = _maintenanceInfo!.networkSummary.networks;
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: networks.length,
-      itemBuilder: (context, index) {
-        final network = networks[index];
-        return _buildResourceCard(
-          title: network.name,
-          subtitle: 'Driver: ${network.driver} • Scope: ${network.scope}',
-          size: null,
-          status: network.unused ? 'Unused' : 'In Use',
-          statusColor: network.unused
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
-          icon: Icons.hub,
-          onDelete: network.unused && !['bridge', 'host', 'none'].contains(network.name)
-              ? () => _deleteResource('network', network.id)
-              : null,
-        );
-      },
-    );
-  }
 
-  Widget _buildCleanupTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.delete_forever,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Docker Cleanup Actions',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'Select cleanup operations to free up disk space. Review the statistics before proceeding.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          
-          // Cleanup Options Grid
-          _buildCleanupOptionsGrid(),
-          
-          const SizedBox(height: AppSpacing.md),
-          
-          // Quick Actions
-          Text(
-            'Quick Actions',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          _buildQuickActionsGrid(),
-        ],
-      ),
-    );
-  }
 
   Widget _buildCleanupOptionsGrid() {
     final cleanupTypes = [
