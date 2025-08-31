@@ -37,8 +37,9 @@ class VolumeList extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Error loading volumes',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.error,
+                      fontWeight: FontWeight.w600,
                     ),
               ),
               const SizedBox(height: 8),
@@ -70,8 +71,9 @@ class VolumeList extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'No volumes found',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
                     ),
               ),
               const SizedBox(height: 8),
@@ -91,8 +93,8 @@ class VolumeList extends StatelessWidget {
     final activeVolumes = volumes.where((volume) => volume.exists).toList();
     final declaredVolumes = volumes.where((volume) => !volume.exists).toList();
 
-    return ListView(
-      padding: const EdgeInsets.all(8.0),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (activeVolumes.isNotEmpty) ...[
           Padding(
@@ -107,8 +109,8 @@ class VolumeList extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Active Volumes (${activeVolumes.length})',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                 ),
               ],
@@ -129,8 +131,8 @@ class VolumeList extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Declared Volumes (${declaredVolumes.length})',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),

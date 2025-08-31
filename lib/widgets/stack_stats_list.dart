@@ -117,7 +117,7 @@ class StackStatsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               // Show spinning icon when loading, static icon when not
@@ -146,15 +146,11 @@ class StackStatsList extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: containers!.length,
-            itemBuilder: (context, index) {
-              final container = containers![index];
+        ...containers!.map((container) {
               return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -184,7 +180,7 @@ class StackStatsList extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       
                       // CPU Section
                       Text(
@@ -193,7 +189,7 @@ class StackStatsList extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -582,9 +578,7 @@ class StackStatsList extends StatelessWidget {
                   ),
                 ),
               );
-            },
-          ),
-        ),
+        }),
       ],
     );
   }

@@ -35,8 +35,9 @@ class EnvironmentVariableList extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Error loading environment variables',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
@@ -66,15 +67,14 @@ class EnvironmentVariableList extends StatelessWidget {
 
     servicesWithVariables.sort((a, b) => a.key.compareTo(b.key));
 
-    return ListView.builder(
-      itemCount: servicesWithVariables.length,
-      itemBuilder: (context, index) {
-        final entry = servicesWithVariables[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: servicesWithVariables.map((entry) {
         return EnvironmentVariableCard(
           serviceName: entry.key,
           serviceEnvironments: entry.value,
         );
-      },
+      }).toList(),
     );
   }
 
@@ -91,8 +91,9 @@ class EnvironmentVariableList extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),

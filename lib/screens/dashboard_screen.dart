@@ -76,44 +76,44 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primaryContainer,
-                    Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
+            Card(
+              child: Padding(
+                padding: AppTheme.spacing.cardPadding,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome back, ${authService.currentUser?.username ?? 'User'}',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Manage your Docker stacks',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back,',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.9),
-                    ),
-                  ),
-                  Text(
-                    authService.currentUser?.username ?? 'User',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  AppTheme.spacing.verticalSM,
-                  Text(
-                    'Have a productive day!',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
               ),
             ),
             
@@ -121,36 +121,30 @@ class DashboardScreen extends StatelessWidget {
             
             const DashboardServerList(),
             
-            AppTheme.spacing.verticalXL,
+            AppTheme.spacing.verticalMD,
             
             Text(
               'Quick Actions',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            AppTheme.spacing.verticalLG,
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: AppSpacing.lg,
-              mainAxisSpacing: AppSpacing.lg,
-              childAspectRatio: 1.2,
+            AppTheme.spacing.verticalSM,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                _buildQuickActionCard(
+                _buildQuickActionButton(
                   context,
                   'Sessions',
                   Icons.devices,
-                  'Manage active sessions',
                   Theme.of(context).colorScheme.primary,
                   () => context.go('/sessions'),
                 ),
-                _buildQuickActionCard(
+                _buildQuickActionButton(
                   context,
-                  '2FA Settings',
+                  authService.currentUser?.totpEnabled == true ? '2FA Active' : 'Enable 2FA',
                   Icons.security,
-                  authService.currentUser?.totpEnabled == true ? 'Manage 2FA' : 'Enable 2FA',
                   authService.currentUser?.totpEnabled == true ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.warning,
                   () {
                     if (authService.currentUser?.totpEnabled == true) {
@@ -162,83 +156,46 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
-            
-            AppTheme.spacing.verticalXL,
-            
-            Text(
-              'Account Overview',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionButton(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: color.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: color,
+              size: 16,
             ),
-            AppTheme.spacing.verticalLG,
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: AppTheme.spacing.cardPadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                          child: Icon(
-                            Icons.person,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            size: 28,
-                          ),
-                        ),
-                        AppTheme.spacing.horizontalLG,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                authService.currentUser?.username ?? 'User',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                authService.currentUser?.email ?? '',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    AppTheme.spacing.verticalXL,
-                    const Divider(),
-                    AppTheme.spacing.verticalLG,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInfoChip(
-                            context,
-                            'Account ID',
-                            '${authService.currentUser?.id}',
-                            Icons.badge,
-                          ),
-                        ),
-                        AppTheme.spacing.horizontalMD,
-                        Expanded(
-                          child: _buildInfoChip(
-                            context,
-                            'Two-Factor Auth',
-                            authService.currentUser?.totpEnabled == true ? 'Enabled' : 'Disabled',
-                            Icons.security,
-                            color: authService.currentUser?.totpEnabled == true ? Theme.of(context).colorScheme.success : Theme.of(context).colorScheme.warning,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -247,97 +204,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActionCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    String subtitle,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: AppTheme.spacing.cardPadding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: AppTheme.spacing.itemPadding,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 28,
-                ),
-              ),
-              AppTheme.spacing.verticalMD,
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoChip(BuildContext context, String label, String value, IconData icon, {Color? color}) {
-    return Container(
-      padding: AppTheme.spacing.itemPadding,
-      decoration: BoxDecoration(
-        color: (color ?? Theme.of(context).colorScheme.onSurfaceVariant).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
-            size: 20,
-          ),
-          AppTheme.spacing.verticalSM,
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: color ?? Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showTOTPManagementDialog(BuildContext context) {
     showDialog(

@@ -56,8 +56,8 @@ class NetworkCard extends StatelessWidget {
             children: [
               Text(
                 network.name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
               ),
               if (network.driver != null)

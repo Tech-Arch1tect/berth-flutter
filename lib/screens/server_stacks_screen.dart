@@ -105,7 +105,9 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
             const SizedBox(height: 16),
             Text(
               'Error loading stacks',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -127,9 +129,9 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
       children: [
         if (_server != null)
           Card(
-            margin: const EdgeInsets.all(AppSpacing.lg),
+            margin: const EdgeInsets.all(AppSpacing.md),
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Row(
                 children: [
                   Container(
@@ -149,7 +151,9 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
                       children: [
                         Text(
                           _server!.name,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -207,7 +211,9 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
           const SizedBox(height: 16),
           Text(
             'No stacks found',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -230,7 +236,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
     return RefreshIndicator(
       onRefresh: _loadData,
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         itemCount: _stacks!.length,
         itemBuilder: (context, index) {
           final stack = _stacks![index];
@@ -247,7 +253,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
         onTap: () => context.push('/servers/${stack.serverId}/stacks/${stack.name}'),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -268,16 +274,17 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       'Available',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: Colors.green.shade700,
                         fontWeight: FontWeight.w500,
+                        fontSize: 10,
                       ),
                     ),
                   ),
@@ -289,19 +296,15 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                stack.composeFile,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
               const SizedBox(height: 4),
               Text(
-                'Path: ${stack.path}',
+                '${stack.composeFile} • ${stack.path}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontFamily: 'monospace',
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

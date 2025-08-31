@@ -52,8 +52,8 @@ class VolumeCard extends StatelessWidget {
             children: [
               Text(
                 _getDisplayName(volume.name),
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
               ),
               if (volume.driver != null)

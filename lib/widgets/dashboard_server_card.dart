@@ -20,7 +20,7 @@ class DashboardServerCard extends StatelessWidget {
         onTap: () => context.push('/servers/${server.id}/stacks'),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Container(

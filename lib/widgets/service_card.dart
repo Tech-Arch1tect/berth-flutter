@@ -132,7 +132,7 @@ class _ServiceCardState extends State<ServiceCard>
     final totalContainers = widget.service.containers.length;
     
     return GlassCard(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
       padding: EdgeInsets.zero,
       onTap: widget.onTap,
       child: Column(

@@ -78,6 +78,8 @@ class AppTheme {
       colorScheme: colorScheme,
       useMaterial3: true,
       fontFamily: 'Inter',
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       
       appBarTheme: AppBarTheme(
         centerTitle: false,
@@ -136,7 +138,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         ),
       ),
 
@@ -145,7 +147,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           side: BorderSide(color: colorScheme.outline),
         ),
       ),
@@ -155,7 +157,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
 
@@ -178,7 +180,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: colorScheme.error, width: 2),
         ),
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.all(12),
       ),
 
       bottomSheetTheme: const BottomSheetThemeData(
@@ -208,17 +210,17 @@ class AppTheme {
         unselectedLabelColor: colorScheme.onSurfaceVariant,
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: colorScheme.primary, width: 2),
-          insets: const EdgeInsets.symmetric(horizontal: 16),
+          insets: const EdgeInsets.symmetric(horizontal: 8),
         ),
         labelStyle: const TextStyle(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
+          letterSpacing: 0.1,
         ),
         unselectedLabelStyle: const TextStyle(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w500,
-          letterSpacing: 0.2,
+          letterSpacing: 0.1,
         ),
       ),
 
@@ -226,7 +228,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       ),
 
       chipTheme: ChipThemeData(
@@ -263,6 +265,8 @@ class AppTheme {
       colorScheme: colorScheme,
       useMaterial3: true,
       fontFamily: 'Inter',
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       
       appBarTheme: AppBarTheme(
         centerTitle: false,
@@ -321,7 +325,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         ),
       ),
 
@@ -330,7 +334,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           side: BorderSide(color: colorScheme.outline),
         ),
       ),
@@ -340,7 +344,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
 
@@ -363,7 +367,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: colorScheme.error, width: 2),
         ),
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.all(12),
       ),
 
       bottomSheetTheme: const BottomSheetThemeData(
@@ -393,17 +397,17 @@ class AppTheme {
         unselectedLabelColor: colorScheme.onSurfaceVariant,
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: colorScheme.primary, width: 2),
-          insets: const EdgeInsets.symmetric(horizontal: 16),
+          insets: const EdgeInsets.symmetric(horizontal: 8),
         ),
         labelStyle: const TextStyle(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
+          letterSpacing: 0.1,
         ),
         unselectedLabelStyle: const TextStyle(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w500,
-          letterSpacing: 0.2,
+          letterSpacing: 0.1,
         ),
       ),
 
@@ -411,7 +415,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       ),
 
       chipTheme: ChipThemeData(
