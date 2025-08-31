@@ -58,6 +58,14 @@ jobs:
       - name: Generate code
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
+      - name: Setup signing key
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/berth-release-key.keystore
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=berth-key" >> android/key.properties
+          echo "storeFile=berth-release-key.keystore" >> android/key.properties
+
       - name: Build Android APK
         run: flutter build apk --release
 
