@@ -17,6 +17,7 @@ class _UsersScreenState extends State<UsersScreen> {
   List<User> users = [];
   bool isLoading = true;
   String? error;
+  bool isCreatingUser = false;
 
   @override
   void initState() {
@@ -50,6 +51,195 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
+  Future<void> _createUser({
+    required String username,
+    required String email,
+    required String password,
+    required String passwordConfirm,
+  }) async {
+    try {
+      setState(() {
+        isCreatingUser = true;
+      });
+
+      final apiClient = context.read<ApiClient>();
+      final response = await apiClient.post(
+        '/api/v1/admin/users',
+        body: {
+          'username': username,
+          'email': email,
+          'password': password,
+          'password_confirm': passwordConfirm,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('User "$username" created successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadUsers();
+        }
+      } else {
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Failed to create user');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create user: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isCreatingUser = false;
+        });
+      }
+    }
+  }
+
+  void _showCreateUserDialog() {
+    final formKey = GlobalKey<FormState>();
+    final usernameController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: !isCreatingUser,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Create New User'),
+          content: Form(
+            key: formKey,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Username is required';
+                      }
+                      return null;
+                    },
+                    enabled: !isCreatingUser,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email is required';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                    enabled: !isCreatingUser,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters';
+                      }
+                      return null;
+                    },
+                    enabled: !isCreatingUser,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: confirmPasswordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm Password',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock_outline),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                    enabled: !isCreatingUser,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: isCreatingUser ? null : () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: isCreatingUser ? null : () async {
+                if (formKey.currentState!.validate()) {
+                  await _createUser(
+                    username: usernameController.text.trim(),
+                    email: emailController.text.trim(),
+                    password: passwordController.text,
+                    passwordConfirm: confirmPasswordController.text,
+                  );
+                  if (context.mounted && !isCreatingUser) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+              child: isCreatingUser
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Create'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +251,11 @@ class _UsersScreenState extends State<UsersScreen> {
               onPressed: () => Navigator.of(context).pop(),
             )
           : null,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showCreateUserDialog,
+        tooltip: 'Create User',
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
