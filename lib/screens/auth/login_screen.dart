@@ -282,19 +282,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               
               const SizedBox(height: 24),
-              
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have an account? "),
-                  TextButton(
-                    onPressed: () {
-                      context.go('/register');
-                    },
-                    child: const Text('Sign Up'),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

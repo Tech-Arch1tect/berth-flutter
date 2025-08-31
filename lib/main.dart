@@ -6,7 +6,6 @@ import 'services/auth_service.dart';
 import 'services/api_client.dart';
 import 'screens/setup/simple_server_setup.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/auth/register_screen.dart';
 import 'screens/auth/totp_setup_screen.dart';
 import 'screens/auth/totp_verify_screen.dart';
 import 'screens/dashboard_screen.dart';
@@ -141,13 +140,12 @@ class BerthApp extends StatelessWidget {
 
         if (isConfigured && !isAuthenticated && 
             !path!.startsWith('/login') && 
-            !path.startsWith('/register') &&
             !path.startsWith('/totp-verify') &&
             path != '/server-setup') {
           return '/login';
         }
 
-        if (isAuthenticated && (path == '/login' || path == '/register')) {
+        if (isAuthenticated && path == '/login') {
           return '/dashboard';
         }
 
@@ -161,10 +159,6 @@ class BerthApp extends StatelessWidget {
         GoRoute(
           path: '/login',
           builder: (context, state) => const LoginScreen(),
-        ),
-        GoRoute(
-          path: '/register',
-          builder: (context, state) => const RegisterScreen(),
         ),
         GoRoute(
           path: '/totp-verify',
