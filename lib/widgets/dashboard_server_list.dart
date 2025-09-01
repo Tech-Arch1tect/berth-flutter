@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/server.dart';
+import '../models/stack_statistics.dart';
 import '../services/server_service.dart';
 import '../services/api_client.dart';
 import 'dashboard_server_card.dart';
@@ -18,6 +19,11 @@ class _DashboardServerListState extends State<DashboardServerList> {
   bool _isLoading = true;
   String? _error;
   late ServerService _serverService;
+  
+  // Statistics state
+  final Map<int, StackStatistics?> _statistics = {};
+  final Set<int> _loadingStatistics = {};
+  final Set<int> _statisticsErrors = {};
 
   @override
   void initState() {
@@ -39,12 +45,48 @@ class _DashboardServerListState extends State<DashboardServerList> {
           _servers = servers;
           _isLoading = false;
         });
+        
+        // Load statistics for each server
+        _loadAllStatistics();
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _error = e.toString();
           _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadAllStatistics() async {
+    for (final server in _servers) {
+      _loadServerStatistics(server.id);
+    }
+  }
+
+  Future<void> _loadServerStatistics(int serverId) async {
+    if (mounted) {
+      setState(() {
+        _loadingStatistics.add(serverId);
+        _statisticsErrors.remove(serverId);
+      });
+    }
+
+    try {
+      final statistics = await _serverService.getServerStatistics(serverId);
+      
+      if (mounted) {
+        setState(() {
+          _statistics[serverId] = statistics;
+          _loadingStatistics.remove(serverId);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _statisticsErrors.add(serverId);
+          _loadingStatistics.remove(serverId);
         });
       }
     }
@@ -140,7 +182,12 @@ class _DashboardServerListState extends State<DashboardServerList> {
             else
               Column(
                 children: _servers
-                    .map((server) => DashboardServerCard(server: server))
+                    .map((server) => DashboardServerCard(
+                          server: server,
+                          statistics: _statistics[server.id],
+                          isLoadingStatistics: _loadingStatistics.contains(server.id),
+                          hasStatisticsError: _statisticsErrors.contains(server.id),
+                        ))
                     .toList(),
               ),
           ],

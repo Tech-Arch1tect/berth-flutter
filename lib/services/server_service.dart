@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../models/server.dart';
+import '../models/stack_statistics.dart';
 import 'api_client.dart';
 
 class ServerService {
@@ -100,6 +101,27 @@ class ServerService {
       return false;
     } else {
       throw Exception('Failed to test connection: ${response.statusCode}');
+    }
+  }
+
+  Future<StackStatistics?> getServerStatistics(int serverId) async {
+    try {
+      final response = await _apiClient.get('/api/v1/servers/$serverId/statistics');
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        
+        if (data['statistics'] != null) {
+          final statistics = StackStatistics.fromJson(data['statistics']);
+          return statistics;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
   }
 }
