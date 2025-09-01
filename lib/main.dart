@@ -50,7 +50,7 @@ class _AppInitializerState extends State<AppInitializer> {
   @override
   void initState() {
     super.initState();
-    _apiClient = ApiClient();
+    _apiClient = ApiClient(skipSslVerification: true);
     _authService = AuthService(_apiClient);
     _stackService = StackService(_apiClient);
     _serverService = ServerService(_apiClient);
@@ -63,6 +63,7 @@ class _AppInitializerState extends State<AppInitializer> {
     
     if (_configService.isConfigured) {
       _apiClient.setBaseUrl(_configService.serverUrl!);
+      _apiClient.updateSslVerification(_configService.skipSslVerification);
       
       await _authService.checkAuthStatus();
     }

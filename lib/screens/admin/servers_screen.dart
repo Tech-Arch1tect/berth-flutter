@@ -355,7 +355,7 @@ class _ServersScreenState extends State<ServersScreen> {
                       ),
                     ),
                   ),
-                  if (server.useHttps) ...[
+                  if (server.skipSslVerification) ...[
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -373,7 +373,7 @@ class _ServersScreenState extends State<ServersScreen> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'HTTPS',
+                            'No SSL Verification',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -433,7 +433,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
   late final TextEditingController _hostController;
   late final TextEditingController _portController;
   late final TextEditingController _accessTokenController;
-  late bool _useHttps;
+  late bool _skipSslVerification;
   late bool _isActive;
   bool _isLoading = false;
   late ServerService _serverService;
@@ -448,7 +448,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
     _hostController = TextEditingController(text: server?.host ?? '');
     _portController = TextEditingController(text: (server?.port ?? 8080).toString());
     _accessTokenController = TextEditingController();
-    _useHttps = server?.useHttps ?? false;
+    _skipSslVerification = server?.skipSslVerification ?? true;
     _isActive = server?.isActive ?? true;
   }
 
@@ -474,7 +474,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
           port: int.parse(_portController.text.trim()),
-          useHttps: _useHttps,
+          skipSslVerification: _skipSslVerification,
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
         );
@@ -485,7 +485,7 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
           port: int.parse(_portController.text.trim()),
-          useHttps: _useHttps,
+          skipSslVerification: _skipSslVerification,
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
         );
@@ -602,12 +602,12 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
                 ),
                 const SizedBox(height: 16),
                 SwitchListTile(
-                  title: const Text('Use HTTPS'),
+                  title: const Text('Skip SSL Verification'),
                   subtitle: const Text('Enable secure connection'),
-                  value: _useHttps,
+                  value: _skipSslVerification,
                   onChanged: (value) {
                     setState(() {
-                      _useHttps = value;
+                      _skipSslVerification = value;
                     });
                   },
                 ),

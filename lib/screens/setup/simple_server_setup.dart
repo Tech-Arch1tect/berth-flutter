@@ -12,7 +12,8 @@ class SimpleServerSetupScreen extends StatefulWidget {
 }
 
 class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
-  final _urlController = TextEditingController(text: 'http://localhost:8080');
+  final _urlController = TextEditingController(text: 'https://localhost:8080');
+  bool _skipSslVerification = true;
 
   @override
   void dispose() {
@@ -27,10 +28,11 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
     final apiClient = context.read<ApiClient>();
     final colorScheme = Theme.of(context).colorScheme;
     
-    final success = await configService.setServerUrl(url);
+    final success = await configService.setServerUrl(url, skipSslVerification: _skipSslVerification);
     
     if (success && mounted) {
       apiClient.setBaseUrl(url);
+      apiClient.updateSslVerification(_skipSslVerification);
       context.go('/login');
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,9 +65,23 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
               controller: _urlController,
               decoration: const InputDecoration(
                 labelText: 'Server URL',
-                hintText: 'http://localhost:8080',
+                hintText: 'https://localhost:8080',
                 border: OutlineInputBorder(),
               ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            CheckboxListTile(
+              title: const Text('Skip SSL certificate verification'),
+              subtitle: const Text('Enable this for self-signed certificates'),
+              value: _skipSslVerification,
+              onChanged: (bool? value) {
+                setState(() {
+                  _skipSslVerification = value ?? true;
+                });
+              },
+              controlAffinity: ListTileControlAffinity.leading,
             ),
             
             const SizedBox(height: 16),
@@ -80,9 +96,9 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
             Wrap(
               spacing: 8,
               children: [
+                'https://localhost:8080',
                 'http://localhost:8080',
-                'https://localhost:8443',
-                'http://192.168.1.100:8080',
+                'https://192.168.1.100:8080',
               ].map((url) => ElevatedButton(
                 onPressed: () {
                   setState(() {

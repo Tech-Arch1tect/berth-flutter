@@ -41,7 +41,7 @@ class TerminalModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final terminalService = TerminalService(context.read());
+    final terminalService = TerminalService(context.read(), context.read());
 
     return Provider<TerminalService>.value(
       value: terminalService,

@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../models/websocket_message.dart';
 import 'api_client.dart';
+import 'config_service.dart';
 
 class WebSocketService {
   final ApiClient _apiClient;
+  final ConfigService _configService;
   WebSocketChannel? _channel;
   StreamController<Map<String, dynamic>>? _messageController;
   Timer? _reconnectTimer;
@@ -23,7 +26,7 @@ class WebSocketService {
   final StreamController<WebSocketConnectionStatus> _statusController = 
       StreamController<WebSocketConnectionStatus>.broadcast();
 
-  WebSocketService(this._apiClient);
+  WebSocketService(this._apiClient, this._configService);
 
   WebSocketConnectionStatus get connectionStatus => _status;
   bool get isConnected => _status == WebSocketConnectionStatus.connected;
@@ -51,10 +54,19 @@ class WebSocketService {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      _channel = IOWebSocketChannel.connect(
-        uri,
-        headers: headers,
-      );
+      if (_configService.skipSslVerification) {
+        final webSocket = await WebSocket.connect(
+          uri.toString(),
+          headers: headers,
+          customClient: HttpClient()..badCertificateCallback = (cert, host, port) => true,
+        );
+        _channel = IOWebSocketChannel(webSocket);
+      } else {
+        _channel = IOWebSocketChannel.connect(
+          uri,
+          headers: headers,
+        );
+      }
 
       _messageController = StreamController<Map<String, dynamic>>.broadcast();
 

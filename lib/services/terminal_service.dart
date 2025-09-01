@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
@@ -7,9 +8,11 @@ import 'package:web_socket_channel/status.dart' as status;
 import '../models/terminal_message.dart';
 import '../models/websocket_message.dart';
 import 'api_client.dart';
+import 'config_service.dart';
 
 class TerminalService {
   final ApiClient _apiClient;
+  final ConfigService _configService;
   WebSocketChannel? _channel;
   StreamController<TerminalOutputMessage>? _outputController;
   StreamController<TerminalSession>? _sessionController;
@@ -31,7 +34,7 @@ class TerminalService {
   final StreamController<WebSocketConnectionStatus> _statusController = 
       StreamController<WebSocketConnectionStatus>.broadcast();
 
-  TerminalService(this._apiClient);
+  TerminalService(this._apiClient, this._configService);
 
   // Getters
   WebSocketConnectionStatus get connectionStatus => _status;
@@ -63,10 +66,19 @@ class TerminalService {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      _channel = IOWebSocketChannel.connect(
-        uri,
-        headers: headers,
-      );
+      if (_configService.skipSslVerification) {
+        final webSocket = await WebSocket.connect(
+          uri.toString(),
+          headers: headers,
+          customClient: HttpClient()..badCertificateCallback = (cert, host, port) => true,
+        );
+        _channel = IOWebSocketChannel(webSocket);
+      } else {
+        _channel = IOWebSocketChannel.connect(
+          uri,
+          headers: headers,
+        );
+      }
 
       // Close existing controllers if they exist to prevent resource leaks
       _outputController?.close();

@@ -9,6 +9,7 @@ import '../services/stack_service.dart';
 import '../services/server_service.dart';
 import '../services/websocket_service.dart';
 import '../services/stack_websocket_service.dart';
+import '../services/config_service.dart';
 import '../widgets/service_card.dart';
 import '../widgets/operations_modal.dart';
 import '../widgets/stack_quick_actions.dart';
@@ -128,7 +129,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     if (_stackDetails == null) return;
     
     final apiClient = context.read<ApiClient>();
-    final operationsService = OperationsService(apiClient);
+    final configService = context.read<ConfigService>();
+    final operationsService = OperationsService(apiClient, configService);
     
     showDialog(
       context: context,
@@ -170,7 +172,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     if (_isQuickOperationRunning) return;
     
     final apiClient = context.read<ApiClient>();
-    _operationsService ??= OperationsService(apiClient);
+    final configService = context.read<ConfigService>();
+    _operationsService ??= OperationsService(apiClient, configService);
     
     final isStackOperation = request.services.isEmpty;
     final operationKey = isStackOperation 
@@ -378,7 +381,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   Future<void> _initWebSocket() async {
     try {
       final apiClient = context.read<ApiClient>();
-      final webSocketService = WebSocketService(apiClient);
+      final configService = context.read<ConfigService>();
+      final webSocketService = WebSocketService(apiClient, configService);
       
       _wsService = StackWebSocketService(
         webSocketService,

@@ -1,18 +1,40 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import '../config/app_config.dart';
 
 class ApiClient {
-  final http.Client _client;
+  http.Client _client;
   String? _baseUrl;
   String? _authToken;
   Function? _onTokenRefresh;
+  bool _skipSslVerification;
   
-  ApiClient() : _client = http.Client();
+  ApiClient({bool skipSslVerification = true}) 
+    : _skipSslVerification = skipSslVerification,
+      _client = _createHttpClient(skipSslVerification);
+  
+  static http.Client _createHttpClient(bool skipSslVerification) {
+    if (skipSslVerification) {
+      final httpClient = HttpClient()
+        ..badCertificateCallback = (cert, host, port) => true;
+      return IOClient(httpClient);
+    } else {
+      return http.Client();
+    }
+  }
 
   void setBaseUrl(String url) {
     _baseUrl = url;
+  }
+  
+  void updateSslVerification(bool skipSslVerification) {
+    if (_skipSslVerification != skipSslVerification) {
+      _skipSslVerification = skipSslVerification;
+      _client.close();
+      _client = _createHttpClient(skipSslVerification);
+    }
   }
 
   void setAuthToken(String token) {

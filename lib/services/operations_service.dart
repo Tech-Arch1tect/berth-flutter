@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../models/operation.dart';
 import 'api_client.dart';
+import 'config_service.dart';
 
 class OperationsService {
   final ApiClient _apiClient;
+  final ConfigService _configService;
   WebSocketChannel? _channel;
   StreamController<StreamMessage>? _messageController;
   StreamController<bool>? _connectionController;
@@ -19,7 +22,7 @@ class OperationsService {
   Timer? _reconnectTimer;
   Timer? _pingTimer;
 
-  OperationsService(this._apiClient) {
+  OperationsService(this._apiClient, this._configService) {
     _messageController = StreamController<StreamMessage>.broadcast();
     _connectionController = StreamController<bool>.broadcast();
     _errorController = StreamController<String>.broadcast();
@@ -59,10 +62,19 @@ class OperationsService {
         'Authorization': 'Bearer $token',
       };
       
-      _channel = IOWebSocketChannel.connect(
-        uri,
-        headers: headers,
-      );
+      if (_configService.skipSslVerification) {
+        final webSocket = await WebSocket.connect(
+          uri.toString(),
+          headers: headers,
+          customClient: HttpClient()..badCertificateCallback = (cert, host, port) => true,
+        );
+        _channel = IOWebSocketChannel(webSocket);
+      } else {
+        _channel = IOWebSocketChannel.connect(
+          uri,
+          headers: headers,
+        );
+      }
 
       if (_connectionController?.isClosed == false) {
         _connectionController!.add(false); 

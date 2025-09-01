@@ -9,8 +9,8 @@ class Server {
   final String description;
   final String host;
   final int port;
-  @JsonKey(name: 'use_https')
-  final bool useHttps;
+  @JsonKey(name: 'skip_ssl_verification')
+  final bool skipSslVerification;
   @JsonKey(name: 'is_active')
   final bool isActive;
   @JsonKey(name: 'created_at')
@@ -24,15 +24,14 @@ class Server {
     this.description = '',
     required this.host,
     this.port = 8080,
-    this.useHttps = false,
+    this.skipSslVerification = true,
     this.isActive = true,
     this.createdAt,
     this.updatedAt,
   });
 
   String get baseUrl {
-    final protocol = useHttps ? 'https' : 'http';
-    return '$protocol://$host:$port';
+    return 'https://$host:$port';
   }
 
   factory Server.fromJson(Map<String, dynamic> json) => _$ServerFromJson(json);
@@ -44,7 +43,7 @@ class Server {
     String? description,
     String? host,
     int? port,
-    bool? useHttps,
+    bool? skipSslVerification,
     bool? isActive,
     String? createdAt,
     String? updatedAt,
@@ -55,7 +54,7 @@ class Server {
       description: description ?? this.description,
       host: host ?? this.host,
       port: port ?? this.port,
-      useHttps: useHttps ?? this.useHttps,
+      skipSslVerification: skipSslVerification ?? this.skipSslVerification,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -68,7 +67,7 @@ class ServerInput {
   final String name;
   final String host;
   final int port;
-  final bool useHttps;
+  final bool skipSslVerification;
   final String accessToken;
   final bool isActive;
 
@@ -77,7 +76,7 @@ class ServerInput {
     required this.name,
     required this.host,
     this.port = 8080,
-    this.useHttps = false,
+    this.skipSslVerification = true,
     required this.accessToken,
     this.isActive = true,
   });
@@ -87,7 +86,7 @@ class ServerInput {
     'name': name,
     'host': host,
     'port': port,
-    'use_https': useHttps,
+    'skip_ssl_verification': skipSslVerification,
     'access_token': accessToken,
     'is_active': isActive,
   };
