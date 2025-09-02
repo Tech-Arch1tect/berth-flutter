@@ -12,6 +12,8 @@ class Stack {
   final int serverId;
   @JsonKey(name: 'server_name')
   final String serverName;
+  @JsonKey(name: 'is_healthy')
+  final bool isHealthy;
 
   Stack({
     required this.name,
@@ -19,6 +21,7 @@ class Stack {
     required this.composeFile,
     required this.serverId,
     required this.serverName,
+    required this.isHealthy,
   });
 
   factory Stack.fromJson(Map<String, dynamic> json) => _$StackFromJson(json);

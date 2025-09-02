@@ -12,6 +12,7 @@ Stack _$StackFromJson(Map<String, dynamic> json) => Stack(
   composeFile: json['compose_file'] as String,
   serverId: (json['server_id'] as num).toInt(),
   serverName: json['server_name'] as String,
+  isHealthy: json['is_healthy'] as bool,
 );
 
 Map<String, dynamic> _$StackToJson(Stack instance) => <String, dynamic>{
@@ -20,6 +21,7 @@ Map<String, dynamic> _$StackToJson(Stack instance) => <String, dynamic>{
   'compose_file': instance.composeFile,
   'server_id': instance.serverId,
   'server_name': instance.serverName,
+  'is_healthy': instance.isHealthy,
 };
 
 StackDetails _$StackDetailsFromJson(Map<String, dynamic> json) => StackDetails(

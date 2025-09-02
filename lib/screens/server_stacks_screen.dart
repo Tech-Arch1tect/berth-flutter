@@ -282,13 +282,17 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
+                      color: stack.isHealthy 
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'Available',
+                      stack.isHealthy ? 'Healthy' : 'Unhealthy',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.green.shade700,
+                        color: stack.isHealthy 
+                          ? Colors.green.shade700 
+                          : Colors.red.shade700,
                         fontWeight: FontWeight.w500,
                         fontSize: 10,
                       ),

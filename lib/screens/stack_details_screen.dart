@@ -156,6 +156,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         composeFile: _stackDetails!.composeFile,
         serverId: _stackDetails!.serverId,
         serverName: _stackDetails!.serverName,
+        isHealthy: true,
       );
       
       TerminalModal.show(
