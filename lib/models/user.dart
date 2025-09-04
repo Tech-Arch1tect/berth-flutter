@@ -10,6 +10,8 @@ class User {
   final String email;
   @JsonKey(name: 'email_verified_at')
   final String? emailVerifiedAt;
+  @JsonKey(name: 'last_login_at')
+  final String? lastLoginAt;
   @JsonKey(name: 'totp_enabled')
   final bool totpEnabled;
   @JsonKey(name: 'created_at')
@@ -23,6 +25,7 @@ class User {
     required this.username,
     required this.email,
     this.emailVerifiedAt,
+    this.lastLoginAt,
     required this.totpEnabled,
     this.createdAt,
     this.updatedAt,

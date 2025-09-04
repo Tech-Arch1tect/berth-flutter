@@ -330,6 +330,26 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
+  String _formatLastLogin(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays > 0) {
+        return '${difference.inDays}d ago';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours}h ago';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes}m ago';
+      } else {
+        return 'Just now';
+      }
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
   Widget _buildUsersList() {
     if (isLoading) {
       return const Card(
@@ -464,6 +484,35 @@ class _UsersScreenState extends State<UsersScreen> {
                             color: user.totpEnabled 
                                 ? Colors.green.shade700 
                                 : Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Colors.blue.shade700,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          user.lastLoginAt != null 
+                              ? 'Last: ${_formatLastLogin(user.lastLoginAt!)}' 
+                              : 'Never logged in',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue.shade700,
                           ),
                         ),
                       ],
