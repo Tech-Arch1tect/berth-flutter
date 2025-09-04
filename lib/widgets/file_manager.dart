@@ -203,17 +203,28 @@ class _FileManagerState extends State<FileManager> {
       ),
       title: Text(entry.name),
       subtitle: entry.isDirectory 
-        ? const Text('Directory')
-        : Text('${entry.displaySize} • ${_formatDate(entry.modTime)}'),
+        ? Text('Directory • ${entry.mode}')
+        : Text('${entry.displaySize} • ${entry.mode} • ${_formatDate(entry.modTime)}'),
       onTap: entry.isDirectory 
         ? () => _navigateToDirectory(entry.path)
         : () => _showFileOptions(entry),
-      trailing: entry.isDirectory 
-        ? const Icon(Icons.chevron_right)
-        : IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => _showFileOptions(entry),
-          ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (entry.isDirectory) ...[
+            IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () => _showFileOptions(entry),
+            ),
+            const Icon(Icons.chevron_right),
+          ] else ...[
+            IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () => _showFileOptions(entry),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
@@ -318,6 +329,14 @@ class _FileManagerState extends State<FileManager> {
             onTap: () {
               Navigator.pop(context);
               _showCopyDialog(entry);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.lock),
+            title: const Text('Permissions'),
+            onTap: () {
+              Navigator.pop(context);
+              _showChmodDialog(entry);
             },
           ),
           ListTile(
@@ -1208,5 +1227,329 @@ class _FileManagerState extends State<FileManager> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void _showChmodDialog(FileEntry entry) {
+    final octalController = TextEditingController();
+    bool userRead = false;
+    bool userWrite = false;
+    bool userExecute = false;
+    bool groupRead = false;
+    bool groupWrite = false;
+    bool groupExecute = false;
+    bool otherRead = false;
+    bool otherWrite = false;
+    bool otherExecute = false;
+    bool recursive = false;
+
+    _parsePermissions(entry.mode, (permissions) {
+      userRead = permissions['userRead']!;
+      userWrite = permissions['userWrite']!;
+      userExecute = permissions['userExecute']!;
+      groupRead = permissions['groupRead']!;
+      groupWrite = permissions['groupWrite']!;
+      groupExecute = permissions['groupExecute']!;
+      otherRead = permissions['otherRead']!;
+      otherWrite = permissions['otherWrite']!;
+      otherExecute = permissions['otherExecute']!;
+    });
+
+    String octalMode = _calculateOctal(userRead, userWrite, userExecute, groupRead, groupWrite, groupExecute, otherRead, otherWrite, otherExecute);
+    octalController.text = octalMode;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          void updateFromCheckboxes() {
+            octalMode = _calculateOctal(userRead, userWrite, userExecute, groupRead, groupWrite, groupExecute, otherRead, otherWrite, otherExecute);
+            octalController.text = octalMode;
+          }
+
+          void updateFromOctal(String value) {
+            if (value.length == 3 && RegExp(r'^\d{3}$').hasMatch(value)) {
+              final permissions = _parseFromOctal(value);
+              setState(() {
+                userRead = permissions['userRead']!;
+                userWrite = permissions['userWrite']!;
+                userExecute = permissions['userExecute']!;
+                groupRead = permissions['groupRead']!;
+                groupWrite = permissions['groupWrite']!;
+                groupExecute = permissions['groupExecute']!;
+                otherRead = permissions['otherRead']!;
+                otherWrite = permissions['otherWrite']!;
+                otherExecute = permissions['otherExecute']!;
+              });
+            }
+          }
+
+          return AlertDialog(
+            title: Text('Change Permissions - ${entry.name}'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: octalController,
+                    decoration: const InputDecoration(
+                      labelText: 'Octal Notation (e.g., 755)',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    maxLength: 3,
+                    onChanged: (value) {
+                      updateFromOctal(value);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Permissions:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  
+                  _buildPermissionRow('Owner', userRead, userWrite, userExecute, (r, w, x) {
+                    setState(() {
+                      userRead = r;
+                      userWrite = w;
+                      userExecute = x;
+                      updateFromCheckboxes();
+                    });
+                  }),
+                  
+                  _buildPermissionRow('Group', groupRead, groupWrite, groupExecute, (r, w, x) {
+                    setState(() {
+                      groupRead = r;
+                      groupWrite = w;
+                      groupExecute = x;
+                      updateFromCheckboxes();
+                    });
+                  }),
+                  
+                  _buildPermissionRow('Others', otherRead, otherWrite, otherExecute, (r, w, x) {
+                    setState(() {
+                      otherRead = r;
+                      otherWrite = w;
+                      otherExecute = x;
+                      updateFromCheckboxes();
+                    });
+                  }),
+
+                  if (entry.isDirectory) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: recursive,
+                            onChanged: (value) {
+                              setState(() {
+                                recursive = value ?? false;
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Apply recursively',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                                Text(
+                                  'Change permissions for all files and subdirectories',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: octalController.text.length == 3
+                  ? () {
+                      Navigator.pop(context);
+                      _changePermissions(entry, octalController.text, recursive && entry.isDirectory);
+                    }
+                  : null,
+                child: const Text('Change Permissions'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPermissionRow(
+    String label,
+    bool read,
+    bool write,
+    bool execute,
+    Function(bool read, bool write, bool execute) onChanged,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 60,
+            child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Row(
+              children: [
+                _buildPermissionCheckbox('Read', read, (value) => onChanged(value, write, execute)),
+                const SizedBox(width: 16),
+                _buildPermissionCheckbox('Write', write, (value) => onChanged(read, value, execute)),
+                const SizedBox(width: 16),
+                _buildPermissionCheckbox('Execute', execute, (value) => onChanged(read, write, value)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPermissionCheckbox(String label, bool value, Function(bool) onChanged) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: (newValue) => onChanged(newValue ?? false),
+        ),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
+    );
+  }
+
+  void _parsePermissions(String mode, Function(Map<String, bool>) callback) {
+    Map<String, bool> permissions = {
+      'userRead': false,
+      'userWrite': false,
+      'userExecute': false,
+      'groupRead': false,
+      'groupWrite': false,
+      'groupExecute': false,
+      'otherRead': false,
+      'otherWrite': false,
+      'otherExecute': false,
+    };
+
+    if (mode.length >= 9) {
+      final perms = mode.substring(mode.length - 9);
+      permissions['userRead'] = perms[0] == 'r';
+      permissions['userWrite'] = perms[1] == 'w';
+      permissions['userExecute'] = perms[2] == 'x' || perms[2] == 's';
+      permissions['groupRead'] = perms[3] == 'r';
+      permissions['groupWrite'] = perms[4] == 'w';
+      permissions['groupExecute'] = perms[5] == 'x' || perms[5] == 's';
+      permissions['otherRead'] = perms[6] == 'r';
+      permissions['otherWrite'] = perms[7] == 'w';
+      permissions['otherExecute'] = perms[8] == 'x' || perms[8] == 't';
+    } else if (RegExp(r'^\d{3,4}$').hasMatch(mode)) {
+      final octal = mode.length == 3 ? mode : mode.substring(1);
+      permissions = _parseFromOctal(octal);
+    }
+
+    callback(permissions);
+  }
+
+  Map<String, bool> _parseFromOctal(String octal) {
+    if (octal.length != 3) {
+      return {
+        'userRead': false,
+        'userWrite': false,
+        'userExecute': false,
+        'groupRead': false,
+        'groupWrite': false,
+        'groupExecute': false,
+        'otherRead': false,
+        'otherWrite': false,
+        'otherExecute': false,
+      };
+    }
+
+    final userValue = int.parse(octal[0]);
+    final groupValue = int.parse(octal[1]);
+    final otherValue = int.parse(octal[2]);
+
+    return {
+      'userRead': (userValue & 4) != 0,
+      'userWrite': (userValue & 2) != 0,
+      'userExecute': (userValue & 1) != 0,
+      'groupRead': (groupValue & 4) != 0,
+      'groupWrite': (groupValue & 2) != 0,
+      'groupExecute': (groupValue & 1) != 0,
+      'otherRead': (otherValue & 4) != 0,
+      'otherWrite': (otherValue & 2) != 0,
+      'otherExecute': (otherValue & 1) != 0,
+    };
+  }
+
+  String _calculateOctal(bool userRead, bool userWrite, bool userExecute,
+                        bool groupRead, bool groupWrite, bool groupExecute,
+                        bool otherRead, bool otherWrite, bool otherExecute) {
+    final userValue = (userRead ? 4 : 0) + (userWrite ? 2 : 0) + (userExecute ? 1 : 0);
+    final groupValue = (groupRead ? 4 : 0) + (groupWrite ? 2 : 0) + (groupExecute ? 1 : 0);
+    final otherValue = (otherRead ? 4 : 0) + (otherWrite ? 2 : 0) + (otherExecute ? 1 : 0);
+
+    return '$userValue$groupValue$otherValue';
+  }
+
+  Future<void> _changePermissions(FileEntry entry, String mode, bool recursive) async {
+    try {
+      await _filesService.chmodFile(
+        widget.serverId,
+        widget.stackName,
+        ChmodRequest(path: entry.path, mode: mode, recursive: recursive),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              recursive 
+                ? 'Permissions changed recursively for ${entry.name}' 
+                : 'Permissions changed for ${entry.name}',
+            ),
+          ),
+        );
+
+        _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to change permissions for ${entry.name}: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 }

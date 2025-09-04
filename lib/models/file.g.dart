@@ -124,3 +124,16 @@ Map<String, dynamic> _$CopyRequestToJson(CopyRequest instance) =>
       'source_path': instance.sourcePath,
       'target_path': instance.targetPath,
     };
+
+ChmodRequest _$ChmodRequestFromJson(Map<String, dynamic> json) => ChmodRequest(
+  path: json['path'] as String,
+  mode: json['mode'] as String,
+  recursive: json['recursive'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$ChmodRequestToJson(ChmodRequest instance) =>
+    <String, dynamic>{
+      'path': instance.path,
+      'mode': instance.mode,
+      'recursive': instance.recursive,
+    };

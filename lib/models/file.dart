@@ -183,3 +183,19 @@ class CopyRequest {
   factory CopyRequest.fromJson(Map<String, dynamic> json) => _$CopyRequestFromJson(json);
   Map<String, dynamic> toJson() => _$CopyRequestToJson(this);
 }
+
+@JsonSerializable()
+class ChmodRequest {
+  final String path;
+  final String mode;
+  final bool recursive;
+
+  const ChmodRequest({
+    required this.path,
+    required this.mode,
+    this.recursive = false,
+  });
+
+  factory ChmodRequest.fromJson(Map<String, dynamic> json) => _$ChmodRequestFromJson(json);
+  Map<String, dynamic> toJson() => _$ChmodRequestToJson(this);
+}
