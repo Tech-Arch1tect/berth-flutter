@@ -203,8 +203,8 @@ class _FileManagerState extends State<FileManager> {
       ),
       title: Text(entry.name),
       subtitle: entry.isDirectory 
-        ? Text('Directory • ${entry.mode}')
-        : Text('${entry.displaySize} • ${entry.mode} • ${_formatDate(entry.modTime)}'),
+        ? Text('Directory • ${entry.mode} • ${_formatOwnership(entry)}')
+        : Text('${entry.displaySize} • ${entry.mode} • ${_formatOwnership(entry)} • ${_formatDate(entry.modTime)}'),
       onTap: entry.isDirectory 
         ? () => _navigateToDirectory(entry.path)
         : () => _showFileOptions(entry),
@@ -278,6 +278,12 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
+  String _formatOwnership(FileEntry entry) {
+    final ownerPart = entry.owner != null ? '${entry.owner}' : '${entry.ownerId ?? 'unknown'}';
+    final groupPart = entry.group != null ? '${entry.group}' : '${entry.groupId ?? 'unknown'}';
+    return '$ownerPart:$groupPart';
+  }
+
   void _showFileOptions(FileEntry entry) {
     showModalBottomSheet(
       context: context,
@@ -337,6 +343,14 @@ class _FileManagerState extends State<FileManager> {
             onTap: () {
               Navigator.pop(context);
               _showChmodDialog(entry);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Ownership'),
+            onTap: () {
+              Navigator.pop(context);
+              _showChownDialog(entry);
             },
           ),
           ListTile(
@@ -1546,6 +1560,174 @@ class _FileManagerState extends State<FileManager> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to change permissions for ${entry.name}: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showChownDialog(FileEntry entry) {
+    final ownerIdController = TextEditingController(text: entry.ownerId?.toString() ?? '');
+    final groupIdController = TextEditingController(text: entry.groupId?.toString() ?? '');
+    bool recursive = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Change Ownership - ${entry.name}'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Current ownership display
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current Ownership',
+                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text('Owner: ', style: Theme.of(context).textTheme.bodySmall),
+                            Expanded(
+                              child: Text(
+                                entry.owner != null ? '${entry.owner} (${entry.ownerId})' : 'UID ${entry.ownerId ?? 'Unknown'}',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontFamily: 'monospace',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text('Group: ', style: Theme.of(context).textTheme.bodySmall),
+                            Expanded(
+                              child: Text(
+                                entry.group != null ? '${entry.group} (${entry.groupId})' : 'GID ${entry.groupId ?? 'Unknown'}',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontFamily: 'monospace',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Owner input
+                  TextField(
+                    controller: ownerIdController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'New Owner ID',
+                      hintText: 'User ID (leave empty to keep current)',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Group input
+                  TextField(
+                    controller: groupIdController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'New Group ID',
+                      hintText: 'Group ID (leave empty to keep current)',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Recursive option for directories
+                  if (entry.isDirectory)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        ),
+                      ),
+                      child: CheckboxListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Apply recursively'),
+                        subtitle: const Text('Change ownership for all files and subdirectories'),
+                        value: recursive,
+                        onChanged: (value) {
+                          setState(() {
+                            recursive = value ?? false;
+                          });
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: (ownerIdController.text.trim().isNotEmpty || groupIdController.text.trim().isNotEmpty)
+                    ? () {
+                        Navigator.pop(context);
+                        _executeChown(entry, ownerIdController.text.trim(), groupIdController.text.trim(), recursive);
+                      }
+                    : null,
+                child: const Text('Change Ownership'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _executeChown(FileEntry entry, String ownerIdStr, String groupIdStr, bool recursive) async {
+    try {
+      final request = ChownRequest(
+        path: entry.path,
+        ownerId: ownerIdStr.isNotEmpty ? int.tryParse(ownerIdStr) : null,
+        groupId: groupIdStr.isNotEmpty ? int.tryParse(groupIdStr) : null,
+        recursive: recursive && entry.isDirectory,
+      );
+
+      await _filesService.chownFile(widget.serverId, widget.stackName, request);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ownership changed successfully for ${entry.name}'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+        _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to change ownership for ${entry.name}: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

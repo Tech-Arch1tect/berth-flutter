@@ -13,6 +13,10 @@ FileEntry _$FileEntryFromJson(Map<String, dynamic> json) => FileEntry(
   isDirectory: json['is_directory'] as bool,
   modTime: DateTime.parse(json['mod_time'] as String),
   mode: json['mode'] as String,
+  owner: json['owner'] as String?,
+  group: json['group'] as String?,
+  ownerId: (json['owner_id'] as num?)?.toInt(),
+  groupId: (json['group_id'] as num?)?.toInt(),
   extension: json['extension'] as String?,
 );
 
@@ -23,6 +27,10 @@ Map<String, dynamic> _$FileEntryToJson(FileEntry instance) => <String, dynamic>{
   'is_directory': instance.isDirectory,
   'mod_time': instance.modTime.toIso8601String(),
   'mode': instance.mode,
+  'owner': instance.owner,
+  'group': instance.group,
+  'owner_id': instance.ownerId,
+  'group_id': instance.groupId,
   'extension': instance.extension,
 };
 
@@ -135,5 +143,20 @@ Map<String, dynamic> _$ChmodRequestToJson(ChmodRequest instance) =>
     <String, dynamic>{
       'path': instance.path,
       'mode': instance.mode,
+      'recursive': instance.recursive,
+    };
+
+ChownRequest _$ChownRequestFromJson(Map<String, dynamic> json) => ChownRequest(
+  path: json['path'] as String,
+  ownerId: (json['owner_id'] as num?)?.toInt(),
+  groupId: (json['group_id'] as num?)?.toInt(),
+  recursive: json['recursive'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$ChownRequestToJson(ChownRequest instance) =>
+    <String, dynamic>{
+      'path': instance.path,
+      'owner_id': instance.ownerId,
+      'group_id': instance.groupId,
       'recursive': instance.recursive,
     };

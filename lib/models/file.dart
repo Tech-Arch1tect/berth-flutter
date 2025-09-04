@@ -12,6 +12,12 @@ class FileEntry {
   @JsonKey(name: 'mod_time')
   final DateTime modTime;
   final String mode;
+  final String? owner;
+  final String? group;
+  @JsonKey(name: 'owner_id')
+  final int? ownerId;
+  @JsonKey(name: 'group_id')
+  final int? groupId;
   final String? extension;
 
   const FileEntry({
@@ -21,6 +27,10 @@ class FileEntry {
     required this.isDirectory,
     required this.modTime,
     required this.mode,
+    this.owner,
+    this.group,
+    this.ownerId,
+    this.groupId,
     this.extension,
   });
 
@@ -198,4 +208,24 @@ class ChmodRequest {
 
   factory ChmodRequest.fromJson(Map<String, dynamic> json) => _$ChmodRequestFromJson(json);
   Map<String, dynamic> toJson() => _$ChmodRequestToJson(this);
+}
+
+@JsonSerializable()
+class ChownRequest {
+  final String path;
+  @JsonKey(name: 'owner_id')
+  final int? ownerId;
+  @JsonKey(name: 'group_id')  
+  final int? groupId;
+  final bool recursive;
+
+  const ChownRequest({
+    required this.path,
+    this.ownerId,
+    this.groupId,
+    this.recursive = false,
+  });
+
+  factory ChownRequest.fromJson(Map<String, dynamic> json) => _$ChownRequestFromJson(json);
+  Map<String, dynamic> toJson() => _$ChownRequestToJson(this);
 }

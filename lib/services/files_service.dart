@@ -184,4 +184,22 @@ class FilesService {
       throw Exception(errorData['error'] ?? 'Failed to change permissions: ${response.statusCode}');
     }
   }
+
+  Future<void> chownFile(int serverId, String stackName, ChownRequest request) async {
+    final response = await _apiClient.post('/api/v1/servers/$serverId/stacks/$stackName/files/chown', 
+      body: request.toJson());
+
+    if (response.statusCode == 200) {
+      return;
+    } else if (response.statusCode == 401) {
+      throw Exception('Authentication failed');
+    } else if (response.statusCode == 403) {
+      throw Exception('Access denied - insufficient permissions');
+    } else if (response.statusCode == 404) {
+      throw Exception('File not found');
+    } else {
+      final Map<String, dynamic> errorData = json.decode(response.body);
+      throw Exception(errorData['error'] ?? 'Failed to change ownership: ${response.statusCode}');
+    }
+  }
 }
