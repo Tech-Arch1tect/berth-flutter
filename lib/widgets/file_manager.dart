@@ -916,10 +916,8 @@ class _FileManagerState extends State<FileManager> {
         final groupIdController = TextEditingController();
         bool showAdvanced = false;
 
-        // Load smart defaults before showing dialog
         final stats = await _loadSmartDefaults(_currentPath);
         
-        // Set defaults based on stats or fallback values
         if (stats != null) {
           modeController.text = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
           ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
@@ -968,8 +966,7 @@ class _FileManagerState extends State<FileManager> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Advanced options toggle
-                      TextButton.icon(
+                          TextButton.icon(
                         onPressed: () {
                           setState(() {
                             showAdvanced = !showAdvanced;
@@ -1097,15 +1094,38 @@ class _FileManagerState extends State<FileManager> {
             uploadPath,
             ioFile,
             file.name,
-            mode: mode.isNotEmpty ? mode : null,
-            ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
-            groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
           );
+
+          final filePath = uploadPath.isEmpty ? file.name : '$uploadPath/${file.name}';
+          
+          if (mode.isNotEmpty) {
+            await _filesService.chmodFile(
+              widget.serverId,
+              widget.stackName,
+              ChmodRequest(
+                path: filePath,
+                mode: mode,
+                recursive: false,
+              ),
+            );
+          }
+
+          if (ownerId.isNotEmpty || groupId.isNotEmpty) {
+            await _filesService.chownFile(
+              widget.serverId,
+              widget.stackName,
+              ChownRequest(
+                path: filePath,
+                ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
+                groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
+                recursive: false,
+              ),
+            );
+          }
           successCount++;
         }
       } catch (e) {
         errorCount++;
-        debugPrint('Failed to upload ${file.name}: $e');
       }
 
       if (mounted) {
@@ -1164,10 +1184,8 @@ class _FileManagerState extends State<FileManager> {
     final groupIdController = TextEditingController();
     bool showAdvanced = false;
 
-    // Load smart defaults before showing dialog
     final stats = await _loadSmartDefaults(_currentPath);
     
-    // Set defaults based on stats or fallback values
     if (stats != null) {
       final defaultMode = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
       modeController.text = defaultMode;
@@ -1210,7 +1228,6 @@ class _FileManagerState extends State<FileManager> {
                   ),
                   const SizedBox(height: 16),
                   
-                  // Advanced options toggle
                   TextButton.icon(
                     onPressed: () {
                       setState(() {
@@ -1312,10 +1329,8 @@ class _FileManagerState extends State<FileManager> {
     final groupIdController = TextEditingController();
     bool showAdvanced = false;
 
-    // Load smart defaults before showing dialog
     final stats = await _loadSmartDefaults(_currentPath);
     
-    // Set defaults based on stats or fallback values
     if (stats != null) {
       modeController.text = stats.mostCommonMode ?? '755';
       ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
@@ -1357,7 +1372,6 @@ class _FileManagerState extends State<FileManager> {
                   ),
                   const SizedBox(height: 16),
                   
-                  // Advanced options toggle
                   TextButton.icon(
                     onPressed: () {
                       setState(() {

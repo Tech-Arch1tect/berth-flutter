@@ -126,19 +126,12 @@ class FilesService {
     }
   }
 
-  Future<void> uploadFile(int serverId, String stackName, String path, File file, String filename, {String? mode, int? ownerId, int? groupId}) async {
+  Future<void> uploadFile(int serverId, String stackName, String path, File file, String filename) async {
     final Map<String, String> fields = {};
-    if (mode != null && mode.isNotEmpty) {
-      fields['mode'] = mode;
-    }
-    if (ownerId != null) {
-      fields['owner_id'] = ownerId.toString();
-    }
-    if (groupId != null) {
-      fields['group_id'] = groupId.toString();
-    }
+    final filePath = path.isEmpty ? filename : '$path/$filename';
+    fields['path'] = filePath;
 
-    final response = await _apiClient.postMultipartWithFields('/api/v1/servers/$serverId/stacks/$stackName/files/upload?path=${Uri.encodeComponent(path)}', file, filename, fields);
+    final response = await _apiClient.postMultipartWithFields('/api/v1/servers/$serverId/stacks/$stackName/files/upload', file, filename, fields);
 
     if (response.statusCode == 200) {
       return;
