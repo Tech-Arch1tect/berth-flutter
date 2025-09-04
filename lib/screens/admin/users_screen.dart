@@ -434,6 +434,43 @@ class _UsersScreenState extends State<UsersScreen> {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: user.totpEnabled 
+                          ? Colors.green.shade100 
+                          : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          user.totpEnabled ? Icons.shield : Icons.shield_outlined,
+                          size: 14,
+                          color: user.totpEnabled 
+                              ? Colors.green.shade700 
+                              : Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          user.totpEnabled ? '2FA Enabled' : '2FA Disabled',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: user.totpEnabled 
+                                ? Colors.green.shade700 
+                                : Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               if (user.roles?.isNotEmpty == true) ...[
                 const SizedBox(height: 8),
                 Wrap(
