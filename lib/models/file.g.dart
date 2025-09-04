@@ -87,6 +87,9 @@ WriteFileRequest _$WriteFileRequestFromJson(Map<String, dynamic> json) =>
       path: json['path'] as String,
       content: json['content'] as String,
       encoding: json['encoding'] as String? ?? 'utf-8',
+      mode: json['mode'] as String?,
+      ownerId: (json['owner_id'] as num?)?.toInt(),
+      groupId: (json['group_id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$WriteFileRequestToJson(WriteFileRequest instance) =>
@@ -94,15 +97,28 @@ Map<String, dynamic> _$WriteFileRequestToJson(WriteFileRequest instance) =>
       'path': instance.path,
       'content': instance.content,
       'encoding': instance.encoding,
+      'mode': instance.mode,
+      'owner_id': instance.ownerId,
+      'group_id': instance.groupId,
     };
 
 CreateDirectoryRequest _$CreateDirectoryRequestFromJson(
   Map<String, dynamic> json,
-) => CreateDirectoryRequest(path: json['path'] as String);
+) => CreateDirectoryRequest(
+  path: json['path'] as String,
+  mode: json['mode'] as String?,
+  ownerId: (json['owner_id'] as num?)?.toInt(),
+  groupId: (json['group_id'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$CreateDirectoryRequestToJson(
   CreateDirectoryRequest instance,
-) => <String, dynamic>{'path': instance.path};
+) => <String, dynamic>{
+  'path': instance.path,
+  'mode': instance.mode,
+  'owner_id': instance.ownerId,
+  'group_id': instance.groupId,
+};
 
 DeleteRequest _$DeleteRequestFromJson(Map<String, dynamic> json) =>
     DeleteRequest(path: json['path'] as String);
@@ -159,4 +175,24 @@ Map<String, dynamic> _$ChownRequestToJson(ChownRequest instance) =>
       'owner_id': instance.ownerId,
       'group_id': instance.groupId,
       'recursive': instance.recursive,
+    };
+
+DirectoryStats _$DirectoryStatsFromJson(Map<String, dynamic> json) =>
+    DirectoryStats(
+      path: json['path'] as String,
+      mostCommonMode: json['most_common_mode'] as String?,
+      mostCommonOwner: (json['most_common_owner'] as num?)?.toInt(),
+      mostCommonGroup: (json['most_common_group'] as num?)?.toInt(),
+      ownerName: json['owner_name'] as String?,
+      groupName: json['group_name'] as String?,
+    );
+
+Map<String, dynamic> _$DirectoryStatsToJson(DirectoryStats instance) =>
+    <String, dynamic>{
+      'path': instance.path,
+      'most_common_mode': instance.mostCommonMode,
+      'most_common_owner': instance.mostCommonOwner,
+      'most_common_group': instance.mostCommonGroup,
+      'owner_name': instance.ownerName,
+      'group_name': instance.groupName,
     };

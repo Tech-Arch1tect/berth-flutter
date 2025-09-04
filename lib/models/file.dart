@@ -127,11 +127,19 @@ class WriteFileRequest {
   final String path;
   final String content;
   final String encoding;
+  final String? mode;
+  @JsonKey(name: 'owner_id')
+  final int? ownerId;
+  @JsonKey(name: 'group_id')
+  final int? groupId;
 
   const WriteFileRequest({
     required this.path,
     required this.content,
     this.encoding = 'utf-8',
+    this.mode,
+    this.ownerId,
+    this.groupId,
   });
 
   factory WriteFileRequest.fromJson(Map<String, dynamic> json) => _$WriteFileRequestFromJson(json);
@@ -141,9 +149,17 @@ class WriteFileRequest {
 @JsonSerializable()
 class CreateDirectoryRequest {
   final String path;
+  final String? mode;
+  @JsonKey(name: 'owner_id')
+  final int? ownerId;
+  @JsonKey(name: 'group_id')
+  final int? groupId;
 
   const CreateDirectoryRequest({
     required this.path,
+    this.mode,
+    this.ownerId,
+    this.groupId,
   });
 
   factory CreateDirectoryRequest.fromJson(Map<String, dynamic> json) => _$CreateDirectoryRequestFromJson(json);
@@ -228,4 +244,31 @@ class ChownRequest {
 
   factory ChownRequest.fromJson(Map<String, dynamic> json) => _$ChownRequestFromJson(json);
   Map<String, dynamic> toJson() => _$ChownRequestToJson(this);
+}
+
+@JsonSerializable()
+class DirectoryStats {
+  final String path;
+  @JsonKey(name: 'most_common_mode')
+  final String? mostCommonMode;
+  @JsonKey(name: 'most_common_owner')
+  final int? mostCommonOwner;
+  @JsonKey(name: 'most_common_group')
+  final int? mostCommonGroup;
+  @JsonKey(name: 'owner_name')
+  final String? ownerName;
+  @JsonKey(name: 'group_name')
+  final String? groupName;
+
+  const DirectoryStats({
+    required this.path,
+    this.mostCommonMode,
+    this.mostCommonOwner,
+    this.mostCommonGroup,
+    this.ownerName,
+    this.groupName,
+  });
+
+  factory DirectoryStats.fromJson(Map<String, dynamic> json) => _$DirectoryStatsFromJson(json);
+  Map<String, dynamic> toJson() => _$DirectoryStatsToJson(this);
 }

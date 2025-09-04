@@ -911,53 +911,151 @@ class _FileManagerState extends State<FileManager> {
       );
 
       if (result != null && result.files.isNotEmpty && mounted) {
+        final modeController = TextEditingController();
+        final ownerIdController = TextEditingController();
+        final groupIdController = TextEditingController();
+        bool showAdvanced = false;
+
+        // Load smart defaults before showing dialog
+        final stats = await _loadSmartDefaults(_currentPath);
+        
+        // Set defaults based on stats or fallback values
+        if (stats != null) {
+          modeController.text = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
+          ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
+          groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+        } else {
+          modeController.text = '644';
+        }
+
+        if (!mounted) return;
+
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Upload Files'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Upload ${result.files.length} file${result.files.length > 1 ? 's' : ''} to:'),
-                const SizedBox(height: 8),
-                Text(
-                  _currentPath.isEmpty ? 'Root directory' : _currentPath,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: result.files.map((file) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Text(
-                          '• ${file.name}',
-                          style: Theme.of(context).textTheme.bodySmall,
+          builder: (context) => StatefulBuilder(
+            builder: (context, setState) {
+
+              return AlertDialog(
+                title: const Text('Upload Files'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Upload ${result.files.length} file${result.files.length > 1 ? 's' : ''} to:'),
+                      const SizedBox(height: 8),
+                      Text(
+                        _currentPath.isEmpty ? 'Root directory' : _currentPath,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                      )).toList(),
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 120),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: result.files.map((file) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Text(
+                                '• ${file.name}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            )).toList(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Advanced options toggle
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            showAdvanced = !showAdvanced;
+                          });
+                        },
+                        icon: Icon(showAdvanced ? Icons.expand_less : Icons.expand_more),
+                        label: const Text('Permissions & Ownership'),
+                      ),
+
+                      if (showAdvanced) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                controller: modeController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Permissions (octal)',
+                                  hintText: '644',
+                                  border: OutlineInputBorder(),
+                                  helperText: 'Leave empty to use default permissions',
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                              const SizedBox(height: 12),
+                              
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: ownerIdController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Owner ID',
+                                        hintText: '1000',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: groupIdController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Group ID',
+                                        hintText: '1000',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Leave empty to use server defaults',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _uploadFiles(result.files);
-                },
-                child: const Text('Upload'),
-              ),
-            ],
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _uploadFilesWithOptions(result.files, modeController.text.trim(), ownerIdController.text.trim(), groupIdController.text.trim());
+                    },
+                    child: const Text('Upload'),
+                  ),
+                ],
+              );
+            },
           ),
         );
       }
@@ -966,7 +1064,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _uploadFiles(List<PlatformFile> files) async {
+  Future<void> _uploadFilesWithOptions(List<PlatformFile> files, String mode, String ownerId, String groupId) async {
     int successCount = 0;
     int errorCount = 0;
 
@@ -999,6 +1097,9 @@ class _FileManagerState extends State<FileManager> {
             uploadPath,
             ioFile,
             file.name,
+            mode: mode.isNotEmpty ? mode : null,
+            ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
+            groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
           );
           successCount++;
         }
@@ -1056,103 +1157,326 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  void _showCreateFileDialog() {
+  void _showCreateFileDialog() async {
     final controller = TextEditingController();
+    final modeController = TextEditingController();
+    final ownerIdController = TextEditingController();
+    final groupIdController = TextEditingController();
+    bool showAdvanced = false;
+
+    // Load smart defaults before showing dialog
+    final stats = await _loadSmartDefaults(_currentPath);
     
+    // Set defaults based on stats or fallback values
+    if (stats != null) {
+      final defaultMode = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
+      modeController.text = defaultMode;
+      ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
+      groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+    } else {
+      modeController.text = '644';
+    }
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Create New File'),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: 'File name',
-            border: const OutlineInputBorder(),
-            helperText: _currentPath.isEmpty 
-              ? 'Location: root directory' 
-              : 'Location: $_currentPath',
-          ),
-          autofocus: true,
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              Navigator.pop(context);
-              _createNewFile(value);
-            }
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final fileName = controller.text.trim();
-              if (fileName.isNotEmpty) {
-                Navigator.pop(context);
-                _createNewFile(fileName);
-              }
-            },
-            child: const Text('Create'),
-          ),
-        ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+
+          return AlertDialog(
+            title: const Text('Create New File'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: 'File name',
+                      border: const OutlineInputBorder(),
+                      helperText: _currentPath.isEmpty 
+                        ? 'Location: root directory' 
+                        : 'Location: $_currentPath',
+                    ),
+                    autofocus: true,
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Navigator.pop(context);
+                        _createNewFileWithOptions(value, modeController.text.trim(), ownerIdController.text.trim(), groupIdController.text.trim());
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Advanced options toggle
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        showAdvanced = !showAdvanced;
+                      });
+                    },
+                    icon: Icon(showAdvanced ? Icons.expand_less : Icons.expand_more),
+                    label: const Text('Permissions & Ownership'),
+                  ),
+
+                  if (showAdvanced) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: modeController,
+                            decoration: const InputDecoration(
+                              labelText: 'Permissions (octal)',
+                              hintText: '644',
+                              border: OutlineInputBorder(),
+                              helperText: 'Leave empty to use default permissions',
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: ownerIdController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Owner ID',
+                                    hintText: '1000',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: TextField(
+                                  controller: groupIdController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Group ID',
+                                    hintText: '1000',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Leave empty to use server defaults',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  final fileName = controller.text.trim();
+                  if (fileName.isNotEmpty) {
+                    Navigator.pop(context);
+                    _createNewFileWithOptions(fileName, modeController.text.trim(), ownerIdController.text.trim(), groupIdController.text.trim());
+                  }
+                },
+                child: const Text('Create'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  void _showCreateDirectoryDialog() {
+  void _showCreateDirectoryDialog() async {
     final controller = TextEditingController();
+    final modeController = TextEditingController();
+    final ownerIdController = TextEditingController();
+    final groupIdController = TextEditingController();
+    bool showAdvanced = false;
+
+    // Load smart defaults before showing dialog
+    final stats = await _loadSmartDefaults(_currentPath);
     
+    // Set defaults based on stats or fallback values
+    if (stats != null) {
+      modeController.text = stats.mostCommonMode ?? '755';
+      ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
+      groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+    } else {
+      modeController.text = '755';
+    }
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Create New Directory'),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: 'Directory name',
-            border: const OutlineInputBorder(),
-            helperText: _currentPath.isEmpty 
-              ? 'Location: root directory' 
-              : 'Location: $_currentPath',
-          ),
-          autofocus: true,
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              Navigator.pop(context);
-              _createNewDirectory(value);
-            }
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final dirName = controller.text.trim();
-              if (dirName.isNotEmpty) {
-                Navigator.pop(context);
-                _createNewDirectory(dirName);
-              }
-            },
-            child: const Text('Create'),
-          ),
-        ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+
+          return AlertDialog(
+            title: const Text('Create New Directory'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      labelText: 'Directory name',
+                      border: const OutlineInputBorder(),
+                      helperText: _currentPath.isEmpty 
+                        ? 'Location: root directory' 
+                        : 'Location: $_currentPath',
+                    ),
+                    autofocus: true,
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Navigator.pop(context);
+                        _createNewDirectoryWithOptions(value, modeController.text.trim(), ownerIdController.text.trim(), groupIdController.text.trim());
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Advanced options toggle
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        showAdvanced = !showAdvanced;
+                      });
+                    },
+                    icon: Icon(showAdvanced ? Icons.expand_less : Icons.expand_more),
+                    label: const Text('Permissions & Ownership'),
+                  ),
+
+                  if (showAdvanced) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: modeController,
+                            decoration: const InputDecoration(
+                              labelText: 'Permissions (octal)',
+                              hintText: '755',
+                              border: OutlineInputBorder(),
+                              helperText: 'Leave empty to use default permissions',
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: ownerIdController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Owner ID',
+                                    hintText: '1000',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: TextField(
+                                  controller: groupIdController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Group ID',
+                                    hintText: '1000',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Leave empty to use server defaults',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  final dirName = controller.text.trim();
+                  if (dirName.isNotEmpty) {
+                    Navigator.pop(context);
+                    _createNewDirectoryWithOptions(dirName, modeController.text.trim(), ownerIdController.text.trim(), groupIdController.text.trim());
+                  }
+                },
+                child: const Text('Create'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Future<void> _createNewFile(String fileName) async {
+  Future<DirectoryStats?> _loadSmartDefaults(String path) async {
+    try {
+      return await _filesService.getDirectoryStats(
+        widget.serverId,
+        widget.stackName,
+        path.isEmpty ? null : path,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> _createNewFileWithOptions(String fileName, String mode, String ownerId, String groupId) async {
     final filePath = _currentPath.isEmpty ? fileName : '$_currentPath/$fileName';
     
     try {
-      await _filesService.writeFile(
-        widget.serverId,
-        widget.stackName,
-        WriteFileRequest(path: filePath, content: ''),
+      final request = WriteFileRequest(
+        path: filePath,
+        content: '',
+        mode: mode.isNotEmpty ? mode : null,
+        ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
+        groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
       );
+
+      await _filesService.writeFile(widget.serverId, widget.stackName, request);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1173,15 +1497,18 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _createNewDirectory(String dirName) async {
+  Future<void> _createNewDirectoryWithOptions(String dirName, String mode, String ownerId, String groupId) async {
     final dirPath = _currentPath.isEmpty ? dirName : '$_currentPath/$dirName';
     
     try {
-      await _filesService.createDirectory(
-        widget.serverId,
-        widget.stackName,
-        CreateDirectoryRequest(path: dirPath),
+      final request = CreateDirectoryRequest(
+        path: dirPath,
+        mode: mode.isNotEmpty ? mode : null,
+        ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
+        groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
       );
+
+      await _filesService.createDirectory(widget.serverId, widget.stackName, request);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1587,7 +1914,7 @@ class _FileManagerState extends State<FileManager> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -1661,10 +1988,10 @@ class _FileManagerState extends State<FileManager> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                         ),
                       ),
                       child: CheckboxListTile(

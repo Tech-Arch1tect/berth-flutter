@@ -126,8 +126,19 @@ class FilesService {
     }
   }
 
-  Future<void> uploadFile(int serverId, String stackName, String path, File file, String filename) async {
-    final response = await _apiClient.postMultipart('/api/v1/servers/$serverId/stacks/$stackName/files/upload?path=${Uri.encodeComponent(path)}', file, filename);
+  Future<void> uploadFile(int serverId, String stackName, String path, File file, String filename, {String? mode, int? ownerId, int? groupId}) async {
+    final Map<String, String> fields = {};
+    if (mode != null && mode.isNotEmpty) {
+      fields['mode'] = mode;
+    }
+    if (ownerId != null) {
+      fields['owner_id'] = ownerId.toString();
+    }
+    if (groupId != null) {
+      fields['group_id'] = groupId.toString();
+    }
+
+    final response = await _apiClient.postMultipartWithFields('/api/v1/servers/$serverId/stacks/$stackName/files/upload?path=${Uri.encodeComponent(path)}', file, filename, fields);
 
     if (response.statusCode == 200) {
       return;
@@ -200,6 +211,25 @@ class FilesService {
     } else {
       final Map<String, dynamic> errorData = json.decode(response.body);
       throw Exception(errorData['error'] ?? 'Failed to change ownership: ${response.statusCode}');
+    }
+  }
+
+  Future<DirectoryStats> getDirectoryStats(int serverId, String stackName, [String? path]) async {
+    final queryParam = path != null && path.isNotEmpty ? '?path=${Uri.encodeComponent(path)}' : '';
+    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/files/stats$queryParam');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return DirectoryStats.fromJson(data);
+    } else if (response.statusCode == 401) {
+      throw Exception('Authentication failed');
+    } else if (response.statusCode == 403) {
+      throw Exception('Access denied - insufficient permissions');
+    } else if (response.statusCode == 404) {
+      throw Exception('Directory not found');
+    } else {
+      final Map<String, dynamic> errorData = json.decode(response.body);
+      throw Exception(errorData['error'] ?? 'Failed to get directory stats: ${response.statusCode}');
     }
   }
 }

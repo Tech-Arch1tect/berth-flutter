@@ -233,6 +233,35 @@ class ApiClient {
     return response;
   }
 
+  Future<http.Response> postMultipartWithFields(String endpoint, File file, String filename, Map<String, String> fields, {Map<String, String>? headers}) async {
+    final url = '$baseUrl$endpoint';
+    final requestHeaders = _getHeaders(headers);
+    
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll(requestHeaders);
+    request.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
+    request.fields.addAll(fields);
+    
+    final streamResponse = await _client.send(request);
+    final response = await http.Response.fromStream(streamResponse);
+    
+    if (response.statusCode == 401 && _onTokenRefresh != null) {
+      final refreshSuccess = await _onTokenRefresh!();
+      if (refreshSuccess) {
+        final newHeaders = _getHeaders(headers);
+        final retryRequest = http.MultipartRequest('POST', Uri.parse(url));
+        retryRequest.headers.addAll(newHeaders);
+        retryRequest.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
+        retryRequest.fields.addAll(fields);
+        
+        final retryStreamResponse = await _client.send(retryRequest);
+        return await http.Response.fromStream(retryStreamResponse);
+      }
+    }
+    
+    return response;
+  }
+
   void dispose() {
     _client.close();
   }
