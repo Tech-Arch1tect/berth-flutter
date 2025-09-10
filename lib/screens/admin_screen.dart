@@ -68,6 +68,13 @@ class AdminScreen extends StatelessWidget {
                     route: '/admin/servers',
                     color: Colors.orange,
                   ),
+                  _AdminItem(
+                    icon: Icons.history_rounded,
+                    title: 'Operation Logs',
+                    subtitle: 'View all system operation history',
+                    route: '/admin/operation-logs',
+                    color: Colors.teal,
+                  ),
                 ],
               ),
             ],

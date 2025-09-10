@@ -136,6 +136,13 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 _buildQuickActionButton(
                   context,
+                  'Operation Logs',
+                  Icons.history,
+                  Theme.of(context).colorScheme.secondary,
+                  () => context.go('/operation-logs'),
+                ),
+                _buildQuickActionButton(
+                  context,
                   'Sessions',
                   Icons.devices,
                   Theme.of(context).colorScheme.primary,

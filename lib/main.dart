@@ -20,10 +20,13 @@ import 'screens/admin/users_screen.dart';
 import 'screens/admin/roles_screen.dart';
 import 'screens/admin/servers_screen.dart';
 import 'screens/admin/role_stack_permissions_screen.dart';
+import 'screens/operation_logs_screen.dart';
+import 'screens/admin/operation_logs_screen.dart';
 import 'widgets/navigation_shell.dart';
 import 'services/stack_service.dart';
 import 'services/server_service.dart';
 import 'services/maintenance_service.dart';
+import 'services/operation_log_service.dart';
 import 'screens/server_maintenance_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -46,6 +49,7 @@ class _AppInitializerState extends State<AppInitializer> {
   late final StackService _stackService;
   late final ServerService _serverService;
   late final MaintenanceService _maintenanceService;
+  late final OperationLogService _operationLogService;
 
   @override
   void initState() {
@@ -55,6 +59,7 @@ class _AppInitializerState extends State<AppInitializer> {
     _stackService = StackService(_apiClient);
     _serverService = ServerService(_apiClient);
     _maintenanceService = MaintenanceService(_apiClient);
+    _operationLogService = OperationLogService(_apiClient);
     _initialize();
   }
 
@@ -92,6 +97,7 @@ class _AppInitializerState extends State<AppInitializer> {
       stackService: _stackService,
       serverService: _serverService,
       maintenanceService: _maintenanceService,
+      operationLogService: _operationLogService,
     );
   }
 }
@@ -103,6 +109,7 @@ class BerthApp extends StatelessWidget {
   final StackService stackService;
   final ServerService serverService;
   final MaintenanceService maintenanceService;
+  final OperationLogService operationLogService;
   
   const BerthApp({
     super.key, 
@@ -112,6 +119,7 @@ class BerthApp extends StatelessWidget {
     required this.stackService,
     required this.serverService,
     required this.maintenanceService,
+    required this.operationLogService,
   });
 
   @override
@@ -124,6 +132,7 @@ class BerthApp extends StatelessWidget {
         Provider.value(value: stackService),
         Provider.value(value: serverService),
         Provider.value(value: maintenanceService),
+        Provider.value(value: operationLogService),
       ],
       child: MaterialApp.router(
         title: 'Berth Mobile',
@@ -273,6 +282,13 @@ class BerthApp extends StatelessWidget {
             child: ProfileScreen(),
           ),
         ),
+        GoRoute(
+          path: '/operation-logs',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/operation-logs',
+            child: OperationLogsScreen(),
+          ),
+        ),
 
         // Admin tab routes
         GoRoute(
@@ -301,6 +317,13 @@ class BerthApp extends StatelessWidget {
           builder: (context, state) => const NavigationShell(
             currentRoute: '/admin/servers',
             child: ServersScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/admin/operation-logs',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin/operation-logs',
+            child: AdminOperationLogsScreen(),
           ),
         ),
 
