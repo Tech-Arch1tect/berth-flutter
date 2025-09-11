@@ -22,6 +22,7 @@ import 'screens/admin/servers_screen.dart';
 import 'screens/admin/role_stack_permissions_screen.dart';
 import 'screens/operation_logs_screen.dart';
 import 'screens/admin/operation_logs_screen.dart';
+import 'screens/migration_screen.dart';
 import 'widgets/navigation_shell.dart';
 import 'services/stack_service.dart';
 import 'services/server_service.dart';
@@ -350,6 +351,13 @@ class BerthApp extends StatelessWidget {
               child: RoleStackPermissionsScreen(roleId: roleId),
             );
           },
+        ),
+        GoRoute(
+          path: '/admin/migration',
+          builder: (context, state) => const NavigationShell(
+            currentRoute: '/admin/migration',
+            child: MigrationScreen(),
+          ),
         ),
       ],
     );

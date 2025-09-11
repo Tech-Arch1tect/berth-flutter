@@ -77,6 +77,22 @@ class AdminScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 24),
+
+              _buildAdminSection(
+                context: context,
+                title: 'System',
+                items: [
+                  _AdminItem(
+                    icon: Icons.backup_rounded,
+                    title: 'Data Migration',
+                    subtitle: 'Export and import system configuration',
+                    route: '/admin/migration',
+                    color: Colors.indigo,
+                  ),
+                ],
+              ),
             ],
           ),
         ),

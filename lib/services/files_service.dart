@@ -131,7 +131,7 @@ class FilesService {
     final filePath = path.isEmpty ? filename : '$path/$filename';
     fields['path'] = filePath;
 
-    final response = await _apiClient.postMultipartWithFields('/api/v1/servers/$serverId/stacks/$stackName/files/upload', file, filename, fields);
+    final response = await _apiClient.postMultipartWithFields('/api/v1/servers/$serverId/stacks/$stackName/files/upload', file, 'file', fields);
 
     if (response.statusCode == 200) {
       return;

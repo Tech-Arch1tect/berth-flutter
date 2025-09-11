@@ -233,13 +233,13 @@ class ApiClient {
     return response;
   }
 
-  Future<http.Response> postMultipartWithFields(String endpoint, File file, String filename, Map<String, String> fields, {Map<String, String>? headers}) async {
+  Future<http.Response> postMultipartWithFields(String endpoint, File file, String fieldName, Map<String, String> fields, {Map<String, String>? headers}) async {
     final url = '$baseUrl$endpoint';
     final requestHeaders = _getHeaders(headers);
     
     final request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll(requestHeaders);
-    request.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
+    request.files.add(await http.MultipartFile.fromPath(fieldName, file.path, filename: file.uri.pathSegments.last));
     request.fields.addAll(fields);
     
     final streamResponse = await _client.send(request);
@@ -251,7 +251,7 @@ class ApiClient {
         final newHeaders = _getHeaders(headers);
         final retryRequest = http.MultipartRequest('POST', Uri.parse(url));
         retryRequest.headers.addAll(newHeaders);
-        retryRequest.files.add(await http.MultipartFile.fromPath('file', file.path, filename: filename));
+        retryRequest.files.add(await http.MultipartFile.fromPath(fieldName, file.path, filename: file.uri.pathSegments.last));
         retryRequest.fields.addAll(fields);
         
         final retryStreamResponse = await _client.send(retryRequest);
