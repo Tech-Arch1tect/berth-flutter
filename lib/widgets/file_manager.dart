@@ -5,9 +5,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import '../models/file.dart';
+import '../models/operation.dart';
 import '../services/files_service.dart';
 import '../services/api_client.dart';
+import '../services/operations_service.dart';
+import '../services/config_service.dart';
 import 'file_editor_dialog.dart';
+import 'archive_operation_dialog.dart';
+import 'operations_modal.dart';
 import '../theme/app_theme.dart';
 
 class FileManager extends StatefulWidget {
@@ -320,7 +325,27 @@ class _FileManagerState extends State<FileManager> {
                 _downloadFile(entry);
               },
             ),
+            // Archive extraction for archive files
+            if (ArchiveOperationBuilder.isArchiveFile(entry.name)) ...[
+              ListTile(
+                leading: const Icon(Icons.unarchive),
+                title: const Text('Extract Archive'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showExtractArchiveDialog(entry);
+                },
+              ),
+            ],
           ],
+          // Archive creation option
+          ListTile(
+            leading: const Icon(Icons.archive),
+            title: const Text('Create Archive'),
+            onTap: () {
+              Navigator.pop(context);
+              _showCreateArchiveDialog(entry);
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.drive_file_rename_outline),
             title: const Text('Rename'),
@@ -2069,6 +2094,73 @@ class _FileManagerState extends State<FileManager> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to change ownership for ${entry.name}: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showCreateArchiveDialog(FileEntry? entry) {
+    showDialog(
+      context: context,
+      builder: (context) => ArchiveOperationDialog(
+        operation: 'create',
+        currentPath: _currentPath,
+        selectedFile: entry,
+        onOperationStart: _handleArchiveOperation,
+      ),
+    );
+  }
+
+  void _showExtractArchiveDialog(FileEntry entry) {
+    showDialog(
+      context: context,
+      builder: (context) => ArchiveOperationDialog(
+        operation: 'extract',
+        currentPath: _currentPath,
+        selectedFile: entry,
+        onOperationStart: _handleArchiveOperation,
+      ),
+    );
+  }
+
+  Future<void> _handleArchiveOperation(OperationRequest request) async {
+    try {
+      final apiClient = context.read<ApiClient>();
+      final configService = context.read<ConfigService>();
+      
+      // Show operations modal for real-time feedback
+      final operationsService = OperationsService(apiClient, configService);
+      
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => OperationsModal(
+            serverId: widget.serverId,
+            stackName: widget.stackName,
+            services: [], // Archive operations don't operate on services
+            operationsService: operationsService,
+          ),
+        );
+        
+        // Connect and start the operation
+        await operationsService.connect(widget.serverId, widget.stackName);
+        await operationsService.startOperation(request);
+        
+        // Refresh directory after operation (with delay to allow completion)
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted) {
+            _loadDirectory(_currentPath.isEmpty ? null : _currentPath);
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to start archive operation: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

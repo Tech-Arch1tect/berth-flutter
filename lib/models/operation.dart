@@ -137,3 +137,97 @@ class OperationStatus {
     );
   }
 }
+
+enum ArchiveFormat {
+  zip,
+  tar,
+  tarGz,
+}
+
+class ArchiveOperationBuilder {
+  static List<String> buildCreateArchiveOptions({
+    required ArchiveFormat format,
+    required String outputPath,
+    List<String>? includePaths,
+    List<String>? excludePatterns,
+    String? compression,
+  }) {
+    final options = <String>[];
+    
+    options.addAll(['--format', _getFormatString(format)]);
+    options.addAll(['--output', outputPath]);
+    
+    if (includePaths != null && includePaths.isNotEmpty) {
+      for (final path in includePaths) {
+        options.addAll(['--include', path]);
+      }
+    }
+    
+    if (excludePatterns != null && excludePatterns.isNotEmpty) {
+      for (final pattern in excludePatterns) {
+        options.addAll(['--exclude', pattern]);
+      }
+    }
+    
+    if (compression != null) {
+      options.addAll(['--compression', compression]);
+    }
+    
+    return options;
+  }
+
+  static List<String> buildExtractArchiveOptions({
+    required String archivePath,
+    String? destinationPath,
+    bool overwrite = false,
+    bool createDirs = true,
+  }) {
+    final options = <String>[];
+    
+    options.addAll(['--archive', archivePath]);
+    
+    if (destinationPath != null && destinationPath.isNotEmpty) {
+      options.addAll(['--destination', destinationPath]);
+    }
+    
+    if (overwrite) {
+      options.add('--overwrite');
+    }
+    
+    if (createDirs) {
+      options.add('--create-dirs');
+    }
+    
+    return options;
+  }
+
+  static String _getFormatString(ArchiveFormat format) {
+    switch (format) {
+      case ArchiveFormat.zip:
+        return 'zip';
+      case ArchiveFormat.tar:
+        return 'tar';
+      case ArchiveFormat.tarGz:
+        return 'tar.gz';
+    }
+  }
+
+  static String getFormatDisplayName(ArchiveFormat format) {
+    switch (format) {
+      case ArchiveFormat.zip:
+        return 'ZIP';
+      case ArchiveFormat.tar:
+        return 'TAR';
+      case ArchiveFormat.tarGz:
+        return 'TAR.GZ';
+    }
+  }
+
+  static bool isArchiveFile(String fileName) {
+    final lowerName = fileName.toLowerCase();
+    return lowerName.endsWith('.zip') || 
+           lowerName.endsWith('.tar') || 
+           lowerName.endsWith('.tar.gz') ||
+           lowerName.endsWith('.gz');
+  }
+}

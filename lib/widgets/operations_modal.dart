@@ -62,11 +62,18 @@ class _OperationsModalState extends State<OperationsModal>
     widget.operationsService.messages.listen((message) {
       if (mounted) {
         setState(() {
+          // Check if this is the first message before adding it
+          final isFirstMessage = _operationStatus.logs.isEmpty;
+          
           _operationStatus = _operationStatus.copyWith(
             logs: [..._operationStatus.logs, message],
           );
 
-          
+          // If this is the first message and we're not already on logs tab, switch to it
+          if (isFirstMessage && _tabController.index == 0) {
+            _tabController.animateTo(1);
+          }
+
           if (message.type == 'complete') {
             _operationTimeout?.cancel();
             _operationTimeout = null;

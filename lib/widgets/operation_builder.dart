@@ -33,7 +33,9 @@ class _OperationBuilderState extends State<OperationBuilder>
     'start', 
     'stop',
     'restart',
-    'pull'
+    'pull',
+    'create-archive',
+    'extract-archive'
   ];
 
   final Map<String, List<String>> _availableOptions = {
@@ -43,6 +45,8 @@ class _OperationBuilderState extends State<OperationBuilder>
     'stop': ['-t 10', '-t 30'],
     'restart': ['-t 10', '-t 30'],
     'pull': ['--ignore-pull-failures'],
+    'create-archive': ['--format zip', '--format tar', '--format tar.gz'],
+    'extract-archive': ['--overwrite', '--create-dirs'],
   };
 
   @override
