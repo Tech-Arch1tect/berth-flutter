@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/server.dart';
 import '../models/stack_statistics.dart';
 import 'api_client.dart';
 import 'berth_api_provider.dart';
@@ -12,15 +11,16 @@ class ServerService {
 
   ServerService(this._apiClient, this._berthApiProvider);
 
-  Future<List<Server>> getServers() async {
-    final response = await _apiClient.get('/api/v1/admin/servers');
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List<dynamic> serverList = data['servers'];
-      return serverList.map((json) => Server.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load servers: ${response.statusCode}');
+  Future<List<berth_api.ServerResponse>> getServers() async {
+    try {
+      final response = await _berthApiProvider.adminApi.apiV1AdminServersGet();
+      if (response == null) {
+        throw Exception('Failed to load servers: null response');
+      }
+      return response.data.servers;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[ServerService] getServers: ApiException - code=${e.code}, message=${e.message}');
+      rethrow;
     }
   }
 
@@ -52,65 +52,60 @@ class ServerService {
     }
   }
 
-  Future<Server> getServer(int id) async {
-    final response = await _apiClient.get('/api/v1/admin/servers/$id');
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Server.fromJson(data['server']);
-    } else {
-      throw Exception('Failed to load server: ${response.statusCode}');
+  Future<berth_api.ServerResponse> getServer(int id) async {
+    final servers = await getServers();
+    try {
+      return servers.firstWhere((server) => server.id == id);
+    } catch (e) {
+      throw Exception('Server not found');
     }
   }
 
-  Future<Server> createServer(ServerInput serverInput) async {
-    final response = await _apiClient.post(
-      '/api/v1/admin/servers',
-      body: serverInput.toJson(),
-    );
-    
-    if (response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return Server.fromJson(data['server']);
-    } else {
-      final errorData = json.decode(response.body);
-      throw Exception('Failed to create server: ${errorData['error'] ?? 'Unknown error'}');
+  Future<berth_api.ServerResponse> createServer(berth_api.ServerCreateRequest request) async {
+    try {
+      final response = await _berthApiProvider.adminApi.apiV1AdminServersPost(request);
+      if (response == null) {
+        throw Exception('Failed to create server: null response');
+      }
+      return response.data.server;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[ServerService] createServer: ApiException - code=${e.code}, message=${e.message}');
+      rethrow;
     }
   }
 
-  Future<Server> updateServer(int id, ServerInput serverInput) async {
-    final response = await _apiClient.put(
-      '/api/v1/admin/servers/$id',
-      body: serverInput.toJson(),
-    );
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Server.fromJson(data['server']);
-    } else {
-      final errorData = json.decode(response.body);
-      throw Exception('Failed to update server: ${errorData['error'] ?? 'Unknown error'}');
+  Future<berth_api.ServerResponse> updateServer(int id, berth_api.ServerUpdateRequest request) async {
+    try {
+      final response = await _berthApiProvider.adminApi.apiV1AdminServersIdPut(id, request);
+      if (response == null) {
+        throw Exception('Failed to update server: null response');
+      }
+      return response.data.server;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[ServerService] updateServer: ApiException - code=${e.code}, message=${e.message}');
+      rethrow;
     }
   }
 
   Future<void> deleteServer(int id) async {
-    final response = await _apiClient.delete('/api/v1/admin/servers/$id');
-    
-    if (response.statusCode != 200) {
-      final errorData = json.decode(response.body);
-      throw Exception('Failed to delete server: ${errorData['error'] ?? 'Unknown error'}');
+    try {
+      await _berthApiProvider.adminApi.apiV1AdminServersIdDelete(id);
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[ServerService] deleteServer: ApiException - code=${e.code}, message=${e.message}');
+      rethrow;
     }
   }
 
   Future<bool> testConnection(int id) async {
-    final response = await _apiClient.post('/api/v1/admin/servers/$id/test');
-    
-    if (response.statusCode == 200) {
-      return true;
-    } else if (response.statusCode == 503) {
-      return false;
-    } else {
-      throw Exception('Failed to test connection: ${response.statusCode}');
+    try {
+      final response = await _berthApiProvider.adminApi.apiV1AdminServersIdTestPost(id);
+      return response?.success ?? false;
+    } on berth_api.ApiException catch (e) {
+      if (e.code == 503) {
+        return false;
+      }
+      debugPrint('[ServerService] testConnection: ApiException - code=${e.code}, message=${e.message}');
+      rethrow;
     }
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../../models/server.dart';
 import '../../extensions/server_response_extensions.dart';
 import '../../services/server_service.dart';
 import '../../theme/app_theme.dart';
@@ -14,7 +13,7 @@ class ServersScreen extends StatefulWidget {
 }
 
 class _ServersScreenState extends State<ServersScreen> {
-  List<Server> servers = [];
+  List<berth_api.ServerResponse> servers = [];
   bool isLoading = true;
   String? error;
   late ServerService _serverService;
@@ -43,7 +42,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  Future<void> _deleteServer(Server server) async {
+  Future<void> _deleteServer(berth_api.ServerResponse server) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -89,7 +88,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  Future<void> _testConnection(Server server) async {
+  Future<void> _testConnection(berth_api.ServerResponse server) async {
     final serverId = server.id;
 
     try {
@@ -120,7 +119,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  void _showServerForm([Server? server]) {
+  void _showServerForm([berth_api.ServerResponse? server]) {
     showDialog(
       context: context,
       builder: (context) => _ServerFormDialog(
@@ -416,7 +415,7 @@ class _ServersScreenState extends State<ServersScreen> {
 }
 
 class _ServerFormDialog extends StatefulWidget {
-  final Server? server;
+  final berth_api.ServerResponse? server;
   final VoidCallback onSaved;
 
   const _ServerFormDialog({
@@ -471,26 +470,27 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
 
     try {
       if (widget.server == null) {
-        final serverInput = ServerInput(
+        final request = berth_api.ServerCreateRequest(
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
           port: int.parse(_portController.text.trim()),
           skipSslVerification: _skipSslVerification,
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
+          description: '',
         );
-        await _serverService.createServer(serverInput);
+        await _serverService.createServer(request);
       } else {
-        final serverInput = ServerInput(
-          id: widget.server!.id,
+        final request = berth_api.ServerUpdateRequest(
           name: _nameController.text.trim(),
           host: _hostController.text.trim(),
           port: int.parse(_portController.text.trim()),
           skipSslVerification: _skipSslVerification,
           accessToken: _accessTokenController.text.trim(),
           isActive: _isActive,
+          description: widget.server!.description,
         );
-        await _serverService.updateServer(widget.server!.id, serverInput);
+        await _serverService.updateServer(widget.server!.id, request);
       }
 
       if (mounted) {
