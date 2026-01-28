@@ -1,54 +1,77 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
-import 'api_client.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import 'package:http/http.dart' as http;
+import 'berth_api_provider.dart';
 
 class MigrationService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  MigrationService(this._apiClient);
+  MigrationService(this._berthApiProvider);
 
   Future<File> exportData(String password) async {
-    final response = await _apiClient.post(
-      '/api/v1/admin/migration/export',
-      body: {'password': password},
-    );
+    debugPrint('[MigrationService] exportData: starting export');
+    try {
+      final request = berth_api.ExportRequest(password: password);
+      final response = await _berthApiProvider.migrationApi.apiV1AdminMigrationExportPostWithHttpInfo(request);
 
-    if (response.statusCode != 200) {
-      throw Exception('Export failed: ${response.statusCode} ${response.body}');
-    }
-
-    
-    String filename = 'berth-backup.json';
-    final contentDisposition = response.headers['content-disposition'];
-    if (contentDisposition != null && contentDisposition.contains('filename=')) {
-      final match = RegExp(r'filename="([^"]+)"').firstMatch(contentDisposition);
-      if (match != null) {
-        filename = match.group(1)!;
+      if (response.statusCode >= 400) {
+        throw berth_api.ApiException(response.statusCode, response.body);
       }
+
+      String filename = 'berth-backup.json';
+      final contentDisposition = response.headers['content-disposition'];
+      if (contentDisposition != null && contentDisposition.contains('filename=')) {
+        final match = RegExp(r'filename="([^"]+)"').firstMatch(contentDisposition);
+        if (match != null) {
+          filename = match.group(1)!;
+        }
+      }
+
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/$filename');
+      await file.writeAsBytes(response.bodyBytes);
+
+      debugPrint('[MigrationService] exportData: success, saved to ${file.path}');
+      return file;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[MigrationService] exportData: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Export failed: ${e.code}');
     }
-
-    
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/$filename');
-    await file.writeAsBytes(response.bodyBytes);
-
-    return file;
   }
 
-  Future<Map<String, dynamic>> importData(File backupFile, String password) async {
-    final response = await _apiClient.postMultipartWithFields(
-      '/api/v1/admin/migration/import',
-      backupFile,
-      'backup_file',
-      {'password': password},
-    );
+  Future<berth_api.ImportResponse> importData(File backupFile, String password) async {
+    debugPrint('[MigrationService] importData: starting import from ${backupFile.path}');
+    try {
+      final bytes = await backupFile.readAsBytes();
+      final multipartFile = http.MultipartFile.fromBytes(
+        'backup_file',
+        bytes,
+        filename: backupFile.path.split('/').last,
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception('Import failed: ${response.statusCode} ${response.body}');
+      final response = await _berthApiProvider.migrationApi.apiV1AdminMigrationImportPost(
+        multipartFile,
+        password,
+      );
+
+      if (response == null) {
+        throw Exception('Import failed: null response');
+      }
+
+      debugPrint('[MigrationService] importData: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[MigrationService] importData: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Import failed: ${e.code}');
     }
-
-    return json.decode(response.body);
   }
 
   Future<void> downloadBackup(File file, String suggestedName) async {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import '../services/migration_service.dart';
-import '../services/api_client.dart';
+import '../services/berth_api_provider.dart';
 import '../theme/app_theme.dart';
 
 class MigrationScreen extends StatefulWidget {
@@ -54,9 +54,9 @@ class _MigrationScreenState extends State<MigrationScreen> {
     setState(() => _exportProcessing = true);
 
     try {
-      final apiClient = Provider.of<ApiClient>(context, listen: false);
-      final migrationService = MigrationService(apiClient);
-      
+      final berthApiProvider = Provider.of<BerthApiProvider>(context, listen: false);
+      final migrationService = MigrationService(berthApiProvider);
+
       final backupFile = await migrationService.exportData(_exportPasswordController.text);
       
       
@@ -111,14 +111,14 @@ class _MigrationScreenState extends State<MigrationScreen> {
     setState(() => _importProcessing = true);
 
     try {
-      final apiClient = Provider.of<ApiClient>(context, listen: false);
-      final migrationService = MigrationService(apiClient);
-      
+      final berthApiProvider = Provider.of<BerthApiProvider>(context, listen: false);
+      final migrationService = MigrationService(berthApiProvider);
+
       final result = await migrationService.importData(_selectedBackupFile!, _importPasswordController.text);
-      
+
       setState(() {
         _importResult = 'Import completed successfully';
-        _encryptionSecret = result['encryption_secret'];
+        _encryptionSecret = result.data.encryptionSecret;
       });
       
       _importPasswordController.clear();
