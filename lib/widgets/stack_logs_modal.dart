@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../widgets/logs_viewer.dart';
 import '../services/logs_service.dart';
 import '../theme/app_theme.dart';
@@ -7,12 +8,14 @@ class StackLogsModal extends StatelessWidget {
   final int serverId;
   final String stackName;
   final LogsService logsService;
+  final List<berth_api.Container>? containers;
 
   const StackLogsModal({
     super.key,
     required this.serverId,
     required this.stackName,
     required this.logsService,
+    this.containers,
   });
 
   @override
@@ -69,6 +72,7 @@ class StackLogsModal extends StatelessWidget {
                   serverId: serverId,
                   stackName: stackName,
                   logsService: logsService,
+                  containers: containers,
                 ),
               ),
             ],

@@ -8,7 +8,7 @@ class LogsViewer extends StatefulWidget {
   final int serverId;
   final String stackName;
   final LogsService logsService;
-  final List<berth_api.ContainerStats>? containers;
+  final List<berth_api.Container>? containers;
 
   const LogsViewer({
     super.key,

@@ -914,6 +914,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         serverId: widget.serverId,
         stackName: widget.stackName,
         logsService: LogsService(context.read<BerthApiProvider>()),
+        containers: _stackDetails?.services.expand((s) => s.containers).toList(),
       ),
     );
   }
