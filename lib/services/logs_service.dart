@@ -1,44 +1,43 @@
-import 'dart:convert';
-import '../models/log.dart' as log_models;
-import 'api_client.dart';
+import 'package:flutter/foundation.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import 'berth_api_provider.dart';
 
 class LogsService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  LogsService(this._apiClient);
+  LogsService(this._berthApiProvider);
 
-  String _buildQueryString(Map<String, String> params) {
-    if (params.isEmpty) return '';
-    return '?${params.entries
-        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-        .join('&')}';
-  }
-
-  Future<log_models.LogsResponse> getStackLogs({
+  Future<berth_api.LogsResponse> getStackLogs({
     required int serverId,
     required String stackName,
     int? tail,
     String? since,
     bool? timestamps,
   }) async {
-    final queryParams = <String, String>{};
-    if (tail != null) queryParams['tail'] = tail.toString();
-    if (since != null && since.isNotEmpty) queryParams['since'] = since;
-    if (timestamps != null) queryParams['timestamps'] = timestamps.toString();
-
-    final endpoint = '/api/v1/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/logs${_buildQueryString(queryParams)}';
-    final response = await _apiClient.get(endpoint);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load stack logs: ${response.statusCode}');
+    debugPrint('[LogsService] getStackLogs: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameLogsGet(
+        serverId,
+        stackName,
+        tail: tail,
+        since: since,
+        timestamps: timestamps,
+      );
+      if (response == null) {
+        throw Exception('Failed to fetch stack logs: null response');
+      }
+      debugPrint('[LogsService] getStackLogs: success, ${response.logs.length} entries');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[LogsService] getStackLogs: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to fetch stack logs: ${e.code}');
     }
-
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    return log_models.LogsResponse.fromJson(data);
   }
 
-
-  Future<log_models.LogsResponse> getContainerLogs({
+  Future<berth_api.LogsResponse> getContainerLogs({
     required int serverId,
     required String stackName,
     required String containerName,
@@ -46,19 +45,27 @@ class LogsService {
     String? since,
     bool? timestamps,
   }) async {
-    final queryParams = <String, String>{};
-    if (tail != null) queryParams['tail'] = tail.toString();
-    if (since != null && since.isNotEmpty) queryParams['since'] = since;
-    if (timestamps != null) queryParams['timestamps'] = timestamps.toString();
-
-    final endpoint = '/api/v1/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/containers/${Uri.encodeComponent(containerName)}/logs${_buildQueryString(queryParams)}';
-    final response = await _apiClient.get(endpoint);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load container logs: ${response.statusCode}');
+    debugPrint('[LogsService] getContainerLogs: serverId=$serverId, stackName=$stackName, containerName=$containerName');
+    try {
+      final response = await _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(
+        serverId,
+        stackName,
+        containerName,
+        tail: tail,
+        since: since,
+        timestamps: timestamps,
+      );
+      if (response == null) {
+        throw Exception('Failed to fetch container logs: null response');
+      }
+      debugPrint('[LogsService] getContainerLogs: success, ${response.logs.length} entries');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[LogsService] getContainerLogs: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to fetch container logs: ${e.code}');
     }
-
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    return log_models.LogsResponse.fromJson(data);
   }
 }

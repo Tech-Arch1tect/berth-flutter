@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/log.dart' as log_models;
 import '../services/logs_service.dart';
 import '../theme/app_theme.dart';
 
@@ -24,7 +23,7 @@ class LogsViewer extends StatefulWidget {
 }
 
 class _LogsViewerState extends State<LogsViewer> {
-  List<log_models.LogEntry> _logs = [];
+  List<berth_api.LogEntry> _logs = [];
   bool _isLoading = false;
   String? _error;
   bool _autoRefresh = false;
@@ -57,7 +56,7 @@ class _LogsViewerState extends State<LogsViewer> {
     });
 
     try {
-      log_models.LogsResponse response;
+      berth_api.LogsResponse response;
       
       if (_selectedContainer.isNotEmpty) {
         response = await widget.logsService.getContainerLogs(
@@ -79,7 +78,7 @@ class _LogsViewerState extends State<LogsViewer> {
       }
 
       setState(() {
-        _logs = response.logs ?? [];
+        _logs = response.logs;
         _isLoading = false;
       });
     } catch (e) {
@@ -92,7 +91,7 @@ class _LogsViewerState extends State<LogsViewer> {
   }
 
 
-  List<log_models.LogEntry> get _filteredLogs {
+  List<berth_api.LogEntry> get _filteredLogs {
     return _logs.where((log) {
       if (_searchTerm.isNotEmpty && 
           !log.message.toLowerCase().contains(_searchTerm.toLowerCase())) {
@@ -545,9 +544,9 @@ class _LogsViewerState extends State<LogsViewer> {
                                         style: const TextStyle(color: Colors.grey),
                                       ),
                                     ],
-                                    if (log.source.isNotEmpty) ...[
+                                    if (log.source_.isNotEmpty) ...[
                                       TextSpan(
-                                        text: '[${log.source}] ',
+                                        text: '[${log.source_}] ',
                                         style: const TextStyle(color: Colors.cyan),
                                       ),
                                     ],

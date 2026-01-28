@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:berth_api/api.dart' as berth_api;
 import '../models/websocket_message.dart';
 import '../services/api_client.dart';
+import '../services/berth_api_provider.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
 import '../services/websocket_service.dart';
@@ -912,7 +913,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       builder: (context) => StackLogsModal(
         serverId: widget.serverId,
         stackName: widget.stackName,
-        logsService: LogsService(context.read<ApiClient>()),
+        logsService: LogsService(context.read<BerthApiProvider>()),
       ),
     );
   }
