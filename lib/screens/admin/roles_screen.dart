@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../../models/role.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../../services/role_service.dart';
+import '../../services/berth_api_provider.dart';
 import '../../widgets/role_form_dialog.dart';
 import '../../theme/app_theme.dart';
 
@@ -14,7 +15,7 @@ class RolesScreen extends StatefulWidget {
 }
 
 class _RolesScreenState extends State<RolesScreen> {
-  List<Role> roles = [];
+  List<berth_api.RoleWithPermissions> roles = [];
   bool isLoading = true;
   String? error;
   late RoleService roleService;
@@ -22,7 +23,7 @@ class _RolesScreenState extends State<RolesScreen> {
   @override
   void initState() {
     super.initState();
-    roleService = RoleService(context.read());
+    roleService = RoleService(context.read<BerthApiProvider>());
     _loadRoles();
   }
 
@@ -58,7 +59,7 @@ class _RolesScreenState extends State<RolesScreen> {
     }
   }
 
-  Future<void> _showEditDialog(Role role) async {
+  Future<void> _showEditDialog(berth_api.RoleWithPermissions role) async {
     if (role.isAdmin) return;
 
     final result = await showDialog<bool>(
@@ -80,7 +81,7 @@ class _RolesScreenState extends State<RolesScreen> {
     }
   }
 
-  Future<void> _confirmDelete(Role role) async {
+  Future<void> _confirmDelete(berth_api.RoleWithPermissions role) async {
     if (role.isAdmin) return;
 
     final confirmed = await showDialog<bool>(
@@ -110,7 +111,7 @@ class _RolesScreenState extends State<RolesScreen> {
     }
   }
 
-  Future<void> _deleteRole(Role role) async {
+  Future<void> _deleteRole(berth_api.RoleWithPermissions role) async {
     try {
       await roleService.deleteRole(role.id);
       _loadRoles();

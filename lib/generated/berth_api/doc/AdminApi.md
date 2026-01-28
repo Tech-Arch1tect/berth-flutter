@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**apiV1AdminOperationLogsGet**](AdminApi.md#apiv1adminoperationlogsget) | **GET** /api/v1/admin/operation-logs | List all operation logs
 [**apiV1AdminOperationLogsIdGet**](AdminApi.md#apiv1adminoperationlogsidget) | **GET** /api/v1/admin/operation-logs/{id} | Get operation log details
 [**apiV1AdminOperationLogsStatsGet**](AdminApi.md#apiv1adminoperationlogsstatsget) | **GET** /api/v1/admin/operation-logs/stats | Get operation logs statistics
+[**apiV1AdminRolesGet**](AdminApi.md#apiv1adminrolesget) | **GET** /api/v1/admin/roles | List all roles
 [**apiV1AdminRolesIdDelete**](AdminApi.md#apiv1adminrolesiddelete) | **DELETE** /api/v1/admin/roles/{id} | Delete a role
 [**apiV1AdminRolesIdPut**](AdminApi.md#apiv1adminrolesidput) | **PUT** /api/v1/admin/roles/{id} | Update a role
 [**apiV1AdminRolesPost**](AdminApi.md#apiv1adminrolespost) | **POST** /api/v1/admin/roles | Create a new role
@@ -318,6 +319,59 @@ This endpoint does not need any parameter.
 ### Return type
 
 [**OperationLogStats**](OperationLogStats.md)
+
+### Authorization
+
+[apiKey](../README.md#apiKey), [session](../README.md#session), [bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **apiV1AdminRolesGet**
+> ListRolesResponse apiV1AdminRolesGet()
+
+List all roles
+
+List all roles. Requires admin permissions.
+
+### Example
+```dart
+import 'package:berth_api/api.dart';
+// TODO Configure API key authorization: apiKey
+//defaultApiClient.getAuthentication<ApiKeyAuth>('apiKey').apiKey = 'YOUR_API_KEY';
+// uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//defaultApiClient.getAuthentication<ApiKeyAuth>('apiKey').apiKeyPrefix = 'Bearer';
+// TODO Configure API key authorization: session
+//defaultApiClient.getAuthentication<ApiKeyAuth>('session').apiKey = 'YOUR_API_KEY';
+// uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//defaultApiClient.getAuthentication<ApiKeyAuth>('session').apiKeyPrefix = 'Bearer';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = AdminApi();
+
+try {
+    final result = api_instance.apiV1AdminRolesGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling AdminApi->apiV1AdminRolesGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**ListRolesResponse**](ListRolesResponse.md)
 
 ### Authorization
 

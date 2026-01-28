@@ -1,40 +1,45 @@
-import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/role.dart';
-import '../models/permission.dart';
-import 'api_client.dart';
+import 'berth_api_provider.dart';
 
 class RoleService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  RoleService(this._apiClient);
+  RoleService(this._berthApiProvider);
 
-  Future<List<Role>> getRoles() async {
-    final response = await _apiClient.get('/api/v1/admin/roles');
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final roles = data['roles'] as List;
-      return roles.map((role) => Role.fromJson(role)).toList();
-    } else {
-      throw Exception('Failed to load roles: ${response.statusCode}');
+  Future<List<berth_api.RoleWithPermissions>> getRoles() async {
+    debugPrint('[RoleService] getRoles');
+    try {
+      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesGet();
+      if (response == null) {
+        throw Exception('Failed to load roles: null response');
+      }
+      debugPrint('[RoleService] getRoles: success, ${response.data.roles.length} roles');
+      return response.data.roles;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] getRoles: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to load roles: ${e.code}');
     }
   }
 
-  Future<RoleStackPermissionsData> getRoleStackPermissions(int roleId) async {
-    final response = await _apiClient.get('/api/v1/admin/roles/$roleId/stack-permissions');
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      
-      return RoleStackPermissionsData(
-        role: Role.fromJson(data['role']),
-        servers: (data['servers'] as List).map((server) => berth_api.ServerResponse.fromJson(server)!).toList(),
-        permissions: (data['permissions'] as List).map((permission) => Permission.fromJson(permission)).toList(),
-        permissionRules: (data['permissionRules'] as List).map((rule) => PermissionRule.fromJson(rule)).toList(),
-      );
-    } else {
-      throw Exception('Failed to load role stack permissions: ${response.statusCode}');
+  Future<berth_api.ListRoleStackPermissionsData> getRoleStackPermissions(int roleId) async {
+    debugPrint('[RoleService] getRoleStackPermissions: roleId=$roleId');
+    try {
+      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsGet(roleId);
+      if (response == null) {
+        throw Exception('Failed to load role stack permissions: null response');
+      }
+      debugPrint('[RoleService] getRoleStackPermissions: success');
+      return response.data;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] getRoleStackPermissions: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to load role stack permissions: ${e.code}');
     }
   }
 
@@ -44,15 +49,24 @@ class RoleService {
     required int permissionId,
     required String stackPattern,
   }) async {
-    final response = await _apiClient.post('/api/v1/admin/roles/$roleId/stack-permissions', body: {
-      'server_id': serverId,
-      'permission_id': permissionId,
-      'stack_pattern': stackPattern,
-    });
-    
-    if (response.statusCode != 201) {
-      final errorData = json.decode(response.body);
-      throw Exception('Failed to create permission: ${errorData['error'] ?? 'Unknown error'}');
+    debugPrint('[RoleService] createStackPermission: roleId=$roleId, serverId=$serverId');
+    try {
+      final request = berth_api.CreateStackPermissionRequest(
+        serverId: serverId,
+        permissionId: permissionId,
+        stackPattern: stackPattern,
+      );
+      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPost(roleId, request);
+      if (response == null) {
+        throw Exception('Failed to create permission: null response');
+      }
+      debugPrint('[RoleService] createStackPermission: success');
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] createStackPermission: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to create permission: ${e.code}');
     }
   }
 
@@ -60,112 +74,81 @@ class RoleService {
     required int roleId,
     required int permissionId,
   }) async {
-    final response = await _apiClient.delete('/api/v1/admin/roles/$roleId/stack-permissions/$permissionId');
-    
-    if (response.statusCode != 200) {
-      final errorData = json.decode(response.body);
-      throw Exception('Failed to delete permission: ${errorData['error'] ?? 'Unknown error'}');
+    debugPrint('[RoleService] deleteStackPermission: roleId=$roleId, permissionId=$permissionId');
+    try {
+      await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(roleId, permissionId);
+      debugPrint('[RoleService] deleteStackPermission: success');
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] deleteStackPermission: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to delete permission: ${e.code}');
     }
   }
 
-  Future<Role> createRole({
+  Future<berth_api.RoleWithPermissions> createRole({
     required String name,
     required String description,
   }) async {
-    final response = await _apiClient.post('/api/v1/admin/roles', body: {
-      'name': name,
-      'description': description,
-    });
-
-    if (response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return Role.fromJson(data);
-    } else {
-      final error = json.decode(response.body);
-      throw Exception('Failed to create role: ${error['error'] ?? 'Unknown error'}');
+    debugPrint('[RoleService] createRole: name=$name');
+    try {
+      final request = berth_api.CreateRoleRequest(
+        name: name,
+        description: description,
+      );
+      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesPost(request);
+      if (response == null) {
+        throw Exception('Failed to create role: null response');
+      }
+      debugPrint('[RoleService] createRole: success');
+      return response.data;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] createRole: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to create role: ${e.code}');
     }
   }
 
-  Future<Role> updateRole({
+  Future<berth_api.RoleWithPermissions> updateRole({
     required int roleId,
     required String name,
     required String description,
   }) async {
-    final response = await _apiClient.put('/api/v1/admin/roles/$roleId', body: {
-      'name': name,
-      'description': description,
-    });
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Role.fromJson(data);
-    } else {
-      final error = json.decode(response.body);
-      throw Exception('Failed to update role: ${error['error'] ?? 'Unknown error'}');
+    debugPrint('[RoleService] updateRole: roleId=$roleId, name=$name');
+    try {
+      final request = berth_api.UpdateRoleRequest(
+        name: name,
+        description: description,
+      );
+      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesIdPut(roleId, request);
+      if (response == null) {
+        throw Exception('Failed to update role: null response');
+      }
+      debugPrint('[RoleService] updateRole: success');
+      return response.data;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] updateRole: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to update role: ${e.code}');
     }
   }
 
   Future<void> deleteRole(int roleId) async {
-    final response = await _apiClient.delete('/api/v1/admin/roles/$roleId');
-
-    if (response.statusCode != 200) {
-      final error = json.decode(response.body);
-      throw Exception('Failed to delete role: ${error['error'] ?? 'Unknown error'}');
+    debugPrint('[RoleService] deleteRole: roleId=$roleId');
+    try {
+      await _berthApiProvider.rolesApi.apiV1AdminRolesIdDelete(roleId);
+      debugPrint('[RoleService] deleteRole: success');
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[RoleService] deleteRole: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to delete role: ${e.code}');
     }
-  }
-
-}
-
-class PermissionRule {
-  final int id;
-  final int serverId;
-  final int permissionId;
-  final String stackPattern;
-  final bool isStackBased;
-
-  PermissionRule({
-    required this.id,
-    required this.serverId,
-    required this.permissionId,
-    required this.stackPattern,
-    required this.isStackBased,
-  });
-
-  factory PermissionRule.fromJson(Map<String, dynamic> json) {
-    return PermissionRule(
-      id: json['id'] as int,
-      serverId: json['server_id'] as int,
-      permissionId: json['permission_id'] as int,
-      stackPattern: json['stack_pattern'] as String? ?? '*',
-      isStackBased: json['is_stack_based'] as bool? ?? true,
-    );
-  }
-}
-
-class RoleStackPermissionsData {
-  final Role role;
-  final List<berth_api.ServerResponse> servers;
-  final List<Permission> permissions;
-  final List<PermissionRule> permissionRules;
-
-  RoleStackPermissionsData({
-    required this.role,
-    required this.servers,
-    required this.permissions,
-    required this.permissionRules,
-  });
-
-  List<PermissionRule> getRulesForServerPattern(int serverId, String stackPattern) {
-    return permissionRules.where((rule) => 
-      rule.serverId == serverId && rule.stackPattern == stackPattern
-    ).toList();
-  }
-
-  bool hasPermissionForPattern(int serverId, int permissionId, String stackPattern) {
-    return permissionRules.any((rule) => 
-      rule.serverId == serverId && 
-      rule.permissionId == permissionId && 
-      rule.stackPattern == stackPattern
-    );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/role.dart';
+import 'package:berth_api/api.dart' as berth_api;
 
 class RoleFormDialog extends StatefulWidget {
-  final Role? role;
+  final berth_api.RoleWithPermissions? role;
   final Function(String name, String description) onSave;
 
   const RoleFormDialog({

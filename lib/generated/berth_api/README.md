@@ -78,6 +78,7 @@ Class | Method | HTTP request | Description
 *AdminApi* | [**apiV1AdminOperationLogsGet**](doc//AdminApi.md#apiv1adminoperationlogsget) | **GET** /api/v1/admin/operation-logs | List all operation logs
 *AdminApi* | [**apiV1AdminOperationLogsIdGet**](doc//AdminApi.md#apiv1adminoperationlogsidget) | **GET** /api/v1/admin/operation-logs/{id} | Get operation log details
 *AdminApi* | [**apiV1AdminOperationLogsStatsGet**](doc//AdminApi.md#apiv1adminoperationlogsstatsget) | **GET** /api/v1/admin/operation-logs/stats | Get operation logs statistics
+*AdminApi* | [**apiV1AdminRolesGet**](doc//AdminApi.md#apiv1adminrolesget) | **GET** /api/v1/admin/roles | List all roles
 *AdminApi* | [**apiV1AdminRolesIdDelete**](doc//AdminApi.md#apiv1adminrolesiddelete) | **DELETE** /api/v1/admin/roles/{id} | Delete a role
 *AdminApi* | [**apiV1AdminRolesIdPut**](doc//AdminApi.md#apiv1adminrolesidput) | **PUT** /api/v1/admin/roles/{id} | Update a role
 *AdminApi* | [**apiV1AdminRolesPost**](doc//AdminApi.md#apiv1adminrolespost) | **POST** /api/v1/admin/roles | Create a new role
@@ -140,6 +141,7 @@ Class | Method | HTTP request | Description
 *RegistriesApi* | [**apiV1ServersServeridRegistriesIdGet**](doc//RegistriesApi.md#apiv1serversserveridregistriesidget) | **GET** /api/v1/servers/{serverid}/registries/{id} | Get registry credential
 *RegistriesApi* | [**apiV1ServersServeridRegistriesIdPut**](doc//RegistriesApi.md#apiv1serversserveridregistriesidput) | **PUT** /api/v1/servers/{serverid}/registries/{id} | Update registry credential
 *RegistriesApi* | [**apiV1ServersServeridRegistriesPost**](doc//RegistriesApi.md#apiv1serversserveridregistriespost) | **POST** /api/v1/servers/{serverid}/registries | Create registry credential
+*RolesApi* | [**apiV1AdminRolesGet**](doc//RolesApi.md#apiv1adminrolesget) | **GET** /api/v1/admin/roles | List all roles
 *RolesApi* | [**apiV1AdminRolesIdDelete**](doc//RolesApi.md#apiv1adminrolesiddelete) | **DELETE** /api/v1/admin/roles/{id} | Delete a role
 *RolesApi* | [**apiV1AdminRolesIdPut**](doc//RolesApi.md#apiv1adminrolesidput) | **PUT** /api/v1/admin/roles/{id} | Update a role
 *RolesApi* | [**apiV1AdminRolesPost**](doc//RolesApi.md#apiv1adminrolespost) | **POST** /api/v1/admin/roles | Create a new role
@@ -297,6 +299,8 @@ Class | Method | HTTP request | Description
  - [ListLogsResponseData](doc//ListLogsResponseData.md)
  - [ListRoleStackPermissionsData](doc//ListRoleStackPermissionsData.md)
  - [ListRoleStackPermissionsResponse](doc//ListRoleStackPermissionsResponse.md)
+ - [ListRolesResponse](doc//ListRolesResponse.md)
+ - [ListRolesResponseData](doc//ListRolesResponseData.md)
  - [ListScopesResponse](doc//ListScopesResponse.md)
  - [ListServersResponse](doc//ListServersResponse.md)
  - [ListStacksResponse](doc//ListStacksResponse.md)

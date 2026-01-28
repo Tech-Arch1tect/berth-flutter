@@ -398,6 +398,10 @@ class ApiClient {
           return ListRoleStackPermissionsData.fromJson(value);
         case 'ListRoleStackPermissionsResponse':
           return ListRoleStackPermissionsResponse.fromJson(value);
+        case 'ListRolesResponse':
+          return ListRolesResponse.fromJson(value);
+        case 'ListRolesResponseData':
+          return ListRolesResponseData.fromJson(value);
         case 'ListScopesResponse':
           return ListScopesResponse.fromJson(value);
         case 'ListServersResponse':

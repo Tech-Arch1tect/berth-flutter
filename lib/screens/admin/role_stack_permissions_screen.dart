@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../../services/role_service.dart';
-import '../../models/permission.dart';
+import '../../services/berth_api_provider.dart';
 import '../../theme/app_theme.dart';
 
 class RoleStackPermissionsScreen extends StatefulWidget {
@@ -18,19 +19,19 @@ class RoleStackPermissionsScreen extends StatefulWidget {
 
 class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen> {
   late RoleService roleService;
-  RoleStackPermissionsData? data;
+  berth_api.ListRoleStackPermissionsData? data;
   bool isLoading = true;
   String? error;
   Set<int> deletingRules = {};
-  
-  
+
+
   bool showAddRuleModal = false;
   int? selectedServerId;
   Set<int> selectedPermissions = {};
   String stackPattern = '*';
   bool isCreatingRule = false;
 
-  
+
   bool showAddToPatternModal = false;
   int? addToPatternServerId;
   String? addToPatternStackPattern;
@@ -40,7 +41,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
   @override
   void initState() {
     super.initState();
-    roleService = RoleService(context.read());
+    roleService = RoleService(context.read<BerthApiProvider>());
     _loadData();
   }
 
@@ -94,16 +95,16 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     });
   }
 
-  List<Permission> _getAvailablePermissionsForPattern(int serverId, String stackPattern) {
+  List<berth_api.PermissionInfo> _getAvailablePermissionsForPattern(int serverId, String stackPattern) {
     if (data == null) return [];
-    
-    final existingRules = data!.permissionRules.where((rule) => 
+
+    final existingRules = data!.permissionRules.where((rule) =>
       rule.serverId == serverId && rule.stackPattern == stackPattern
     ).toList();
-    
+
     final existingPermissionIds = existingRules.map((rule) => rule.permissionId).toSet();
-    
-    return data!.permissions.where((permission) => 
+
+    return data!.permissions.where((permission) =>
       !existingPermissionIds.contains(permission.id)
     ).toList();
   }
@@ -214,14 +215,14 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     }
   }
 
-  Map<String, List<PermissionRule>> _groupRulesByServerAndPattern() {
+  Map<String, List<berth_api.StackPermissionRule>> _groupRulesByServerAndPattern() {
     if (data == null) return {};
-    
-    final grouped = <String, List<PermissionRule>>{};
+
+    final grouped = <String, List<berth_api.StackPermissionRule>>{};
     for (final rule in data!.permissionRules) {
       final serverName = data!.servers.firstWhere((s) => s.id == rule.serverId).name;
       final key = '$serverName - ${rule.stackPattern}';
-      
+
       if (!grouped.containsKey(key)) {
         grouped[key] = [];
       }
@@ -432,7 +433,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     );
   }
 
-  Widget _buildGroupedRuleCard(String groupTitle, List<PermissionRule> rules) {
+  Widget _buildGroupedRuleCard(String groupTitle, List<berth_api.StackPermissionRule> rules) {
     final firstRule = rules.first;
     final availablePermissions = _getAvailablePermissionsForPattern(firstRule.serverId, firstRule.stackPattern);
     
@@ -478,7 +479,7 @@ class _RoleStackPermissionsScreenState extends State<RoleStackPermissionsScreen>
     );
   }
 
-  Widget _buildPermissionChip(PermissionRule rule) {
+  Widget _buildPermissionChip(berth_api.StackPermissionRule rule) {
     final permission = data!.permissions.firstWhere((p) => p.id == rule.permissionId);
     final isDeleting = deletingRules.contains(rule.id);
     

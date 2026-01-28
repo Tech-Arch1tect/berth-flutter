@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**apiV1AdminRolesGet**](RolesApi.md#apiv1adminrolesget) | **GET** /api/v1/admin/roles | List all roles
 [**apiV1AdminRolesIdDelete**](RolesApi.md#apiv1adminrolesiddelete) | **DELETE** /api/v1/admin/roles/{id} | Delete a role
 [**apiV1AdminRolesIdPut**](RolesApi.md#apiv1adminrolesidput) | **PUT** /api/v1/admin/roles/{id} | Update a role
 [**apiV1AdminRolesPost**](RolesApi.md#apiv1adminrolespost) | **POST** /api/v1/admin/roles | Create a new role
@@ -16,6 +17,59 @@ Method | HTTP request | Description
 [**apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete**](RolesApi.md#apiv1adminrolesroleidstackpermissionspermissioniddelete) | **DELETE** /api/v1/admin/roles/{roleId}/stack-permissions/{permissionId} | Delete a role stack permission
 [**apiV1AdminRolesRoleIdStackPermissionsPost**](RolesApi.md#apiv1adminrolesroleidstackpermissionspost) | **POST** /api/v1/admin/roles/{roleId}/stack-permissions | Create a role stack permission
 
+
+# **apiV1AdminRolesGet**
+> ListRolesResponse apiV1AdminRolesGet()
+
+List all roles
+
+List all roles. Requires admin permissions.
+
+### Example
+```dart
+import 'package:berth_api/api.dart';
+// TODO Configure API key authorization: apiKey
+//defaultApiClient.getAuthentication<ApiKeyAuth>('apiKey').apiKey = 'YOUR_API_KEY';
+// uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//defaultApiClient.getAuthentication<ApiKeyAuth>('apiKey').apiKeyPrefix = 'Bearer';
+// TODO Configure API key authorization: session
+//defaultApiClient.getAuthentication<ApiKeyAuth>('session').apiKey = 'YOUR_API_KEY';
+// uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//defaultApiClient.getAuthentication<ApiKeyAuth>('session').apiKeyPrefix = 'Bearer';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = RolesApi();
+
+try {
+    final result = api_instance.apiV1AdminRolesGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling RolesApi->apiV1AdminRolesGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**ListRolesResponse**](ListRolesResponse.md)
+
+### Authorization
+
+[apiKey](../README.md#apiKey), [session](../README.md#session), [bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1AdminRolesIdDelete**
 > DeleteRoleResponse apiV1AdminRolesIdDelete(id)

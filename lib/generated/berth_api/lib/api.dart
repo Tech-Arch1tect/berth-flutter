@@ -157,6 +157,8 @@ part 'model/list_logs_api_response.dart';
 part 'model/list_logs_response_data.dart';
 part 'model/list_role_stack_permissions_data.dart';
 part 'model/list_role_stack_permissions_response.dart';
+part 'model/list_roles_response.dart';
+part 'model/list_roles_response_data.dart';
 part 'model/list_scopes_response.dart';
 part 'model/list_servers_response.dart';
 part 'model/list_stacks_response.dart';
