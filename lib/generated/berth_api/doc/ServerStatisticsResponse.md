@@ -1,0 +1,15 @@
+# berth_api.model.ServerStatisticsResponse
+
+## Load the model package
+```dart
+import 'package:berth_api/api.dart';
+```
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**statistics** | [**StackStatistics**](StackStatistics.md) |  | 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

@@ -1,0 +1,17 @@
+# berth_api.model.VolumeUsage
+
+## Load the model package
+```dart
+import 'package:berth_api/api.dart';
+```
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**containerName** | **String** |  | 
+**mounts** | [**List<VolumeMount>**](VolumeMount.md) |  | [default to const []]
+**serviceName** | **String** |  | 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
