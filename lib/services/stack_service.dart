@@ -1,139 +1,133 @@
-import 'dart:convert';
-import '../models/stack.dart';
-import 'api_client.dart';
+import 'package:flutter/foundation.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import 'berth_api_provider.dart';
 
 class StackService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  StackService(this._apiClient);
+  StackService(this._berthApiProvider);
 
-  Future<List<Stack>> getServerStacks(int serverId) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks');
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final List<dynamic> stacksData = data['stacks'] ?? [];
-      
-      final stacks = stacksData
-          .map((stackData) => Stack.fromJson(stackData))
-          .toList();
-      
-      stacks.sort((a, b) => a.name.compareTo(b.name));
-      return stacks;
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else {
-      throw Exception('Failed to fetch server stacks: ${response.statusCode}');
-    }
-  }
-
-  Future<StackDetails> getStackDetails(int serverId, String stackName) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName');
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final stackDetails = StackDetails.fromJson(data);
-      
-      stackDetails.services.sort((a, b) => a.name.compareTo(b.name));
-      for (final service in stackDetails.services) {
-        service.containers.sort((a, b) => a.name.compareTo(b.name));
+  Future<List<berth_api.Stack>> getServerStacks(int serverId) async {
+    debugPrint('[StackService] getServerStacks: serverId=$serverId');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksGet(serverId);
+      if (response == null) {
+        throw Exception('Failed to fetch server stacks: null response');
       }
-      
-      return stackDetails;
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else if (response.statusCode == 404) {
-      throw Exception('Stack not found');
-    } else {
-      throw Exception('Failed to fetch stack details: ${response.statusCode}');
+      final stacks = response.stacks.toList();
+      stacks.sort((a, b) => a.name.compareTo(b.name));
+      debugPrint('[StackService] getServerStacks: returned ${stacks.length} stacks');
+      return stacks;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getServerStacks: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to fetch server stacks: ${e.code}');
     }
   }
 
-  Future<List<Network>> getStackNetworks(int serverId, String stackName) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/networks');
+  Future<berth_api.StackDetails> getStackDetails(int serverId, String stackName) async {
+    debugPrint('[StackService] getStackDetails: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameGet(serverId, stackName);
+      if (response == null) {
+        throw Exception('Failed to fetch stack details: null response');
+      }
+      debugPrint('[StackService] getStackDetails: returned stack with ${response.services.length} services');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getStackDetails: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      } else if (e.code == 404) {
+        throw Exception('Stack not found');
+      }
+      throw Exception('Failed to fetch stack details: ${e.code}');
+    }
+  }
 
-    if (response.statusCode == 200) {
-      final List<dynamic> networksData = json.decode(response.body);
-      
-      final networks = networksData
-          .map((networkData) => Network.fromJson(networkData))
-          .toList();
-      
+  Future<List<berth_api.Network>> getStackNetworks(int serverId, String stackName) async {
+    debugPrint('[StackService] getStackNetworks: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameNetworksGet(serverId, stackName);
+      if (response == null) {
+        throw Exception('Failed to fetch stack networks: null response');
+      }
+      final networks = response.networks.toList();
       networks.sort((a, b) => a.name.compareTo(b.name));
+      debugPrint('[StackService] getStackNetworks: returned ${networks.length} networks');
       return networks;
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else if (response.statusCode == 404) {
-      throw Exception('Stack or networks not found');
-    } else {
-      throw Exception('Failed to fetch stack networks: ${response.statusCode}');
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getStackNetworks: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      } else if (e.code == 404) {
+        throw Exception('Stack or networks not found');
+      }
+      throw Exception('Failed to fetch stack networks: ${e.code}');
     }
   }
 
-  Future<List<Volume>> getStackVolumes(int serverId, String stackName) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/volumes');
-
-    if (response.statusCode == 200) {
-      final List<dynamic> volumesData = json.decode(response.body);
-      
-      final volumes = volumesData
-          .map((volumeData) => Volume.fromJson(volumeData))
-          .toList();
-      
+  Future<List<berth_api.Volume>> getStackVolumes(int serverId, String stackName) async {
+    debugPrint('[StackService] getStackVolumes: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameVolumesGet(serverId, stackName);
+      if (response == null) {
+        throw Exception('Failed to fetch stack volumes: null response');
+      }
+      final volumes = response.volumes.toList();
       volumes.sort((a, b) => a.name.compareTo(b.name));
+      debugPrint('[StackService] getStackVolumes: returned ${volumes.length} volumes');
       return volumes;
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else if (response.statusCode == 404) {
-      throw Exception('Stack or volumes not found');
-    } else {
-      throw Exception('Failed to fetch stack volumes: ${response.statusCode}');
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getStackVolumes: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      } else if (e.code == 404) {
+        throw Exception('Stack or volumes not found');
+      }
+      throw Exception('Failed to fetch stack volumes: ${e.code}');
     }
   }
 
-  Future<Map<String, List<ServiceEnvironment>>> getStackEnvironmentVariables(int serverId, String stackName) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/environment');
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final Map<String, List<ServiceEnvironment>> environmentData = {};
-      
-      data.forEach((serviceName, serviceEnvList) {
-        if (serviceEnvList is List) {
-          final serviceEnvironments = serviceEnvList
-              .map((envData) => ServiceEnvironment.fromJson(envData))
-              .toList();
-          
-          for (final env in serviceEnvironments) {
-            env.variables.sort((a, b) => a.key.compareTo(b.key));
-          }
-          
-          environmentData[serviceName] = serviceEnvironments;
-        }
-      });
-      
-      return environmentData;
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else if (response.statusCode == 404) {
-      throw Exception('Stack or environment variables not found');
-    } else {
-      throw Exception('Failed to fetch stack environment variables: ${response.statusCode}');
+  Future<Map<String, List<berth_api.ServiceEnvironment>>> getStackEnvironmentVariables(int serverId, String stackName) async {
+    debugPrint('[StackService] getStackEnvironmentVariables: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameEnvironmentGet(serverId, stackName);
+      if (response == null) {
+        throw Exception('Failed to fetch stack environment variables: null response');
+      }
+      debugPrint('[StackService] getStackEnvironmentVariables: returned ${response.length} services');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getStackEnvironmentVariables: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      } else if (e.code == 404) {
+        throw Exception('Stack or environment variables not found');
+      }
+      throw Exception('Failed to fetch stack environment variables: ${e.code}');
     }
   }
 
-  Future<StackStats> getStackStats(int serverId, String stackName) async {
-    final response = await _apiClient.get('/api/v1/servers/$serverId/stacks/$stackName/stats');
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return StackStats.fromJson(data);
-    } else if (response.statusCode == 401) {
-      throw Exception('Authentication failed');
-    } else if (response.statusCode == 404) {
-      throw Exception('Stack or stats not found');
-    } else {
-      throw Exception('Failed to fetch stack stats: ${response.statusCode}');
+  Future<berth_api.StackStatsResponse> getStackStats(int serverId, String stackName) async {
+    debugPrint('[StackService] getStackStats: serverId=$serverId, stackName=$stackName');
+    try {
+      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameStatsGet(serverId, stackName);
+      if (response == null) {
+        throw Exception('Failed to fetch stack stats: null response');
+      }
+      debugPrint('[StackService] getStackStats: returned stats with ${response.containers.length} containers');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[StackService] getStackStats: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      } else if (e.code == 404) {
+        throw Exception('Stack or stats not found');
+      }
+      throw Exception('Failed to fetch stack stats: ${e.code}');
     }
   }
 }

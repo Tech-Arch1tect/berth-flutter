@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' hide Container;
+import 'package:berth_api/api.dart' as berth_api;
 import 'network_card.dart';
 
 class NetworkList extends StatelessWidget {
-  final List<Network> networks;
+  final List<berth_api.Network> networks;
   final bool isLoading;
   final String? error;
 

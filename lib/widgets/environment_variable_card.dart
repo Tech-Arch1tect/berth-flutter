@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' hide Container;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class EnvironmentVariableCard extends StatelessWidget {
   final String serviceName;
-  final List<ServiceEnvironment> serviceEnvironments;
+  final List<berth_api.ServiceEnvironment> serviceEnvironments;
 
   const EnvironmentVariableCard({
     super.key,
@@ -19,11 +19,11 @@ class EnvironmentVariableCard extends StatelessWidget {
         .toList();
     
     final composeVariables = allVariables
-        .where((v) => v.source == 'compose')
+        .where((v) => v.source_ == 'compose')
         .toList();
-    
+
     final runtimeOnlyVariables = allVariables
-        .where((v) => v.source == 'runtime' && 
+        .where((v) => v.source_ == 'runtime' &&
                      !composeVariables.any((cv) => cv.key == v.key))
         .toList();
 
@@ -106,7 +106,7 @@ class EnvironmentVariableCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVariableSection(BuildContext context, String title, List<EnvironmentVariable> variables, Color color) {
+  Widget _buildVariableSection(BuildContext context, String title, List<berth_api.EnvironmentVariable> variables, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -123,7 +123,7 @@ class EnvironmentVariableCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVariableItem(BuildContext context, EnvironmentVariable variable, Color color) {
+  Widget _buildVariableItem(BuildContext context, berth_api.EnvironmentVariable variable, Color color) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -156,7 +156,7 @@ class EnvironmentVariableCard extends StatelessWidget {
               Row(
                 children: [
                   Chip(
-                    label: Text(variable.source.toUpperCase()),
+                    label: Text(variable.source_.toUpperCase()),
                     labelStyle: const TextStyle(fontSize: 10),
                     backgroundColor: color.withOpacity(0.1),
                     side: BorderSide(color: color.withOpacity(0.3)),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/operation.dart';
-import '../models/stack.dart' as stack_models;
 import '../services/operations_service.dart';
 import '../theme/app_theme.dart';
 
 class OperationBuilder extends StatefulWidget {
-  final List<stack_models.ComposeService> services;
+  final List<berth_api.ComposeService> services;
   final Function(OperationRequest) onOperationStart;
   final bool isRunning;
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/stack.dart' as stack_models;
 import '../models/websocket_message.dart';
 import '../services/api_client.dart';
 import '../services/stack_service.dart';
@@ -44,10 +43,10 @@ class StackDetailsScreen extends StatefulWidget {
 }
 
 class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTickerProviderStateMixin {
-  stack_models.StackDetails? _stackDetails;
-  List<stack_models.Network>? _networks;
-  List<stack_models.Volume>? _volumes;
-  Map<String, List<stack_models.ServiceEnvironment>>? _environmentVariables;
+  berth_api.StackDetails? _stackDetails;
+  List<berth_api.Network>? _networks;
+  List<berth_api.Volume>? _volumes;
+  Map<String, List<berth_api.ServiceEnvironment>>? _environmentVariables;
   berth_api.ServerResponse? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
@@ -106,7 +105,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       ]);
       
       final server = futures[0] as berth_api.ServerResponse;
-      final stackDetails = futures[1] as stack_models.StackDetails;
+      final stackDetails = futures[1] as berth_api.StackDetails;
 
       setState(() {
         _server = server;
@@ -141,22 +140,24 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
     );
   }
 
-  void _handleServiceTap(stack_models.ComposeService service) {
+  void _handleServiceTap(berth_api.ComposeService service) {
   }
 
-  void _handleOpenTerminal(stack_models.ComposeService service) {
+  void _handleOpenTerminal(berth_api.ComposeService service) {
     if (_server != null && _stackDetails != null) {
       final runningContainer = service.containers
           .firstWhere((container) => container.state == 'running');
-      final stack = stack_models.Stack(
+      final stack = berth_api.Stack(
         name: _stackDetails!.name,
         path: _stackDetails!.path,
         composeFile: _stackDetails!.composeFile,
         serverId: _stackDetails!.serverId,
         serverName: _stackDetails!.serverName,
         isHealthy: true,
+        runningContainers: 0,
+        totalContainers: 0,
       );
-      
+
       TerminalModal.show(
         context: context,
         server: _server!,
@@ -359,7 +360,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
       ]);
       
       final server = futures[0] as berth_api.ServerResponse;
-      final stackDetails = futures[1] as stack_models.StackDetails;
+      final stackDetails = futures[1] as berth_api.StackDetails;
 
       if (mounted) {
         setState(() {

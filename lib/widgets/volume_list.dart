@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import 'volume_card.dart';
 
 class VolumeList extends StatelessWidget {
-  final List<Volume> volumes;
+  final List<berth_api.Volume> volumes;
   final bool isLoading;
   final String? error;
 

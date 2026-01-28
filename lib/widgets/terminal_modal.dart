@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:berth_api/api.dart' as berth_api;
 import '../services/terminal_service.dart';
-import '../models/stack.dart' as models;
 import 'terminal_widget.dart';
 
 class TerminalModal extends StatelessWidget {
   final berth_api.ServerResponse server;
-  final models.Stack stack;
+  final berth_api.Stack stack;
   final String serviceName;
   final String? containerName;
 
@@ -22,7 +21,7 @@ class TerminalModal extends StatelessWidget {
   static Future<void> show({
     required BuildContext context,
     required berth_api.ServerResponse server,
-    required models.Stack stack,
+    required berth_api.Stack stack,
     required String serviceName,
     String? containerName,
   }) {

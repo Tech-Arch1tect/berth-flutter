@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' hide Container;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class VolumeCard extends StatelessWidget {
-  final Volume volume;
+  final berth_api.Volume volume;
 
   const VolumeCard({super.key, required this.volume});
 
@@ -68,7 +68,7 @@ class VolumeCard extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         _buildStatusChip(context),
-        if (volume.external == true) ...[
+        if (volume.external_ == true) ...[
           const SizedBox(width: 8),
           _buildExternalChip(context),
         ],
@@ -210,7 +210,7 @@ class VolumeCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 2),
-                        _buildInfoRow(context, 'Source', mount.source),
+                        _buildInfoRow(context, 'Source', mount.source_),
                         const SizedBox(height: 2),
                         _buildInfoRow(context, 'Target', mount.target),
                       ],

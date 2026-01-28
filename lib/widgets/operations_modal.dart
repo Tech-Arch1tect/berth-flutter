@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/operation.dart';
-import '../models/stack.dart' as stack_models;
 import '../services/operations_service.dart';
 import '../theme/app_theme.dart';
 import 'operation_builder.dart';
@@ -10,7 +10,7 @@ import 'operation_logs.dart';
 class OperationsModal extends StatefulWidget {
   final int serverId;
   final String stackName;
-  final List<stack_models.ComposeService> services;
+  final List<berth_api.ComposeService> services;
   final OperationsService operationsService;
 
   const OperationsModal({

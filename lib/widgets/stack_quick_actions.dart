@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' as stack_models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/operation.dart';
 import '../theme/app_theme.dart';
 
 class StackQuickActions extends StatelessWidget {
-  final List<stack_models.ComposeService> services;
+  final List<berth_api.ComposeService> services;
   final Function(OperationRequest) onQuickOperation;
   final bool isOperationRunning;
   final String? runningOperation;

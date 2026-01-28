@@ -60,7 +60,7 @@ class _AppInitializerState extends State<AppInitializer> {
     _apiClient = ApiClient(skipSslVerification: true);
     _berthApiProvider = BerthApiProvider(skipSslVerification: true);
     _authService = AuthService(_apiClient);
-    _stackService = StackService(_apiClient);
+    _stackService = StackService(_berthApiProvider);
     _serverService = ServerService(_apiClient, _berthApiProvider);
     _maintenanceService = MaintenanceService(_apiClient);
     _operationLogService = OperationLogService(_apiClient);

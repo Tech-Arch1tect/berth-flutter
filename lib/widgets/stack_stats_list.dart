@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' as stack_models;
+import 'package:berth_api/api.dart' as berth_api;
 
 class StackStatsList extends StatelessWidget {
-  final List<stack_models.ContainerStats>? containers;
+  final List<berth_api.ContainerStats>? containers;
   final bool isLoading;
   final String? error;
 
@@ -37,9 +37,9 @@ class StackStatsList extends StatelessWidget {
     );
   }
 
-  String _formatPercent(double percent) {
+  String _formatPercent(num percent) {
     if (percent < 0) return 'Calculating...';
-    return '${percent.toStringAsFixed(1)}%';
+    return '${percent.toDouble().toStringAsFixed(1)}%';
   }
 
   @override
@@ -207,7 +207,7 @@ class StackStatsList extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       LinearProgressIndicator(
-                        value: container.cpuPercent < 0 ? null : (container.cpuPercent / 100).clamp(0.0, 1.0),
+                        value: container.cpuPercent < 0 ? null : (container.cpuPercent / 100).clamp(0.0, 1.0).toDouble(),
                         backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           container.cpuPercent < 0 
@@ -285,7 +285,7 @@ class StackStatsList extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       LinearProgressIndicator(
-                        value: (container.memoryPercent / 100).clamp(0.0, 1.0),
+                        value: (container.memoryPercent / 100).clamp(0.0, 1.0).toDouble(),
                         backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           Theme.of(context).colorScheme.secondary,

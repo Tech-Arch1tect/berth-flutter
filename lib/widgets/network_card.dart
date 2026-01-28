@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' hide Container;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class NetworkCard extends StatelessWidget {
-  final Network network;
+  final berth_api.Network network;
 
   const NetworkCard({super.key, required this.network});
 
@@ -72,7 +72,7 @@ class NetworkCard extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         _buildStatusChip(context),
-        if (network.external == true) ...[
+        if (network.external_ == true) ...[
           const SizedBox(width: 8),
           _buildExternalChip(context),
         ],

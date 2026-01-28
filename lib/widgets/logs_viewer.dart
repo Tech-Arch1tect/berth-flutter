@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/log.dart' as log_models;
-import '../models/stack.dart' as stack_models;
 import '../services/logs_service.dart';
 import '../theme/app_theme.dart';
 
@@ -9,7 +9,7 @@ class LogsViewer extends StatefulWidget {
   final int serverId;
   final String stackName;
   final LogsService logsService;
-  final List<stack_models.ContainerStats>? containers;
+  final List<berth_api.ContainerStats>? containers;
 
   const LogsViewer({
     super.key,

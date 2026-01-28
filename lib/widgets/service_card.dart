@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' as stack_models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/operation.dart';
 import '../theme/app_theme.dart';
 
 class ServiceCard extends StatefulWidget {
-  final stack_models.ComposeService service;
+  final berth_api.ComposeService service;
   final Function(OperationRequest)? onQuickOperation;
   final bool isOperationRunning;
   final String? runningOperation;
@@ -680,7 +680,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   Widget _buildContainerItem(BuildContext context, ColorScheme colorScheme, 
-      stack_models.Container container) {
+      berth_api.Container container) {
     final statusInfo = _getContainerStatusInfo(colorScheme, container);
     final uptime = _formatUptime(container.started);
     final screenWidth = MediaQuery.of(context).size.width;
@@ -771,9 +771,9 @@ class _ServiceCardState extends State<ServiceCard>
                 borderRadius: BorderRadius.circular(isMobile ? 4 : 6),
               ),
               child: Text(
-                port.publicPort != null && port.publicPort! > 0 
-                    ? '${port.publicPort}:${port.privatePort}'
-                    : '${port.privatePort}',
+                port.public != null && port.public! > 0
+                    ? '${port.public}:${port.private}'
+                    : '${port.private}',
                 style: TextStyle(
                   fontSize: isMobile ? 9 : 10,
                   fontWeight: FontWeight.w600,
@@ -834,7 +834,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   Widget _buildContainerExpandedDetails(BuildContext context, ColorScheme colorScheme, 
-      stack_models.Container container, bool isMobile) {
+      berth_api.Container container, bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -874,7 +874,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   Widget _buildMobileDetailColumn(BuildContext context, ColorScheme colorScheme, 
-      stack_models.Container container) {
+      berth_api.Container container) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -946,7 +946,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   Widget _buildDesktopDetailColumns(BuildContext context, ColorScheme colorScheme, 
-      stack_models.Container container) {
+      berth_api.Container container) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1140,7 +1140,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   Map<String, dynamic> _getContainerStatusInfo(ColorScheme colorScheme, 
-      stack_models.Container container) {
+      berth_api.Container container) {
     final state = container.state.toLowerCase();
     
     switch (state) {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/stack.dart' hide Container;
+import 'package:berth_api/api.dart' as berth_api;
 import 'environment_variable_card.dart';
 
 class EnvironmentVariableList extends StatelessWidget {
-  final Map<String, List<ServiceEnvironment>>? environmentData;
+  final Map<String, List<berth_api.ServiceEnvironment>>? environmentData;
   final bool isLoading;
   final String? error;
 

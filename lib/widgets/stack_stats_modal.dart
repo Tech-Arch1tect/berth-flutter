@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../models/stack.dart' as stack_models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../services/stack_service.dart';
 import '../widgets/stack_stats_list.dart';
 import '../theme/app_theme.dart';
@@ -22,7 +22,7 @@ class StackStatsModal extends StatefulWidget {
 }
 
 class _StackStatsModalState extends State<StackStatsModal> {
-  stack_models.StackStats? _stackStats;
+  berth_api.StackStatsResponse? _stackStats;
   bool _isStatsLoading = false;
   String? _statsError;
   Timer? _statsTimer;
