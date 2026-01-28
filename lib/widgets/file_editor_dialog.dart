@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import '../models/file.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import '../extensions/file_entry_extensions.dart';
 import '../services/files_service.dart';
 import '../theme/app_theme.dart';
 
 class FileEditorDialog extends StatefulWidget {
   final int serverId;
   final String stackName;
-  final FileEntry fileEntry;
+  final berth_api.FileEntry fileEntry;
   final FilesService filesService;
   final bool readOnly;
 
@@ -29,7 +30,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
   bool _isLoading = true;
   bool _isSaving = false;
   String? _error;
-  FileContent? _fileContent;
+  berth_api.FileContent? _fileContent;
   bool _hasChanges = false;
 
   @override
@@ -93,7 +94,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       await widget.filesService.writeFile(
         widget.serverId,
         widget.stackName,
-        WriteFileRequest(
+        berth_api.WriteFileRequest(
           path: widget.fileEntry.path,
           content: _controller.text,
           encoding: _fileContent!.encoding,
@@ -101,7 +102,7 @@ class _FileEditorDialogState extends State<FileEditorDialog> {
       );
 
       setState(() {
-        _fileContent = FileContent(
+        _fileContent = berth_api.FileContent(
           path: _fileContent!.path,
           content: _controller.text,
           size: _controller.text.length,

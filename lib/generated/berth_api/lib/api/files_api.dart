@@ -318,12 +318,12 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path (required):
+  /// * [String] filePath (required):
   ///   File path to download
   ///
   /// * [String] filename:
   ///   Optional filename for the downloaded file
-  Future<Response> apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(int serverid, String stackname, String path, { String? filename, }) async {
+  Future<Response> apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(int serverid, String stackname, String filePath, { String? filename, }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/files/download'
       .replaceAll('{serverid}', serverid.toString())
@@ -336,7 +336,7 @@ class FilesApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-      queryParams.addAll(_queryParams('', 'path', path));
+      queryParams.addAll(_queryParams('', 'filePath', filePath));
     if (filename != null) {
       queryParams.addAll(_queryParams('', 'filename', filename));
     }
@@ -367,13 +367,13 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path (required):
+  /// * [String] filePath (required):
   ///   File path to download
   ///
   /// * [String] filename:
   ///   Optional filename for the downloaded file
-  Future<MultipartFile?> apiV1ServersServeridStacksStacknameFilesDownloadGet(int serverid, String stackname, String path, { String? filename, }) async {
-    final response = await apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(serverid, stackname, path,  filename: filename, );
+  Future<MultipartFile?> apiV1ServersServeridStacksStacknameFilesDownloadGet(int serverid, String stackname, String filePath, { String? filename, }) async {
+    final response = await apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(serverid, stackname, filePath,  filename: filename, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -401,9 +401,9 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path:
+  /// * [String] filePath:
   ///   Directory path to list
-  Future<Response> apiV1ServersServeridStacksStacknameFilesGetWithHttpInfo(int serverid, String stackname, { String? path, }) async {
+  Future<Response> apiV1ServersServeridStacksStacknameFilesGetWithHttpInfo(int serverid, String stackname, { String? filePath, }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/files'
       .replaceAll('{serverid}', serverid.toString())
@@ -416,8 +416,8 @@ class FilesApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    if (path != null) {
-      queryParams.addAll(_queryParams('', 'path', path));
+    if (filePath != null) {
+      queryParams.addAll(_queryParams('', 'filePath', filePath));
     }
 
     const contentTypes = <String>[];
@@ -446,10 +446,10 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path:
+  /// * [String] filePath:
   ///   Directory path to list
-  Future<DirectoryListing?> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String? path, }) async {
-    final response = await apiV1ServersServeridStacksStacknameFilesGetWithHttpInfo(serverid, stackname,  path: path, );
+  Future<DirectoryListing?> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String? filePath, }) async {
+    final response = await apiV1ServersServeridStacksStacknameFilesGetWithHttpInfo(serverid, stackname,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -549,9 +549,9 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path (required):
+  /// * [String] filePath (required):
   ///   File path to read
-  Future<Response> apiV1ServersServeridStacksStacknameFilesReadGetWithHttpInfo(int serverid, String stackname, String path,) async {
+  Future<Response> apiV1ServersServeridStacksStacknameFilesReadGetWithHttpInfo(int serverid, String stackname, String filePath,) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/files/read'
       .replaceAll('{serverid}', serverid.toString())
@@ -564,7 +564,7 @@ class FilesApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-      queryParams.addAll(_queryParams('', 'path', path));
+      queryParams.addAll(_queryParams('', 'filePath', filePath));
 
     const contentTypes = <String>[];
 
@@ -592,10 +592,10 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path (required):
+  /// * [String] filePath (required):
   ///   File path to read
-  Future<FileContent?> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String path,) async {
-    final response = await apiV1ServersServeridStacksStacknameFilesReadGetWithHttpInfo(serverid, stackname, path,);
+  Future<FileContent?> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath,) async {
+    final response = await apiV1ServersServeridStacksStacknameFilesReadGetWithHttpInfo(serverid, stackname, filePath,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -695,9 +695,9 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path:
+  /// * [String] filePath:
   ///   Directory path
-  Future<Response> apiV1ServersServeridStacksStacknameFilesStatsGetWithHttpInfo(int serverid, String stackname, { String? path, }) async {
+  Future<Response> apiV1ServersServeridStacksStacknameFilesStatsGetWithHttpInfo(int serverid, String stackname, { String? filePath, }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/files/stats'
       .replaceAll('{serverid}', serverid.toString())
@@ -710,8 +710,8 @@ class FilesApi {
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    if (path != null) {
-      queryParams.addAll(_queryParams('', 'path', path));
+    if (filePath != null) {
+      queryParams.addAll(_queryParams('', 'filePath', filePath));
     }
 
     const contentTypes = <String>[];
@@ -740,10 +740,10 @@ class FilesApi {
   /// * [String] stackname (required):
   ///   Stack name
   ///
-  /// * [String] path:
+  /// * [String] filePath:
   ///   Directory path
-  Future<DirectoryStats?> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String? path, }) async {
-    final response = await apiV1ServersServeridStacksStacknameFilesStatsGetWithHttpInfo(serverid, stackname,  path: path, );
+  Future<DirectoryStats?> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String? filePath, }) async {
+    final response = await apiV1ServersServeridStacksStacknameFilesStatsGetWithHttpInfo(serverid, stackname,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -773,8 +773,8 @@ class FilesApi {
   ///
   /// * [MultipartFile] file (required):
   ///
-  /// * [String] path:
-  Future<Response> apiV1ServersServeridStacksStacknameFilesUploadPostWithHttpInfo(int serverid, String stackname, MultipartFile file, { String? path, }) async {
+  /// * [String] filePath:
+  Future<Response> apiV1ServersServeridStacksStacknameFilesUploadPostWithHttpInfo(int serverid, String stackname, MultipartFile file, { String? filePath, }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/files/upload'
       .replaceAll('{serverid}', serverid.toString())
@@ -796,9 +796,9 @@ class FilesApi {
       mp.fields[r'file'] = file.field;
       mp.files.add(file);
     }
-    if (path != null) {
+    if (filePath != null) {
       hasFields = true;
-      mp.fields[r'path'] = parameterToString(path);
+      mp.fields[r'filePath'] = parameterToString(filePath);
     }
     if (hasFields) {
       postBody = mp;
@@ -829,9 +829,9 @@ class FilesApi {
   ///
   /// * [MultipartFile] file (required):
   ///
-  /// * [String] path:
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String? path, }) async {
-    final response = await apiV1ServersServeridStacksStacknameFilesUploadPostWithHttpInfo(serverid, stackname, file,  path: path, );
+  /// * [String] filePath:
+  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String? filePath, }) async {
+    final response = await apiV1ServersServeridStacksStacknameFilesUploadPostWithHttpInfo(serverid, stackname, file,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }

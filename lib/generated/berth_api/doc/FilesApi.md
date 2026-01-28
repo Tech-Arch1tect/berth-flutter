@@ -268,7 +268,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesDownloadGet**
-> MultipartFile apiV1ServersServeridStacksStacknameFilesDownloadGet(serverid, stackname, path, filename)
+> MultipartFile apiV1ServersServeridStacksStacknameFilesDownloadGet(serverid, stackname, filePath, filename)
 
 Download a file
 
@@ -295,11 +295,11 @@ import 'package:berth_api/api.dart';
 final api_instance = FilesApi();
 final serverid = 56; // int | Server ID
 final stackname = stackname_example; // String | Stack name
-final path = path_example; // String | File path to download
+final filePath = filePath_example; // String | File path to download
 final filename = filename_example; // String | Optional filename for the downloaded file
 
 try {
-    final result = api_instance.apiV1ServersServeridStacksStacknameFilesDownloadGet(serverid, stackname, path, filename);
+    final result = api_instance.apiV1ServersServeridStacksStacknameFilesDownloadGet(serverid, stackname, filePath, filename);
     print(result);
 } catch (e) {
     print('Exception when calling FilesApi->apiV1ServersServeridStacksStacknameFilesDownloadGet: $e\n');
@@ -312,7 +312,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **serverid** | **int**| Server ID | 
  **stackname** | **String**| Stack name | 
- **path** | **String**| File path to download | 
+ **filePath** | **String**| File path to download | 
  **filename** | **String**| Optional filename for the downloaded file | [optional] 
 
 ### Return type
@@ -331,7 +331,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesGet**
-> DirectoryListing apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, path)
+> DirectoryListing apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, filePath)
 
 List directory contents
 
@@ -358,10 +358,10 @@ import 'package:berth_api/api.dart';
 final api_instance = FilesApi();
 final serverid = 56; // int | Server ID
 final stackname = stackname_example; // String | Stack name
-final path = path_example; // String | Directory path to list
+final filePath = filePath_example; // String | Directory path to list
 
 try {
-    final result = api_instance.apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, path);
+    final result = api_instance.apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, filePath);
     print(result);
 } catch (e) {
     print('Exception when calling FilesApi->apiV1ServersServeridStacksStacknameFilesGet: $e\n');
@@ -374,7 +374,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **serverid** | **int**| Server ID | 
  **stackname** | **String**| Stack name | 
- **path** | **String**| Directory path to list | [optional] 
+ **filePath** | **String**| Directory path to list | [optional] 
 
 ### Return type
 
@@ -453,7 +453,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesReadGet**
-> FileContent apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, path)
+> FileContent apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, filePath)
 
 Read file contents
 
@@ -480,10 +480,10 @@ import 'package:berth_api/api.dart';
 final api_instance = FilesApi();
 final serverid = 56; // int | Server ID
 final stackname = stackname_example; // String | Stack name
-final path = path_example; // String | File path to read
+final filePath = filePath_example; // String | File path to read
 
 try {
-    final result = api_instance.apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, path);
+    final result = api_instance.apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, filePath);
     print(result);
 } catch (e) {
     print('Exception when calling FilesApi->apiV1ServersServeridStacksStacknameFilesReadGet: $e\n');
@@ -496,7 +496,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **serverid** | **int**| Server ID | 
  **stackname** | **String**| Stack name | 
- **path** | **String**| File path to read | 
+ **filePath** | **String**| File path to read | 
 
 ### Return type
 
@@ -575,7 +575,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesStatsGet**
-> DirectoryStats apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, path)
+> DirectoryStats apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, filePath)
 
 Get directory statistics
 
@@ -602,10 +602,10 @@ import 'package:berth_api/api.dart';
 final api_instance = FilesApi();
 final serverid = 56; // int | Server ID
 final stackname = stackname_example; // String | Stack name
-final path = path_example; // String | Directory path
+final filePath = filePath_example; // String | Directory path
 
 try {
-    final result = api_instance.apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, path);
+    final result = api_instance.apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, filePath);
     print(result);
 } catch (e) {
     print('Exception when calling FilesApi->apiV1ServersServeridStacksStacknameFilesStatsGet: $e\n');
@@ -618,7 +618,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **serverid** | **int**| Server ID | 
  **stackname** | **String**| Stack name | 
- **path** | **String**| Directory path | [optional] 
+ **filePath** | **String**| Directory path | [optional] 
 
 ### Return type
 
@@ -636,7 +636,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesUploadPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, path)
+> MessageResponse apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, filePath)
 
 Upload a file
 
@@ -664,10 +664,10 @@ final api_instance = FilesApi();
 final serverid = 56; // int | Server ID
 final stackname = stackname_example; // String | Stack name
 final file = BINARY_DATA_HERE; // MultipartFile | 
-final path = path_example; // String | 
+final filePath = filePath_example; // String | 
 
 try {
-    final result = api_instance.apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, path);
+    final result = api_instance.apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, filePath);
     print(result);
 } catch (e) {
     print('Exception when calling FilesApi->apiV1ServersServeridStacksStacknameFilesUploadPost: $e\n');
@@ -681,7 +681,7 @@ Name | Type | Description  | Notes
  **serverid** | **int**| Server ID | 
  **stackname** | **String**| Stack name | 
  **file** | **MultipartFile**|  | 
- **path** | **String**|  | [optional] 
+ **filePath** | **String**|  | [optional] 
 
 ### Return type
 

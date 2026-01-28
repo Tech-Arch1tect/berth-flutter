@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
-import '../models/file.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import '../extensions/file_entry_extensions.dart';
 import '../models/operation.dart';
 import '../services/files_service.dart';
+import '../services/berth_api_provider.dart';
 import '../services/api_client.dart';
 import '../services/operations_service.dart';
 import '../services/config_service.dart';
@@ -31,7 +33,7 @@ class FileManager extends StatefulWidget {
 
 class _FileManagerState extends State<FileManager> {
   late final FilesService _filesService;
-  DirectoryListing? _currentListing;
+  berth_api.DirectoryListing? _currentListing;
   bool _isLoading = true;
   String? _error;
   String _currentPath = '';
@@ -40,8 +42,8 @@ class _FileManagerState extends State<FileManager> {
   @override
   void initState() {
     super.initState();
-    final apiClient = Provider.of<ApiClient>(context, listen: false);
-    _filesService = FilesService(apiClient);
+    final berthApiProvider = Provider.of<BerthApiProvider>(context, listen: false);
+    _filesService = FilesService(berthApiProvider);
     _loadDirectory();
   }
 
@@ -198,10 +200,10 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Widget _buildFileListTile(FileEntry entry) {
+  Widget _buildFileListTile(berth_api.FileEntry entry) {
     return ListTile(
       leading: Icon(
-        entry.isDirectory ? Icons.folder : _getFileIcon(entry.extension),
+        entry.isDirectory ? Icons.folder : _getFileIcon(entry.extension_),
         color: entry.isDirectory 
           ? Theme.of(context).colorScheme.primary 
           : Theme.of(context).colorScheme.onSurface,
@@ -283,13 +285,13 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  String _formatOwnership(FileEntry entry) {
+  String _formatOwnership(berth_api.FileEntry entry) {
     final ownerPart = entry.owner != null ? '${entry.owner}' : '${entry.ownerId ?? 'unknown'}';
     final groupPart = entry.group != null ? '${entry.group}' : '${entry.groupId ?? 'unknown'}';
     return '$ownerPart:$groupPart';
   }
 
-  void _showFileOptions(FileEntry entry) {
+  void _showFileOptions(berth_api.FileEntry entry) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -392,7 +394,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _viewFile(FileEntry entry) {
+  void _viewFile(berth_api.FileEntry entry) {
     showDialog(
       context: context,
       builder: (context) => FileEditorDialog(
@@ -405,7 +407,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _editFile(FileEntry entry) {
+  void _editFile(berth_api.FileEntry entry) {
     showDialog(
       context: context,
       builder: (context) => FileEditorDialog(
@@ -418,11 +420,11 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Future<void> _downloadFile(FileEntry entry) async {
+  Future<void> _downloadFile(berth_api.FileEntry entry) async {
     _showDownloadLocationDialog(entry);
   }
 
-  void _showDownloadLocationDialog(FileEntry entry) {
+  void _showDownloadLocationDialog(berth_api.FileEntry entry) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -474,7 +476,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Future<void> _downloadToDownloads(FileEntry entry) async {
+  Future<void> _downloadToDownloads(berth_api.FileEntry entry) async {
     try {
       if (Platform.isAndroid) {
         bool hasPermission = await _requestStoragePermission();
@@ -487,7 +489,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _downloadToCustomLocation(FileEntry entry) async {
+  Future<void> _downloadToCustomLocation(berth_api.FileEntry entry) async {
     try {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
       
@@ -503,7 +505,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _downloadToAppFolder(FileEntry entry) async {
+  Future<void> _downloadToAppFolder(berth_api.FileEntry entry) async {
     try {
       await _performDownload(entry, _getAppDirectory, 'app folder');
     } catch (e) {
@@ -579,7 +581,7 @@ class _FileManagerState extends State<FileManager> {
   }
 
   Future<void> _performDownload(
-    FileEntry entry, 
+    berth_api.FileEntry entry, 
     Future<Directory> Function() getDirectory, 
     String locationName
   ) async {
@@ -672,7 +674,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _showRenameDialog(FileEntry entry) {
+  void _showRenameDialog(berth_api.FileEntry entry) {
     final controller = TextEditingController(text: entry.name);
     
     showDialog(
@@ -713,7 +715,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _showCopyDialog(FileEntry entry) {
+  void _showCopyDialog(berth_api.FileEntry entry) {
     final pathController = TextEditingController();
     final nameController = TextEditingController(text: entry.name);
     
@@ -767,7 +769,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _confirmDelete(FileEntry entry) {
+  void _confirmDelete(berth_api.FileEntry entry) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -793,7 +795,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Future<void> _renameItem(FileEntry entry, String newName) async {
+  Future<void> _renameItem(berth_api.FileEntry entry, String newName) async {
     final pathSegments = entry.path.split('/');
     pathSegments[pathSegments.length - 1] = newName;
     final newPath = pathSegments.join('/');
@@ -802,7 +804,7 @@ class _FileManagerState extends State<FileManager> {
       await _filesService.renameFile(
         widget.serverId,
         widget.stackName,
-        RenameRequest(oldPath: entry.path, newPath: newPath),
+        berth_api.RenameRequest(oldPath: entry.path, newPath: newPath),
       );
       
       if (mounted) {
@@ -824,7 +826,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _copyItem(FileEntry entry, String destinationPath, String newName) async {
+  Future<void> _copyItem(berth_api.FileEntry entry, String destinationPath, String newName) async {
     String targetPath;
     if (destinationPath.isEmpty) {
       targetPath = _currentPath.isEmpty ? newName : '$_currentPath/$newName';
@@ -838,7 +840,7 @@ class _FileManagerState extends State<FileManager> {
       await _filesService.copyFile(
         widget.serverId,
         widget.stackName,
-        CopyRequest(sourcePath: entry.path, targetPath: targetPath),
+        berth_api.CopyRequest(sourcePath: entry.path, targetPath: targetPath),
       );
       
       if (mounted) {
@@ -860,12 +862,12 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  Future<void> _deleteItem(FileEntry entry) async {
+  Future<void> _deleteItem(berth_api.FileEntry entry) async {
     try {
       await _filesService.deleteFile(
         widget.serverId,
         widget.stackName,
-        DeleteRequest(path: entry.path),
+        berth_api.DeleteRequest2(path: entry.path),
       );
       
       if (mounted) {
@@ -1127,7 +1129,7 @@ class _FileManagerState extends State<FileManager> {
             await _filesService.chmodFile(
               widget.serverId,
               widget.stackName,
-              ChmodRequest(
+              berth_api.ChmodRequest(
                 path: filePath,
                 mode: mode,
                 recursive: false,
@@ -1139,7 +1141,7 @@ class _FileManagerState extends State<FileManager> {
             await _filesService.chownFile(
               widget.serverId,
               widget.stackName,
-              ChownRequest(
+              berth_api.ChownRequest(
                 path: filePath,
                 ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
                 groupId: groupId.isNotEmpty ? int.tryParse(groupId) : null,
@@ -1491,7 +1493,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Future<DirectoryStats?> _loadSmartDefaults(String path) async {
+  Future<berth_api.DirectoryStats?> _loadSmartDefaults(String path) async {
     try {
       return await _filesService.getDirectoryStats(
         widget.serverId,
@@ -1507,7 +1509,7 @@ class _FileManagerState extends State<FileManager> {
     final filePath = _currentPath.isEmpty ? fileName : '$_currentPath/$fileName';
     
     try {
-      final request = WriteFileRequest(
+      final request = berth_api.WriteFileRequest(
         path: filePath,
         content: '',
         mode: mode.isNotEmpty ? mode : null,
@@ -1540,7 +1542,7 @@ class _FileManagerState extends State<FileManager> {
     final dirPath = _currentPath.isEmpty ? dirName : '$_currentPath/$dirName';
     
     try {
-      final request = CreateDirectoryRequest(
+      final request = berth_api.CreateDirectoryRequest(
         path: dirPath,
         mode: mode.isNotEmpty ? mode : null,
         ownerId: ownerId.isNotEmpty ? int.tryParse(ownerId) : null,
@@ -1609,7 +1611,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _showChmodDialog(FileEntry entry) {
+  void _showChmodDialog(berth_api.FileEntry entry) {
     final octalController = TextEditingController();
     bool userRead = false;
     bool userWrite = false;
@@ -1900,12 +1902,12 @@ class _FileManagerState extends State<FileManager> {
     return '$userValue$groupValue$otherValue';
   }
 
-  Future<void> _changePermissions(FileEntry entry, String mode, bool recursive) async {
+  Future<void> _changePermissions(berth_api.FileEntry entry, String mode, bool recursive) async {
     try {
       await _filesService.chmodFile(
         widget.serverId,
         widget.stackName,
-        ChmodRequest(path: entry.path, mode: mode, recursive: recursive),
+        berth_api.ChmodRequest(path: entry.path, mode: mode, recursive: recursive),
       );
 
       if (mounted) {
@@ -1933,7 +1935,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  void _showChownDialog(FileEntry entry) {
+  void _showChownDialog(berth_api.FileEntry entry) {
     final ownerIdController = TextEditingController(text: entry.ownerId?.toString() ?? '');
     final groupIdController = TextEditingController(text: entry.groupId?.toString() ?? '');
     bool recursive = false;
@@ -2069,9 +2071,9 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  Future<void> _executeChown(FileEntry entry, String ownerIdStr, String groupIdStr, bool recursive) async {
+  Future<void> _executeChown(berth_api.FileEntry entry, String ownerIdStr, String groupIdStr, bool recursive) async {
     try {
-      final request = ChownRequest(
+      final request = berth_api.ChownRequest(
         path: entry.path,
         ownerId: ownerIdStr.isNotEmpty ? int.tryParse(ownerIdStr) : null,
         groupId: groupIdStr.isNotEmpty ? int.tryParse(groupIdStr) : null,
@@ -2101,7 +2103,7 @@ class _FileManagerState extends State<FileManager> {
     }
   }
 
-  void _showCreateArchiveDialog(FileEntry? entry) {
+  void _showCreateArchiveDialog(berth_api.FileEntry? entry) {
     showDialog(
       context: context,
       builder: (context) => ArchiveOperationDialog(
@@ -2113,7 +2115,7 @@ class _FileManagerState extends State<FileManager> {
     );
   }
 
-  void _showExtractArchiveDialog(FileEntry entry) {
+  void _showExtractArchiveDialog(berth_api.FileEntry entry) {
     showDialog(
       context: context,
       builder: (context) => ArchiveOperationDialog(

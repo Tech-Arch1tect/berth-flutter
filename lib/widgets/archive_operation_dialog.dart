@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/operation.dart';
-import '../models/file.dart';
 
 class ArchiveOperationDialog extends StatefulWidget {
   final String operation; // 'create' or 'extract'
   final String currentPath;
-  final FileEntry? selectedFile;
+  final berth_api.FileEntry? selectedFile;
   final Function(OperationRequest) onOperationStart;
 
   const ArchiveOperationDialog({
