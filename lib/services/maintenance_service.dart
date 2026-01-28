@@ -1,66 +1,63 @@
-import 'dart:convert';
-import '../models/maintenance.dart';
-import 'api_client.dart';
+import 'package:flutter/foundation.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import 'berth_api_provider.dart';
 
 class MaintenanceService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  MaintenanceService(this._apiClient);
+  MaintenanceService(this._berthApiProvider);
 
-  Future<MaintenanceInfo> getMaintenanceInfo(int serverId) async {
+  Future<berth_api.MaintenanceInfo> getMaintenanceInfo(int serverId) async {
+    debugPrint('[MaintenanceService] getMaintenanceInfo: serverId=$serverId');
     try {
-      final response = await _apiClient.get('/api/v1/servers/$serverId/maintenance/info');
-      
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return MaintenanceInfo.fromJson(json);
-      } else {
-        throw Exception('Failed to fetch maintenance info: ${response.statusCode}');
+      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceInfoGet(serverId);
+      if (response == null) {
+        throw Exception('Failed to fetch maintenance info: null response');
       }
-    } catch (e) {
-      throw Exception('Error fetching maintenance info: $e');
+      debugPrint('[MaintenanceService] getMaintenanceInfo: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[MaintenanceService] getMaintenanceInfo: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to fetch maintenance info: ${e.code}');
     }
   }
 
-  Future<PruneResult> pruneResources(int serverId, PruneRequest request) async {
+  Future<berth_api.PruneResult> pruneResources(int serverId, berth_api.PruneRequest request) async {
+    debugPrint('[MaintenanceService] pruneResources: serverId=$serverId');
     try {
-      final response = await _apiClient.post(
-        '/api/v1/servers/$serverId/maintenance/prune',
-        body: request.toJson(),
-      );
-      
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return PruneResult.fromJson(json);
-      } else {
-        final errorMessage = response.statusCode == 400 || response.statusCode == 500
-            ? jsonDecode(response.body)['error'] ?? 'Unknown error'
-            : 'Failed to prune resources';
-        throw Exception('$errorMessage (${response.statusCode})');
+      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenancePrunePost(serverId, request);
+      if (response == null) {
+        throw Exception('Failed to prune resources: null response');
       }
-    } catch (e) {
-      throw Exception('Error pruning resources: $e');
+      debugPrint('[MaintenanceService] pruneResources: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[MaintenanceService] pruneResources: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to prune resources: ${e.code}');
     }
   }
 
-  Future<DeleteResult> deleteResource(int serverId, DeleteRequest request) async {
+  Future<berth_api.DeleteResult> deleteResource(int serverId, berth_api.DeleteRequest request) async {
+    debugPrint('[MaintenanceService] deleteResource: serverId=$serverId');
     try {
-      final response = await _apiClient.deleteWithBody(
-        '/api/v1/servers/$serverId/maintenance/resource',
-        body: request.toJson(),
-      );
-      
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return DeleteResult.fromJson(json);
-      } else {
-        final errorMessage = response.statusCode == 400 || response.statusCode == 500
-            ? jsonDecode(response.body)['error'] ?? 'Unknown error'
-            : 'Failed to delete resource';
-        throw Exception('$errorMessage (${response.statusCode})');
+      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceResourceDelete(serverId, request);
+      if (response == null) {
+        throw Exception('Failed to delete resource: null response');
       }
-    } catch (e) {
-      throw Exception('Error deleting resource: $e');
+      debugPrint('[MaintenanceService] deleteResource: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[MaintenanceService] deleteResource: ApiException - code=${e.code}, message=${e.message}');
+      if (e.code == 401) {
+        throw Exception('Authentication failed');
+      }
+      throw Exception('Failed to delete resource: ${e.code}');
     }
   }
 }

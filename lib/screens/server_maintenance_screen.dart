@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/maintenance.dart';
 import '../services/maintenance_service.dart';
 import '../services/server_service.dart';
 import '../theme/app_theme.dart';
@@ -19,7 +18,7 @@ class ServerMaintenanceScreen extends StatefulWidget {
 }
 
 class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
-  MaintenanceInfo? _maintenanceInfo;
+  berth_api.MaintenanceInfo? _maintenanceInfo;
   berth_api.ServerResponse? _server;
   bool _isLoading = true;
   String? _error;
@@ -46,7 +45,7 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
       ]);
 
       final server = futures[0] as berth_api.ServerResponse;
-      final maintenanceInfo = futures[1] as MaintenanceInfo;
+      final maintenanceInfo = futures[1] as berth_api.MaintenanceInfo;
 
       setState(() {
         _server = server;
@@ -1035,10 +1034,11 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
     if (!confirmed) return;
 
     try {
-      final request = PruneRequest(
+      final request = berth_api.PruneRequest(
         type: type,
-        force: force,
-        all: all,
+        force: force ?? false,
+        all: all ?? false,
+        filters: '',
       );
 
       final result = await maintenanceService.pruneResources(widget.serverId, request);
@@ -1226,7 +1226,7 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
     if (!confirmed) return;
 
     try {
-      final request = DeleteRequest(type: type, id: id);
+      final request = berth_api.DeleteRequest(type: type, id: id);
 
       final result = await maintenanceService.deleteResource(widget.serverId, request);
 
