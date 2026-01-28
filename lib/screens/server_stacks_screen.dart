@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/stack.dart' as stack_models;
-import '../models/server.dart';
+import '../extensions/server_response_extensions.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class ServerStacksScreen extends StatefulWidget {
 
 class _ServerStacksScreenState extends State<ServerStacksScreen> {
   List<stack_models.Stack>? _stacks;
-  Server? _server;
+  berth_api.ServerResponse? _server;
   bool _isLoading = true;
   String? _error;
 
@@ -47,7 +48,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
         widget.stackService.getServerStacks(widget.serverId),
       ]);
       
-      final server = futures[0] as Server;
+      final server = futures[0] as berth_api.ServerResponse;
       final stacks = futures[1] as List<stack_models.Stack>;
       
       setState(() {

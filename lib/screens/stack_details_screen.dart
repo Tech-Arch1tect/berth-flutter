@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/stack.dart' as stack_models;
-import '../models/server.dart';
 import '../models/websocket_message.dart';
 import '../services/api_client.dart';
 import '../services/stack_service.dart';
@@ -48,7 +48,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   List<stack_models.Network>? _networks;
   List<stack_models.Volume>? _volumes;
   Map<String, List<stack_models.ServiceEnvironment>>? _environmentVariables;
-  Server? _server;
+  berth_api.ServerResponse? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
   bool _isVolumesLoading = false;
@@ -105,16 +105,14 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         widget.stackService.getStackDetails(widget.serverId, widget.stackName),
       ]);
       
-      final server = futures[0] as Server;
+      final server = futures[0] as berth_api.ServerResponse;
       final stackDetails = futures[1] as stack_models.StackDetails;
-      
+
       setState(() {
         _server = server;
         _stackDetails = stackDetails;
         _isLoading = false;
       });
-
-      // Load secondary data on demand later
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -360,9 +358,9 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         widget.stackService.getStackDetails(widget.serverId, widget.stackName),
       ]);
       
-      final server = futures[0] as Server;
+      final server = futures[0] as berth_api.ServerResponse;
       final stackDetails = futures[1] as stack_models.StackDetails;
-      
+
       if (mounted) {
         setState(() {
           _server = server;

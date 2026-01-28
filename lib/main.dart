@@ -61,10 +61,27 @@ class _AppInitializerState extends State<AppInitializer> {
     _berthApiProvider = BerthApiProvider(skipSslVerification: true);
     _authService = AuthService(_apiClient);
     _stackService = StackService(_apiClient);
-    _serverService = ServerService(_apiClient);
+    _serverService = ServerService(_apiClient, _berthApiProvider);
     _maintenanceService = MaintenanceService(_apiClient);
     _operationLogService = OperationLogService(_apiClient);
+
+    _authService.addListener(_syncAuthToken);
+
     _initialize();
+  }
+
+  @override
+  void dispose() {
+    _authService.removeListener(_syncAuthToken);
+    super.dispose();
+  }
+
+  void _syncAuthToken() {
+    if (_authService.isAuthenticated && _apiClient.authToken != null) {
+      _berthApiProvider.setAuthToken(_apiClient.authToken!);
+    } else {
+      _berthApiProvider.clearAuthToken();
+    }
   }
 
   Future<void> _initialize() async {

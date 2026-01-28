@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../../models/server.dart';
+import '../../extensions/server_response_extensions.dart';
 import '../../services/server_service.dart';
-import '../../services/api_client.dart';
 import '../../theme/app_theme.dart';
 
 class ServersScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _ServersScreenState extends State<ServersScreen> {
   @override
   void initState() {
     super.initState();
-    _serverService = ServerService(context.read<ApiClient>());
+    _serverService = context.read<ServerService>();
     _loadServers();
   }
 
@@ -441,8 +442,8 @@ class _ServerFormDialogState extends State<_ServerFormDialog> {
   @override
   void initState() {
     super.initState();
-    _serverService = ServerService(context.read<ApiClient>());
-    
+    _serverService = context.read<ServerService>();
+
     final server = widget.server;
     _nameController = TextEditingController(text: server?.name ?? '');
     _hostController = TextEditingController(text: server?.host ?? '');

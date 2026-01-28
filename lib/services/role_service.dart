@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/role.dart';
 import '../models/permission.dart';
-import '../models/server.dart';
 import 'api_client.dart';
 
 class RoleService {
@@ -29,7 +29,7 @@ class RoleService {
       
       return RoleStackPermissionsData(
         role: Role.fromJson(data['role']),
-        servers: (data['servers'] as List).map((server) => Server.fromJson(server)).toList(),
+        servers: (data['servers'] as List).map((server) => berth_api.ServerResponse.fromJson(server)!).toList(),
         permissions: (data['permissions'] as List).map((permission) => Permission.fromJson(permission)).toList(),
         permissionRules: (data['permissionRules'] as List).map((rule) => PermissionRule.fromJson(rule)).toList(),
       );
@@ -144,7 +144,7 @@ class PermissionRule {
 
 class RoleStackPermissionsData {
   final Role role;
-  final List<Server> servers;
+  final List<berth_api.ServerResponse> servers;
   final List<Permission> permissions;
   final List<PermissionRule> permissionRules;
 

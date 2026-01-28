@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../models/server.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/stack_statistics.dart';
+import '../extensions/server_response_extensions.dart';
 import '../theme/app_theme.dart';
 
 class DashboardServerCard extends StatelessWidget {
-  final Server server;
+  final berth_api.ServerResponse server;
   final StackStatistics? statistics;
   final bool isLoadingStatistics;
   final bool hasStatisticsError;

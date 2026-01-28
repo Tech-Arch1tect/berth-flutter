@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/server.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/stack_statistics.dart';
 import '../services/server_service.dart';
-import '../services/api_client.dart';
 import 'dashboard_server_card.dart';
 import '../theme/app_theme.dart';
 
@@ -15,12 +14,11 @@ class DashboardServerList extends StatefulWidget {
 }
 
 class _DashboardServerListState extends State<DashboardServerList> {
-  List<Server> _servers = [];
+  List<berth_api.ServerResponse> _servers = [];
   bool _isLoading = true;
   String? _error;
   late ServerService _serverService;
-  
-  // Statistics state
+
   final Map<int, StackStatistics?> _statistics = {};
   final Set<int> _loadingStatistics = {};
   final Set<int> _statisticsErrors = {};
@@ -28,7 +26,7 @@ class _DashboardServerListState extends State<DashboardServerList> {
   @override
   void initState() {
     super.initState();
-    _serverService = ServerService(context.read<ApiClient>());
+    _serverService = context.read<ServerService>();
     _loadServers();
   }
 
