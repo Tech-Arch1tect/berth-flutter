@@ -13,7 +13,9 @@ class ServerService {
 
   Future<List<berth_api.ServerResponse>> getServers() async {
     try {
-      final response = await _berthApiProvider.adminApi.apiV1AdminServersGet();
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.adminApi.apiV1AdminServersGet(),
+      );
       if (response == null) {
         throw Exception('Failed to load servers: null response');
       }
@@ -27,7 +29,9 @@ class ServerService {
   Future<List<berth_api.ServerResponse>> getUserServers() async {
     try {
       debugPrint('[ServerService] getUserServers: calling API...');
-      final response = await _berthApiProvider.serversApi.apiV1ServersGet();
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.serversApi.apiV1ServersGet(),
+      );
       if (response == null) {
         debugPrint('[ServerService] getUserServers: API returned null response');
         throw Exception('Failed to load servers: null response');
@@ -63,7 +67,9 @@ class ServerService {
 
   Future<berth_api.ServerResponse> createServer(berth_api.ServerCreateRequest request) async {
     try {
-      final response = await _berthApiProvider.adminApi.apiV1AdminServersPost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.adminApi.apiV1AdminServersPost(request),
+      );
       if (response == null) {
         throw Exception('Failed to create server: null response');
       }
@@ -76,7 +82,9 @@ class ServerService {
 
   Future<berth_api.ServerResponse> updateServer(int id, berth_api.ServerUpdateRequest request) async {
     try {
-      final response = await _berthApiProvider.adminApi.apiV1AdminServersIdPut(id, request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.adminApi.apiV1AdminServersIdPut(id, request),
+      );
       if (response == null) {
         throw Exception('Failed to update server: null response');
       }
@@ -89,7 +97,9 @@ class ServerService {
 
   Future<void> deleteServer(int id) async {
     try {
-      await _berthApiProvider.adminApi.apiV1AdminServersIdDelete(id);
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.adminApi.apiV1AdminServersIdDelete(id),
+      );
     } on berth_api.ApiException catch (e) {
       debugPrint('[ServerService] deleteServer: ApiException - code=${e.code}, message=${e.message}');
       rethrow;
@@ -98,7 +108,9 @@ class ServerService {
 
   Future<bool> testConnection(int id) async {
     try {
-      final response = await _berthApiProvider.adminApi.apiV1AdminServersIdTestPost(id);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.adminApi.apiV1AdminServersIdTestPost(id),
+      );
       return response?.success ?? false;
     } on berth_api.ApiException catch (e) {
       if (e.code == 503) {
@@ -112,10 +124,8 @@ class ServerService {
   Future<StackStatistics?> getServerStatistics(int serverId) async {
     try {
       final response = await _apiClient.get('/api/v1/servers/$serverId/statistics');
-      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
         if (data['statistics'] != null) {
           final statistics = StackStatistics.fromJson(data['statistics']);
           return statistics;

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 
@@ -16,7 +17,7 @@ class TOTPSetupScreen extends StatefulWidget {
 class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
-  TOTPSetupResponse? _setupData;
+  berth_api.TOTPSetupResponse? _setupData;
   bool _isLoading = true;
   String? _errorMessage;
   bool _isEnabling = false;
@@ -110,8 +111,8 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
   }
 
   void _copySecret() {
-    if (_setupData?.secret != null) {
-      Clipboard.setData(ClipboardData(text: _setupData!.secret));
+    if (_setupData?.data.secret != null) {
+      Clipboard.setData(ClipboardData(text: _setupData!.data.secret));
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Secret copied to clipboard')),
       );
@@ -200,7 +201,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                 ),
                                 child: Center(
                                   child: QrImageView(
-                                    data: _setupData!.qrCodeURI,
+                                    data: _setupData!.data.qrCodeUri,
                                     version: QrVersions.auto,
                                     size: 200.0,
                                     backgroundColor: Colors.white,
@@ -226,7 +227,7 @@ class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        _setupData!.secret,
+                                        _setupData!.data.secret,
                                         style: const TextStyle(
                                           fontFamily: 'monospace',
                                           fontSize: 12,

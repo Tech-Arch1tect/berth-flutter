@@ -14,7 +14,9 @@ class MigrationService {
     debugPrint('[MigrationService] exportData: starting export');
     try {
       final request = berth_api.ExportRequest(password: password);
-      final response = await _berthApiProvider.migrationApi.apiV1AdminMigrationExportPostWithHttpInfo(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.migrationApi.apiV1AdminMigrationExportPostWithHttpInfo(request),
+      );
 
       if (response.statusCode >= 400) {
         throw berth_api.ApiException(response.statusCode, response.body);
@@ -54,9 +56,11 @@ class MigrationService {
         filename: backupFile.path.split('/').last,
       );
 
-      final response = await _berthApiProvider.migrationApi.apiV1AdminMigrationImportPost(
-        multipartFile,
-        password,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.migrationApi.apiV1AdminMigrationImportPost(
+          multipartFile,
+          password,
+        ),
       );
 
       if (response == null) {

@@ -59,29 +59,13 @@ class _AppInitializerState extends State<AppInitializer> {
     super.initState();
     _apiClient = ApiClient(skipSslVerification: true);
     _berthApiProvider = BerthApiProvider(skipSslVerification: true);
-    _authService = AuthService(_apiClient);
+    _authService = AuthService(_berthApiProvider);
     _stackService = StackService(_berthApiProvider);
     _serverService = ServerService(_apiClient, _berthApiProvider);
     _maintenanceService = MaintenanceService(_berthApiProvider);
     _operationLogService = OperationLogService(_berthApiProvider);
 
-    _authService.addListener(_syncAuthToken);
-
     _initialize();
-  }
-
-  @override
-  void dispose() {
-    _authService.removeListener(_syncAuthToken);
-    super.dispose();
-  }
-
-  void _syncAuthToken() {
-    if (_authService.isAuthenticated && _apiClient.authToken != null) {
-      _berthApiProvider.setAuthToken(_apiClient.authToken!);
-    } else {
-      _berthApiProvider.clearAuthToken();
-    }
   }
 
   Future<void> _initialize() async {
@@ -95,10 +79,6 @@ class _AppInitializerState extends State<AppInitializer> {
       _berthApiProvider.updateSslVerification(_configService.skipSslVerification);
 
       await _authService.checkAuthStatus();
-
-      if (_authService.isAuthenticated && _apiClient.authToken != null) {
-        _berthApiProvider.setAuthToken(_apiClient.authToken!);
-      }
     }
 
     setState(() {

@@ -10,7 +10,9 @@ class StackService {
   Future<List<berth_api.Stack>> getServerStacks(int serverId) async {
     debugPrint('[StackService] getServerStacks: serverId=$serverId');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksGet(serverId);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksGet(serverId),
+      );
       if (response == null) {
         throw Exception('Failed to fetch server stacks: null response');
       }
@@ -30,7 +32,9 @@ class StackService {
   Future<berth_api.StackDetails> getStackDetails(int serverId, String stackName) async {
     debugPrint('[StackService] getStackDetails: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameGet(serverId, stackName);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameGet(serverId, stackName),
+      );
       if (response == null) {
         throw Exception('Failed to fetch stack details: null response');
       }
@@ -50,7 +54,9 @@ class StackService {
   Future<List<berth_api.Network>> getStackNetworks(int serverId, String stackName) async {
     debugPrint('[StackService] getStackNetworks: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameNetworksGet(serverId, stackName);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameNetworksGet(serverId, stackName),
+      );
       if (response == null) {
         throw Exception('Failed to fetch stack networks: null response');
       }
@@ -72,7 +78,9 @@ class StackService {
   Future<List<berth_api.Volume>> getStackVolumes(int serverId, String stackName) async {
     debugPrint('[StackService] getStackVolumes: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameVolumesGet(serverId, stackName);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameVolumesGet(serverId, stackName),
+      );
       if (response == null) {
         throw Exception('Failed to fetch stack volumes: null response');
       }
@@ -94,7 +102,9 @@ class StackService {
   Future<Map<String, List<berth_api.ServiceEnvironment>>> getStackEnvironmentVariables(int serverId, String stackName) async {
     debugPrint('[StackService] getStackEnvironmentVariables: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameEnvironmentGet(serverId, stackName);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameEnvironmentGet(serverId, stackName),
+      );
       if (response == null) {
         throw Exception('Failed to fetch stack environment variables: null response');
       }
@@ -114,7 +124,9 @@ class StackService {
   Future<berth_api.StackStatsResponse> getStackStats(int serverId, String stackName) async {
     debugPrint('[StackService] getStackStats: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameStatsGet(serverId, stackName);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameStatsGet(serverId, stackName),
+      );
       if (response == null) {
         throw Exception('Failed to fetch stack stats: null response');
       }

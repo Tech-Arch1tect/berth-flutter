@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:berth_api/api.dart' as berth_api;
@@ -10,8 +12,57 @@ class BerthApiProvider {
   String? _authToken;
   bool _skipSslVerification;
 
+  Future<bool> Function()? _tokenRefreshCallback;
+
+  Completer<bool>? _refreshCompleter;
+
   BerthApiProvider({bool skipSslVerification = true})
       : _skipSslVerification = skipSslVerification;
+
+  void setTokenRefreshCallback(Future<bool> Function() callback) {
+    _tokenRefreshCallback = callback;
+  }
+
+  Future<T> callWithAutoRefresh<T>(Future<T> Function() apiCall) async {
+    try {
+      return await apiCall();
+    } on berth_api.ApiException catch (e) {
+      if (e.code == 401 && _tokenRefreshCallback != null) {
+        debugPrint('BerthApiProvider: Got 401, attempting token refresh...');
+
+        final refreshed = await _attemptTokenRefresh();
+
+        if (refreshed) {
+          debugPrint('BerthApiProvider: Token refreshed, retrying API call...');
+          return await apiCall();
+        } else {
+          debugPrint('BerthApiProvider: Token refresh failed, re-throwing 401');
+        }
+      }
+      rethrow;
+    }
+  }
+
+  Future<bool> _attemptTokenRefresh() async {
+    if (_refreshCompleter != null) {
+      debugPrint('BerthApiProvider: Refresh already in progress, waiting...');
+      return await _refreshCompleter!.future;
+    }
+
+    _refreshCompleter = Completer<bool>();
+
+    try {
+      final result = await _tokenRefreshCallback!();
+      _refreshCompleter!.complete(result);
+      return result;
+    } catch (e) {
+      debugPrint('BerthApiProvider: Token refresh threw error: $e');
+      _refreshCompleter!.complete(false);
+      return false;
+    } finally {
+      _refreshCompleter = null;
+    }
+  }
 
   void setBaseUrl(String url) {
     _baseUrl = url;
@@ -94,6 +145,7 @@ class BerthApiProvider {
   berth_api.LogsApi? _logsApi;
   berth_api.MigrationApi? _migrationApi;
   berth_api.TotpApi? _totpApi;
+  berth_api.AuthApi? _authApi;
 
   berth_api.ServersApi get serversApi => _serversApi ??= berth_api.ServersApi(apiClient);
   berth_api.StacksApi get stacksApi => _stacksApi ??= berth_api.StacksApi(apiClient);
@@ -108,6 +160,7 @@ class BerthApiProvider {
   berth_api.LogsApi get logsApi => _logsApi ??= berth_api.LogsApi(apiClient);
   berth_api.MigrationApi get migrationApi => _migrationApi ??= berth_api.MigrationApi(apiClient);
   berth_api.TotpApi get totpApi => _totpApi ??= berth_api.TotpApi(apiClient);
+  berth_api.AuthApi get authApi => _authApi ??= berth_api.AuthApi(apiClient);
 
   void _clearApiInstances() {
     _serversApi = null;
@@ -123,5 +176,6 @@ class BerthApiProvider {
     _logsApi = null;
     _migrationApi = null;
     _totpApi = null;
+    _authApi = null;
   }
 }

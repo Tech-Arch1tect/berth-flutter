@@ -10,7 +10,9 @@ class RoleService {
   Future<List<berth_api.RoleWithPermissions>> getRoles() async {
     debugPrint('[RoleService] getRoles');
     try {
-      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesGet();
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesGet(),
+      );
       if (response == null) {
         throw Exception('Failed to load roles: null response');
       }
@@ -28,7 +30,9 @@ class RoleService {
   Future<berth_api.ListRoleStackPermissionsData> getRoleStackPermissions(int roleId) async {
     debugPrint('[RoleService] getRoleStackPermissions: roleId=$roleId');
     try {
-      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsGet(roleId);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsGet(roleId),
+      );
       if (response == null) {
         throw Exception('Failed to load role stack permissions: null response');
       }
@@ -56,7 +60,9 @@ class RoleService {
         permissionId: permissionId,
         stackPattern: stackPattern,
       );
-      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPost(roleId, request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPost(roleId, request),
+      );
       if (response == null) {
         throw Exception('Failed to create permission: null response');
       }
@@ -76,7 +82,9 @@ class RoleService {
   }) async {
     debugPrint('[RoleService] deleteStackPermission: roleId=$roleId, permissionId=$permissionId');
     try {
-      await _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(roleId, permissionId);
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(roleId, permissionId),
+      );
       debugPrint('[RoleService] deleteStackPermission: success');
     } on berth_api.ApiException catch (e) {
       debugPrint('[RoleService] deleteStackPermission: ApiException - code=${e.code}, message=${e.message}');
@@ -97,7 +105,9 @@ class RoleService {
         name: name,
         description: description,
       );
-      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesPost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesPost(request),
+      );
       if (response == null) {
         throw Exception('Failed to create role: null response');
       }
@@ -123,7 +133,9 @@ class RoleService {
         name: name,
         description: description,
       );
-      final response = await _berthApiProvider.rolesApi.apiV1AdminRolesIdPut(roleId, request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesIdPut(roleId, request),
+      );
       if (response == null) {
         throw Exception('Failed to update role: null response');
       }
@@ -141,7 +153,9 @@ class RoleService {
   Future<void> deleteRole(int roleId) async {
     debugPrint('[RoleService] deleteRole: roleId=$roleId');
     try {
-      await _berthApiProvider.rolesApi.apiV1AdminRolesIdDelete(roleId);
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.rolesApi.apiV1AdminRolesIdDelete(roleId),
+      );
       debugPrint('[RoleService] deleteRole: success');
     } on berth_api.ApiException catch (e) {
       debugPrint('[RoleService] deleteRole: ApiException - code=${e.code}, message=${e.message}');

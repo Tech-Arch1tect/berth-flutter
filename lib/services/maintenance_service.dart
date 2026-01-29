@@ -10,7 +10,9 @@ class MaintenanceService {
   Future<berth_api.MaintenanceInfo> getMaintenanceInfo(int serverId) async {
     debugPrint('[MaintenanceService] getMaintenanceInfo: serverId=$serverId');
     try {
-      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceInfoGet(serverId);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceInfoGet(serverId),
+      );
       if (response == null) {
         throw Exception('Failed to fetch maintenance info: null response');
       }
@@ -28,7 +30,9 @@ class MaintenanceService {
   Future<berth_api.PruneResult> pruneResources(int serverId, berth_api.PruneRequest request) async {
     debugPrint('[MaintenanceService] pruneResources: serverId=$serverId');
     try {
-      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenancePrunePost(serverId, request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenancePrunePost(serverId, request),
+      );
       if (response == null) {
         throw Exception('Failed to prune resources: null response');
       }
@@ -46,7 +50,9 @@ class MaintenanceService {
   Future<berth_api.DeleteResult> deleteResource(int serverId, berth_api.DeleteRequest request) async {
     debugPrint('[MaintenanceService] deleteResource: serverId=$serverId');
     try {
-      final response = await _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceResourceDelete(serverId, request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.maintenanceApi.apiV1ServersServeridMaintenanceResourceDelete(serverId, request),
+      );
       if (response == null) {
         throw Exception('Failed to delete resource: null response');
       }

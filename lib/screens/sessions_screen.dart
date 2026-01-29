@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/session.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 
@@ -13,8 +13,12 @@ class SessionsScreen extends StatefulWidget {
 
 class _SessionsScreenState extends State<SessionsScreen> {
   bool _isLoading = true;
-  List<UserSession> _sessions = [];
+  List<berth_api.SessionItem> _sessions = [];
   String? _errorMessage;
+
+  bool _isSessionExpired(berth_api.SessionItem session) {
+    return session.expiresAt.isBefore(DateTime.now());
+  }
 
   @override
   void initState() {
@@ -41,7 +45,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
     });
   }
 
-  Future<void> _revokeSession(UserSession session) async {
+  Future<void> _revokeSession(berth_api.SessionItem session) async {
     final authService = Provider.of<AuthService>(context, listen: false);
     final confirmed = await _showRevokeConfirmDialog(
       title: 'Revoke Session',
@@ -156,39 +160,39 @@ class _SessionsScreenState extends State<SessionsScreen> {
     }
   }
 
-  IconData _getDeviceIcon(UserSession session) {
+  IconData _getDeviceIcon(berth_api.SessionItem session) {
     if (session.bot) return Icons.smart_toy;
     if (session.mobile) return Icons.phone_android;
     if (session.tablet) return Icons.tablet;
-    
+
     final browser = session.browser.toLowerCase();
     if (browser.contains('chrome')) return Icons.web;
     if (browser.contains('firefox')) return Icons.whatshot;
     if (browser.contains('safari')) return Icons.language;
     if (browser.contains('edge')) return Icons.shield;
     if (browser.contains('opera')) return Icons.theaters;
-    
+
     return Icons.computer;
   }
 
-  Color _getSessionColor(BuildContext context, UserSession session) {
+  Color _getSessionColor(BuildContext context, berth_api.SessionItem session) {
     if (session.current) {
       return Theme.of(context).colorScheme.success;
-    } else if (session.isExpired) {
+    } else if (_isSessionExpired(session)) {
       return Theme.of(context).colorScheme.error;
     } else {
       return Theme.of(context).colorScheme.primary;
     }
   }
 
-  Color _getDeviceTypeColor(BuildContext context, UserSession session) {
+  Color _getDeviceTypeColor(BuildContext context, berth_api.SessionItem session) {
     if (session.bot) return Theme.of(context).colorScheme.secondary;
     if (session.mobile) return Theme.of(context).colorScheme.primary;
     if (session.tablet) return Theme.of(context).colorScheme.success;
     return Theme.of(context).colorScheme.onSurfaceVariant;
   }
 
-  Widget _buildSessionCard(BuildContext context, UserSession session) {
+  Widget _buildSessionCard(BuildContext context, berth_api.SessionItem session) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
@@ -302,7 +306,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   ),
                 ),
                 SizedBox(width: 16),
-                if (session.isExpired)
+                if (_isSessionExpired(session))
                   Text(
                     'Expired',
                     style: TextStyle(

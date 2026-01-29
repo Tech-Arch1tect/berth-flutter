@@ -13,10 +13,12 @@ class FilesService {
   Future<berth_api.DirectoryListing> listDirectory(int serverId, String stackName, [String? path]) async {
     debugPrint('[FilesService] listDirectory: serverId=$serverId, stackName=$stackName, path=$path');
     try {
-      final response = await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesGet(
-        serverId,
-        stackName,
-        filePath: path,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesGet(
+          serverId,
+          stackName,
+          filePath: path,
+        ),
       );
       if (response == null) {
         throw Exception('Failed to list directory: null response');
@@ -39,10 +41,12 @@ class FilesService {
   Future<berth_api.FileContent> readFile(int serverId, String stackName, String path) async {
     debugPrint('[FilesService] readFile: serverId=$serverId, stackName=$stackName, path=$path');
     try {
-      final response = await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesReadGet(
-        serverId,
-        stackName,
-        path,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesReadGet(
+          serverId,
+          stackName,
+          path,
+        ),
       );
       if (response == null) {
         throw Exception('Failed to read file: null response');
@@ -65,10 +69,12 @@ class FilesService {
   Future<void> writeFile(int serverId, String stackName, berth_api.WriteFileRequest request) async {
     debugPrint('[FilesService] writeFile: serverId=$serverId, stackName=$stackName, path=${request.path}');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesWritePost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesWritePost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] writeFile: success');
     } on berth_api.ApiException catch (e) {
@@ -85,10 +91,12 @@ class FilesService {
   Future<void> createDirectory(int serverId, String stackName, berth_api.CreateDirectoryRequest request) async {
     debugPrint('[FilesService] createDirectory: serverId=$serverId, stackName=$stackName, path=${request.path}');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesMkdirPost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesMkdirPost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] createDirectory: success');
     } on berth_api.ApiException catch (e) {
@@ -105,10 +113,12 @@ class FilesService {
   Future<void> deleteFile(int serverId, String stackName, berth_api.DeleteRequest2 request) async {
     debugPrint('[FilesService] deleteFile: serverId=$serverId, stackName=$stackName, path=${request.path}');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesDeleteDelete(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesDeleteDelete(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] deleteFile: success');
     } on berth_api.ApiException catch (e) {
@@ -125,10 +135,12 @@ class FilesService {
   Future<void> renameFile(int serverId, String stackName, berth_api.RenameRequest request) async {
     debugPrint('[FilesService] renameFile: serverId=$serverId, stackName=$stackName');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesRenamePost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesRenamePost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] renameFile: success');
     } on berth_api.ApiException catch (e) {
@@ -145,10 +157,12 @@ class FilesService {
   Future<void> copyFile(int serverId, String stackName, berth_api.CopyRequest request) async {
     debugPrint('[FilesService] copyFile: serverId=$serverId, stackName=$stackName');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesCopyPost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesCopyPost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] copyFile: success');
     } on berth_api.ApiException catch (e) {
@@ -172,11 +186,13 @@ class FilesService {
         bytes,
         filename: filename,
       );
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesUploadPost(
-        serverId,
-        stackName,
-        multipartFile,
-        filePath: targetPath,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesUploadPost(
+          serverId,
+          stackName,
+          multipartFile,
+          filePath: targetPath,
+        ),
       );
       debugPrint('[FilesService] uploadFile: success');
     } on berth_api.ApiException catch (e) {
@@ -193,11 +209,13 @@ class FilesService {
   Future<Uint8List> downloadFile(int serverId, String stackName, String path, [String? filename]) async {
     debugPrint('[FilesService] downloadFile: serverId=$serverId, stackName=$stackName, path=$path');
     try {
-      final response = await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(
-        serverId,
-        stackName,
-        path,
-        filename: filename,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesDownloadGetWithHttpInfo(
+          serverId,
+          stackName,
+          path,
+          filename: filename,
+        ),
       );
       if (response.statusCode >= 400) {
         throw berth_api.ApiException(response.statusCode, 'Download failed');
@@ -220,10 +238,12 @@ class FilesService {
   Future<void> chmodFile(int serverId, String stackName, berth_api.ChmodRequest request) async {
     debugPrint('[FilesService] chmodFile: serverId=$serverId, stackName=$stackName, path=${request.path}');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesChmodPost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesChmodPost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] chmodFile: success');
     } on berth_api.ApiException catch (e) {
@@ -242,10 +262,12 @@ class FilesService {
   Future<void> chownFile(int serverId, String stackName, berth_api.ChownRequest request) async {
     debugPrint('[FilesService] chownFile: serverId=$serverId, stackName=$stackName, path=${request.path}');
     try {
-      await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesChownPost(
-        serverId,
-        stackName,
-        request,
+      await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesChownPost(
+          serverId,
+          stackName,
+          request,
+        ),
       );
       debugPrint('[FilesService] chownFile: success');
     } on berth_api.ApiException catch (e) {
@@ -264,10 +286,12 @@ class FilesService {
   Future<berth_api.DirectoryStats> getDirectoryStats(int serverId, String stackName, [String? path]) async {
     debugPrint('[FilesService] getDirectoryStats: serverId=$serverId, stackName=$stackName, path=$path');
     try {
-      final response = await _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesStatsGet(
-        serverId,
-        stackName,
-        filePath: path,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.filesApi.apiV1ServersServeridStacksStacknameFilesStatsGet(
+          serverId,
+          stackName,
+          filePath: path,
+        ),
       );
       if (response == null) {
         throw Exception('Failed to get directory stats: null response');

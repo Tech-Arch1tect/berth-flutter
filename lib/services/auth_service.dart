@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:berth_api/api.dart' as berth_api;
 import '../models/user.dart';
-import '../models/session.dart';
-import 'api_client.dart';
+import '../models/role.dart';
+import 'berth_api_provider.dart';
 
 class AuthService extends ChangeNotifier {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
   static const _secureStorage = FlutterSecureStorage();
-  
+
   User? _currentUser;
   bool _isLoading = false;
   String? _accessToken;
   String? _refreshToken;
 
-  AuthService(this._apiClient) {
-    _apiClient.setTokenRefreshCallback(() async {
+  AuthService(this._berthApiProvider) {
+    _berthApiProvider.setTokenRefreshCallback(() async {
       return await _refreshAccessToken();
     });
   }
@@ -29,18 +30,43 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  User _userInfoToUser(berth_api.UserInfo userInfo) {
+    return User(
+      id: userInfo.id,
+      username: userInfo.username,
+      email: userInfo.email,
+      emailVerifiedAt: userInfo.emailVerifiedAt,
+      lastLoginAt: userInfo.lastLoginAt,
+      totpEnabled: userInfo.totpEnabled,
+      createdAt: userInfo.createdAt,
+      updatedAt: userInfo.updatedAt,
+      roles: userInfo.roles.map((r) => _roleInfoToRole(r)).toList(),
+    );
+  }
+
+  Role _roleInfoToRole(berth_api.RoleInfo roleInfo) {
+    return Role(
+      id: roleInfo.id,
+      name: roleInfo.name,
+      description: roleInfo.description,
+      isAdmin: roleInfo.isAdmin,
+    );
+  }
+
   Future<AuthResponse> login(String username, String password) async {
     _setLoading(true);
-    
+
     try {
-      final response = await _apiClient.post('/api/v1/auth/login', body: {
-        'username': username,
-        'password': password,
-      });
+      final request = berth_api.AuthLoginRequest(
+        username: username,
+        password: password,
+      );
+
+      final response = await _berthApiProvider.authApi.apiV1AuthLoginPostWithHttpInfo(request);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['totp_required'] == true) {
           return AuthResponse(
             success: true,
@@ -49,20 +75,20 @@ class AuthService extends ChangeNotifier {
             temporaryToken: data['temporary_token'],
           );
         }
-        
-        _accessToken = data['access_token'];
-        _refreshToken = data['refresh_token'];
-        
-        if (data['user'] != null) {
-          _currentUser = User.fromJson(data['user']);
-          
+
+        final loginResponse = berth_api.AuthLoginResponse.fromJson(data);
+        if (loginResponse != null) {
+          _accessToken = loginResponse.accessToken;
+          _refreshToken = loginResponse.refreshToken;
+          _currentUser = _userInfoToUser(loginResponse.user);
+
           await _saveTokensToStorage(_accessToken!, _refreshToken!);
           await _saveUserToStorage(_currentUser!);
-          
-          _apiClient.setAuthToken(_accessToken!);
-          
+
+          _berthApiProvider.setAuthToken(_accessToken!);
+
           notifyListeners();
-          
+
           return AuthResponse(
             success: true,
             message: 'Login successful',
@@ -94,6 +120,7 @@ class AuthService extends ChangeNotifier {
         );
       }
     } catch (e) {
+      debugPrint('Login error: $e');
       return AuthResponse(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -106,25 +133,26 @@ class AuthService extends ChangeNotifier {
 
   Future<void> logout() async {
     _setLoading(true);
-    
+
     try {
       if (_accessToken != null && _refreshToken != null) {
-        await _apiClient.post('/api/v1/auth/logout', body: {
-          'refresh_token': _refreshToken!,
-        });
+        final request = berth_api.AuthLogoutRequest(
+          refreshToken: _refreshToken!,
+        );
+        await _berthApiProvider.authApi.apiV1AuthLogoutPost(request);
       }
     } catch (e) {
-      // Ignore logout errors - user will be logged out locally regardless
+      debugPrint('Logout error (ignored): $e');
     } finally {
       _currentUser = null;
       _accessToken = null;
       _refreshToken = null;
-      
+
       await _clearTokensFromStorage();
       await _removeUserFromStorage();
-      
-      _apiClient.clearAuthToken();
-      
+
+      _berthApiProvider.clearAuthToken();
+
       notifyListeners();
       _setLoading(false);
     }
@@ -136,41 +164,56 @@ class AuthService extends ChangeNotifier {
       if (tokens['access_token'] == null) {
         return false;
       }
-      
+
       _accessToken = tokens['access_token'];
       _refreshToken = tokens['refresh_token'];
-      _apiClient.setAuthToken(_accessToken!);
-      
+      _berthApiProvider.setAuthToken(_accessToken!);
+
       _currentUser = await _getUserFromStorage();
-      
-      final response = await _apiClient.get('/api/v1/profile');
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _currentUser = User.fromJson(data);
+
+      final response = await _berthApiProvider.profileApi.apiV1ProfileGet();
+
+      if (response != null) {
+        _currentUser = _userInfoToUser(response.data);
         await _saveUserToStorage(_currentUser!);
         notifyListeners();
         return true;
-      } else if (response.statusCode == 401) {
+      } else {
         final refreshResult = await _refreshAccessToken();
         if (refreshResult) {
-          final retryResponse = await _apiClient.get('/api/v1/profile');
-          if (retryResponse.statusCode == 200) {
-            final data = json.decode(retryResponse.body);
-            _currentUser = User.fromJson(data);
+          final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
+          if (retryResponse != null) {
+            _currentUser = _userInfoToUser(retryResponse.data);
             await _saveUserToStorage(_currentUser!);
             notifyListeners();
             return true;
           }
         }
-        
-        await logout();
-        return false;
-      } else {
+
         await logout();
         return false;
       }
+    } on berth_api.ApiException catch (e) {
+      if (e.code == 401) {
+        final refreshResult = await _refreshAccessToken();
+        if (refreshResult) {
+          try {
+            final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
+            if (retryResponse != null) {
+              _currentUser = _userInfoToUser(retryResponse.data);
+              await _saveUserToStorage(_currentUser!);
+              notifyListeners();
+              return true;
+            }
+          } catch (e) {
+            debugPrint('Retry after refresh failed: $e');
+          }
+        }
+      }
+      await logout();
+      return false;
     } catch (e) {
+      debugPrint('Check auth status error: $e');
       await logout();
       return false;
     }
@@ -178,28 +221,33 @@ class AuthService extends ChangeNotifier {
 
   Future<bool> _refreshAccessToken() async {
     if (_refreshToken == null) {
+      debugPrint('Token refresh: No refresh token available');
       return false;
     }
-    
+
     try {
-      
-      final response = await _apiClient.post('/api/v1/auth/refresh', body: {
-        'refresh_token': _refreshToken!,
-      });
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _accessToken = data['access_token'];
-        _refreshToken = data['refresh_token'];
-        
+      debugPrint('Token refresh: Attempting to refresh access token...');
+      final request = berth_api.AuthRefreshRequest(
+        refreshToken: _refreshToken!,
+      );
+
+      final response = await _berthApiProvider.authApi.apiV1AuthRefreshPost(request);
+
+      if (response != null) {
+        _accessToken = response.accessToken;
+        _refreshToken = response.refreshToken;
+
         await _saveTokensToStorage(_accessToken!, _refreshToken!);
-        _apiClient.setAuthToken(_accessToken!);
-        
+        _berthApiProvider.setAuthToken(_accessToken!);
+
+        debugPrint('Token refresh: Successfully refreshed access token');
         return true;
       } else {
+        debugPrint('Token refresh: Failed - null response');
         return false;
       }
     } catch (e) {
+      debugPrint('Token refresh: Error - $e');
       return false;
     }
   }
@@ -245,56 +293,53 @@ class AuthService extends ChangeNotifier {
 
   Future<AuthResponse> verifyTOTP(String temporaryToken, String code) async {
     _setLoading(true);
-    
-    try {
-      
-      final response = await _apiClient.post('/api/v1/auth/totp/verify', 
-        body: {'code': code},
-        headers: {'Authorization': 'Bearer $temporaryToken'},
-      );
-      
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        
-        _accessToken = data['access_token'];
-        _refreshToken = data['refresh_token'];
-        
-        if (data['user'] != null) {
-          _currentUser = User.fromJson(data['user']);
-          
-          await _saveTokensToStorage(_accessToken!, _refreshToken!);
-          await _saveUserToStorage(_currentUser!);
-          
-          _apiClient.setAuthToken(_accessToken!);
-          
-          notifyListeners();
-          
-          return AuthResponse(
-            success: true,
-            message: 'Two-factor authentication successful',
-            user: _currentUser,
-          );
-        } else {
-          return AuthResponse(
-            success: false,
-            message: 'TOTP verification failed - invalid response format',
-          );
-        }
-      } else if (response.statusCode == 401) {
-        final data = json.decode(response.body);
+    try {
+      _berthApiProvider.setAuthToken(temporaryToken);
+
+      final request = berth_api.AuthTOTPVerifyRequest(
+        code: code,
+      );
+
+      final response = await _berthApiProvider.authApi.apiV1AuthTotpVerifyPost(request);
+
+      if (response != null) {
+        _accessToken = response.accessToken;
+        _refreshToken = response.refreshToken;
+        _currentUser = _userInfoToUser(response.user);
+
+        await _saveTokensToStorage(_accessToken!, _refreshToken!);
+        await _saveUserToStorage(_currentUser!);
+
+        _berthApiProvider.setAuthToken(_accessToken!);
+
+        notifyListeners();
+
         return AuthResponse(
-          success: false,
-          message: data['message'] ?? 'Invalid TOTP code',
+          success: true,
+          message: 'Two-factor authentication successful',
+          user: _currentUser,
         );
       } else {
-        final data = json.decode(response.body);
+        _berthApiProvider.clearAuthToken();
         return AuthResponse(
           success: false,
-          message: data['message'] ?? 'TOTP verification failed. Please try again.',
+          message: 'TOTP verification failed - invalid response format',
         );
       }
+    } on berth_api.ApiException catch (e) {
+      _berthApiProvider.clearAuthToken();
+      String message = 'TOTP verification failed. Please try again.';
+      if (e.code == 401) {
+        message = 'Invalid TOTP code';
+      }
+      return AuthResponse(
+        success: false,
+        message: message,
+      );
     } catch (e) {
+      _berthApiProvider.clearAuthToken();
+      debugPrint('TOTP verify error: $e');
       return AuthResponse(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -304,28 +349,24 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<TOTPSetupResponse?> getTOTPSetup() async {
+  Future<berth_api.TOTPSetupResponse?> getTOTPSetup() async {
     try {
-      final response = await _apiClient.get('/api/v1/totp/setup');
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return TOTPSetupResponse.fromJson(data);
-      } else {
-        return null;
-      }
+      return await _berthApiProvider.totpApi.apiV1TotpSetupGet();
     } catch (e) {
+      debugPrint('Get TOTP setup error: $e');
       return null;
     }
   }
 
   Future<bool> enableTOTP(String code) async {
     try {
-      final response = await _apiClient.post('/api/v1/totp/enable', body: {
-        'code': code,
-      });
-      
-      if (response.statusCode == 200) {
+      final request = berth_api.TOTPEnableRequest(
+        code: code,
+      );
+
+      final response = await _berthApiProvider.totpApi.apiV1TotpEnablePost(request);
+
+      if (response != null) {
         if (_currentUser != null) {
           final updatedUserJson = _currentUser!.toJson();
           updatedUserJson['totp_enabled'] = true;
@@ -338,18 +379,21 @@ class AuthService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
+      debugPrint('Enable TOTP error: $e');
       return false;
     }
   }
 
   Future<bool> disableTOTP(String code, String password) async {
     try {
-      final response = await _apiClient.post('/api/v1/totp/disable', body: {
-        'code': code,
-        'password': password,
-      });
-      
-      if (response.statusCode == 200) {
+      final request = berth_api.TOTPDisableRequest(
+        code: code,
+        password: password,
+      );
+
+      final response = await _berthApiProvider.totpApi.apiV1TotpDisablePost(request);
+
+      if (response != null) {
         if (_currentUser != null) {
           final updatedUserJson = _currentUser!.toJson();
           updatedUserJson['totp_enabled'] = false;
@@ -362,81 +406,65 @@ class AuthService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
+      debugPrint('Disable TOTP error: $e');
       return false;
     }
   }
 
-  Future<TOTPStatusResponse?> getTOTPStatus() async {
+  Future<berth_api.TOTPStatusResponse?> getTOTPStatus() async {
     try {
-      final response = await _apiClient.get('/api/v1/totp/status');
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return TOTPStatusResponse.fromJson(data);
-      } else {
-        return null;
-      }
+      return await _berthApiProvider.totpApi.apiV1TotpStatusGet();
     } catch (e) {
+      debugPrint('Get TOTP status error: $e');
       return null;
     }
   }
 
-  Future<List<UserSession>?> getSessions() async {
+  Future<List<berth_api.SessionItem>?> getSessions() async {
     try {
-      
-      final response = await _apiClient.post('/api/v1/sessions', body: {
-        'refresh_token': _refreshToken!,
-      });
-      
+      final request = berth_api.GetSessionsRequest(
+        refreshToken: _refreshToken!,
+      );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final sessionsResponse = SessionsResponse.fromJson(data);
-        
-        return sessionsResponse.sessions;
+      final response = await _berthApiProvider.sessionsApi.apiV1SessionsPost(request);
+
+      if (response != null) {
+        return response.sessions;
       } else {
-        // Failed to fetch sessions
         return null;
       }
     } catch (e) {
+      debugPrint('Get sessions error: $e');
       return null;
     }
   }
 
   Future<bool> revokeSession(int sessionId) async {
     try {
-      
-      final response = await _apiClient.post('/api/v1/sessions/revoke', body: {
-        'session_id': sessionId,
-      });
-      
+      final request = berth_api.RevokeSessionRequest(
+        sessionId: sessionId,
+      );
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        // Failed to revoke session
-        return false;
-      }
+      final response = await _berthApiProvider.sessionsApi.apiV1SessionsRevokePost(request);
+
+      return response != null;
     } catch (e) {
+      debugPrint('Revoke session error: $e');
       return false;
     }
   }
 
   Future<bool> revokeAllOtherSessions() async {
     try {
-      
-      final response = await _apiClient.post('/api/v1/sessions/revoke-all-others', body: {
-        'refresh_token': _refreshToken!,
-      });
-      
+      final request = berth_api.RevokeAllOtherSessionsRequest(
+        refreshToken: _refreshToken!,
+      );
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        // Failed to revoke all sessions
-        return false;
-      }
+      final response = await _berthApiProvider.sessionsApi.apiV1SessionsRevokeAllOthersPost(request);
+
+      return response != null;
     } catch (e) {
+      debugPrint('Revoke all other sessions error: $e');
       return false;
     }
   }
@@ -456,31 +484,4 @@ class AuthResponse {
     this.totpRequired = false,
     this.temporaryToken,
   });
-}
-
-class TOTPSetupResponse {
-  final String qrCodeURI;
-  final String secret;
-
-  TOTPSetupResponse({
-    required this.qrCodeURI,
-    required this.secret,
-  });
-
-  factory TOTPSetupResponse.fromJson(Map<String, dynamic> json) {
-    return TOTPSetupResponse(
-      qrCodeURI: json['qr_code_uri'],
-      secret: json['secret'],
-    );
-  }
-}
-
-class TOTPStatusResponse {
-  final bool enabled;
-
-  TOTPStatusResponse({required this.enabled});
-
-  factory TOTPStatusResponse.fromJson(Map<String, dynamic> json) {
-    return TOTPStatusResponse(enabled: json['enabled']);
-  }
 }

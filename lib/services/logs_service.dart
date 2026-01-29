@@ -16,12 +16,14 @@ class LogsService {
   }) async {
     debugPrint('[LogsService] getStackLogs: serverId=$serverId, stackName=$stackName');
     try {
-      final response = await _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameLogsGet(
-        serverId,
-        stackName,
-        tail: tail,
-        since: since,
-        timestamps: timestamps,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameLogsGet(
+          serverId,
+          stackName,
+          tail: tail,
+          since: since,
+          timestamps: timestamps,
+        ),
       );
       if (response == null) {
         throw Exception('Failed to fetch stack logs: null response');
@@ -47,13 +49,15 @@ class LogsService {
   }) async {
     debugPrint('[LogsService] getContainerLogs: serverId=$serverId, stackName=$stackName, containerName=$containerName');
     try {
-      final response = await _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(
-        serverId,
-        stackName,
-        containerName,
-        tail: tail,
-        since: since,
-        timestamps: timestamps,
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.logsApi.apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(
+          serverId,
+          stackName,
+          containerName,
+          tail: tail,
+          since: since,
+          timestamps: timestamps,
+        ),
       );
       if (response == null) {
         throw Exception('Failed to fetch container logs: null response');
