@@ -208,6 +208,24 @@ class ApiClient {
           return AssignRoleRequest.fromJson(value);
         case 'AssignRoleResponse':
           return AssignRoleResponse.fromJson(value);
+        case 'AuthErrorResponse':
+          return AuthErrorResponse.fromJson(value);
+        case 'AuthLoginRequest':
+          return AuthLoginRequest.fromJson(value);
+        case 'AuthLoginResponse':
+          return AuthLoginResponse.fromJson(value);
+        case 'AuthLogoutRequest':
+          return AuthLogoutRequest.fromJson(value);
+        case 'AuthLogoutResponse':
+          return AuthLogoutResponse.fromJson(value);
+        case 'AuthRefreshRequest':
+          return AuthRefreshRequest.fromJson(value);
+        case 'AuthRefreshResponse':
+          return AuthRefreshResponse.fromJson(value);
+        case 'AuthTOTPRequiredResponse':
+          return AuthTOTPRequiredResponse.fromJson(value);
+        case 'AuthTOTPVerifyRequest':
+          return AuthTOTPVerifyRequest.fromJson(value);
         case 'BaseModel':
           return BaseModel.fromJson(value);
         case 'BuildCacheInfo':
@@ -344,6 +362,10 @@ class ApiClient {
           return GetScansHistoryData.fromJson(value);
         case 'GetScansHistoryResponse':
           return GetScansHistoryResponse.fromJson(value);
+        case 'GetSessionsRequest':
+          return GetSessionsRequest.fromJson(value);
+        case 'GetSessionsResponse':
+          return GetSessionsResponse.fromJson(value);
         case 'GetStatsAPIResponse':
           return GetStatsAPIResponse.fromJson(value);
         case 'GetVersionResponse':
@@ -532,6 +554,8 @@ class ApiClient {
           return ServiceEnvironment.fromJson(value);
         case 'ServiceNetworkConfig':
           return ServiceNetworkConfig.fromJson(value);
+        case 'SessionItem':
+          return SessionItem.fromJson(value);
         case 'SessionMessageResponse':
           return SessionMessageResponse.fromJson(value);
         case 'Stack':

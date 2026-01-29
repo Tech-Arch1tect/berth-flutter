@@ -16,6 +16,64 @@ class SessionsApi {
 
   final ApiClient apiClient;
 
+  /// List user sessions
+  ///
+  /// Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [GetSessionsRequest] getSessionsRequest (required):
+  ///   Refresh token to identify current session
+  Future<Response> apiV1SessionsPostWithHttpInfo(GetSessionsRequest getSessionsRequest,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/v1/sessions';
+
+    // ignore: prefer_final_locals
+    Object? postBody = getSessionsRequest;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List user sessions
+  ///
+  /// Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
+  ///
+  /// Parameters:
+  ///
+  /// * [GetSessionsRequest] getSessionsRequest (required):
+  ///   Refresh token to identify current session
+  Future<GetSessionsResponse?> apiV1SessionsPost(GetSessionsRequest getSessionsRequest,) async {
+    final response = await apiV1SessionsPostWithHttpInfo(getSessionsRequest,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetSessionsResponse',) as GetSessionsResponse;
+    
+    }
+    return null;
+  }
+
   /// Revoke all other sessions
   ///
   /// Revokes all sessions except the current one. For JWT authentication, the refresh token must be provided in the request body.

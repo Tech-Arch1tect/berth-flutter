@@ -17,6 +17,16 @@ doc/AdminUpdateServerResponseData.md
 doc/ApiKeysApi.md
 doc/AssignRoleRequest.md
 doc/AssignRoleResponse.md
+doc/AuthApi.md
+doc/AuthErrorResponse.md
+doc/AuthLoginRequest.md
+doc/AuthLoginResponse.md
+doc/AuthLogoutRequest.md
+doc/AuthLogoutResponse.md
+doc/AuthRefreshRequest.md
+doc/AuthRefreshResponse.md
+doc/AuthTOTPRequiredResponse.md
+doc/AuthTOTPVerifyRequest.md
 doc/BaseModel.md
 doc/BuildCacheInfo.md
 doc/BuildCacheSummary.md
@@ -87,6 +97,8 @@ doc/GetScanTrendData.md
 doc/GetScanTrendResponse.md
 doc/GetScansHistoryData.md
 doc/GetScansHistoryResponse.md
+doc/GetSessionsRequest.md
+doc/GetSessionsResponse.md
 doc/GetStatsAPIResponse.md
 doc/GetVersionResponse.md
 doc/HealthLog.md
@@ -191,6 +203,7 @@ doc/ServersApi.md
 doc/ServiceChanges.md
 doc/ServiceEnvironment.md
 doc/ServiceNetworkConfig.md
+doc/SessionItem.md
 doc/SessionMessageResponse.md
 doc/SessionsApi.md
 doc/Stack.md
@@ -243,6 +256,7 @@ git_push.sh
 lib/api.dart
 lib/api/admin_api.dart
 lib/api/api_keys_api.dart
+lib/api/auth_api.dart
 lib/api/compose_api.dart
 lib/api/files_api.dart
 lib/api/image_updates_api.dart
@@ -282,6 +296,15 @@ lib/model/api_key_response.dart
 lib/model/api_key_scope_response.dart
 lib/model/assign_role_request.dart
 lib/model/assign_role_response.dart
+lib/model/auth_error_response.dart
+lib/model/auth_login_request.dart
+lib/model/auth_login_response.dart
+lib/model/auth_logout_request.dart
+lib/model/auth_logout_response.dart
+lib/model/auth_refresh_request.dart
+lib/model/auth_refresh_response.dart
+lib/model/auth_totp_required_response.dart
+lib/model/auth_totp_verify_request.dart
 lib/model/base_model.dart
 lib/model/build_cache_info.dart
 lib/model/build_cache_summary.dart
@@ -350,6 +373,8 @@ lib/model/get_scan_trend_data.dart
 lib/model/get_scan_trend_response.dart
 lib/model/get_scans_history_data.dart
 lib/model/get_scans_history_response.dart
+lib/model/get_sessions_request.dart
+lib/model/get_sessions_response.dart
 lib/model/get_stats_api_response.dart
 lib/model/get_version_response.dart
 lib/model/health_log.dart
@@ -444,6 +469,7 @@ lib/model/server_update_request.dart
 lib/model/service_changes.dart
 lib/model/service_environment.dart
 lib/model/service_network_config.dart
+lib/model/session_item.dart
 lib/model/session_message_response.dart
 lib/model/stack.dart
 lib/model/stack_details.dart

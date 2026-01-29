@@ -103,6 +103,10 @@ Class | Method | HTTP request | Description
 *ApiKeysApi* | [**apiV1ApiKeysIdScopesPost**](doc//ApiKeysApi.md#apiv1apikeysidscopespost) | **POST** /api/v1/api-keys/{id}/scopes | Add scope to API key
 *ApiKeysApi* | [**apiV1ApiKeysIdScopesScopeIdDelete**](doc//ApiKeysApi.md#apiv1apikeysidscopesscopeiddelete) | **DELETE** /api/v1/api-keys/{id}/scopes/{scopeId} | Remove scope from API key
 *ApiKeysApi* | [**apiV1ApiKeysPost**](doc//ApiKeysApi.md#apiv1apikeyspost) | **POST** /api/v1/api-keys | Create API key
+*AuthApi* | [**apiV1AuthLoginPost**](doc//AuthApi.md#apiv1authloginpost) | **POST** /api/v1/auth/login | Login with username and password
+*AuthApi* | [**apiV1AuthLogoutPost**](doc//AuthApi.md#apiv1authlogoutpost) | **POST** /api/v1/auth/logout | Logout and revoke tokens
+*AuthApi* | [**apiV1AuthRefreshPost**](doc//AuthApi.md#apiv1authrefreshpost) | **POST** /api/v1/auth/refresh | Refresh access token
+*AuthApi* | [**apiV1AuthTotpVerifyPost**](doc//AuthApi.md#apiv1authtotpverifypost) | **POST** /api/v1/auth/totp/verify | Verify TOTP code to complete login
 *ComposeApi* | [**apiV1ServersServeridStacksStacknameComposeGet**](doc//ComposeApi.md#apiv1serversserveridstacksstacknamecomposeget) | **GET** /api/v1/servers/{serverid}/stacks/{stackname}/compose | Get compose configuration
 *ComposeApi* | [**apiV1ServersServeridStacksStacknameComposePatch**](doc//ComposeApi.md#apiv1serversserveridstacksstacknamecomposepatch) | **PATCH** /api/v1/servers/{serverid}/stacks/{stackname}/compose | Update compose configuration
 *FilesApi* | [**apiV1ServersServeridStacksStacknameFilesChmodPost**](doc//FilesApi.md#apiv1serversserveridstacksstacknamefileschmodpost) | **POST** /api/v1/servers/{serverid}/stacks/{stackname}/files/chmod | Change file permissions
@@ -158,6 +162,7 @@ Class | Method | HTTP request | Description
 *ServersApi* | [**apiV1AdminServersPost**](doc//ServersApi.md#apiv1adminserverspost) | **POST** /api/v1/admin/servers | Create a new server
 *ServersApi* | [**apiV1ServersGet**](doc//ServersApi.md#apiv1serversget) | **GET** /api/v1/servers | List accessible servers
 *ServersApi* | [**apiV1ServersServeridStatisticsGet**](doc//ServersApi.md#apiv1serversserveridstatisticsget) | **GET** /api/v1/servers/{serverid}/statistics | Get server statistics
+*SessionsApi* | [**apiV1SessionsPost**](doc//SessionsApi.md#apiv1sessionspost) | **POST** /api/v1/sessions | List user sessions
 *SessionsApi* | [**apiV1SessionsRevokeAllOthersPost**](doc//SessionsApi.md#apiv1sessionsrevokeallotherspost) | **POST** /api/v1/sessions/revoke-all-others | Revoke all other sessions
 *SessionsApi* | [**apiV1SessionsRevokePost**](doc//SessionsApi.md#apiv1sessionsrevokepost) | **POST** /api/v1/sessions/revoke | Revoke a session
 *StacksApi* | [**apiV1ServersServeridStacksCanCreateGet**](doc//StacksApi.md#apiv1serversserveridstackscancreateget) | **GET** /api/v1/servers/{serverid}/stacks/can-create | Check if user can create stacks
@@ -204,6 +209,15 @@ Class | Method | HTTP request | Description
  - [AdminUpdateServerResponseData](doc//AdminUpdateServerResponseData.md)
  - [AssignRoleRequest](doc//AssignRoleRequest.md)
  - [AssignRoleResponse](doc//AssignRoleResponse.md)
+ - [AuthErrorResponse](doc//AuthErrorResponse.md)
+ - [AuthLoginRequest](doc//AuthLoginRequest.md)
+ - [AuthLoginResponse](doc//AuthLoginResponse.md)
+ - [AuthLogoutRequest](doc//AuthLogoutRequest.md)
+ - [AuthLogoutResponse](doc//AuthLogoutResponse.md)
+ - [AuthRefreshRequest](doc//AuthRefreshRequest.md)
+ - [AuthRefreshResponse](doc//AuthRefreshResponse.md)
+ - [AuthTOTPRequiredResponse](doc//AuthTOTPRequiredResponse.md)
+ - [AuthTOTPVerifyRequest](doc//AuthTOTPVerifyRequest.md)
  - [BaseModel](doc//BaseModel.md)
  - [BuildCacheInfo](doc//BuildCacheInfo.md)
  - [BuildCacheSummary](doc//BuildCacheSummary.md)
@@ -272,6 +286,8 @@ Class | Method | HTTP request | Description
  - [GetScanTrendResponse](doc//GetScanTrendResponse.md)
  - [GetScansHistoryData](doc//GetScansHistoryData.md)
  - [GetScansHistoryResponse](doc//GetScansHistoryResponse.md)
+ - [GetSessionsRequest](doc//GetSessionsRequest.md)
+ - [GetSessionsResponse](doc//GetSessionsResponse.md)
  - [GetStatsAPIResponse](doc//GetStatsAPIResponse.md)
  - [GetVersionResponse](doc//GetVersionResponse.md)
  - [HealthLog](doc//HealthLog.md)
@@ -366,6 +382,7 @@ Class | Method | HTTP request | Description
  - [ServiceChanges](doc//ServiceChanges.md)
  - [ServiceEnvironment](doc//ServiceEnvironment.md)
  - [ServiceNetworkConfig](doc//ServiceNetworkConfig.md)
+ - [SessionItem](doc//SessionItem.md)
  - [SessionMessageResponse](doc//SessionMessageResponse.md)
  - [Stack](doc//Stack.md)
  - [StackDetails](doc//StackDetails.md)
