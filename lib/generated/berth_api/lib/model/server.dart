@@ -14,20 +14,26 @@ class Server {
   /// Returns a new [Server] instance.
   Server({
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     required this.description,
     required this.host,
     required this.id,
     required this.isActive,
     required this.name,
     required this.port,
-    required this.skipSslVerification,
+    this.skipSslVerification,
     required this.updatedAt,
   });
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   String description;
 
@@ -63,7 +69,7 @@ class Server {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (description.hashCode) +
     (host.hashCode) +
     (id.hashCode) +
@@ -79,7 +85,11 @@ class Server {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
       json[r'description'] = this.description;
       json[r'host'] = this.host;
       json[r'id'] = this.id;
@@ -115,7 +125,7 @@ class Server {
 
       return Server(
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         description: mapValueOfType<String>(json, r'description')!,
         host: mapValueOfType<String>(json, r'host')!,
         id: mapValueOfType<int>(json, r'id')!,
@@ -172,14 +182,12 @@ class Server {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'created_at',
-    'deleted_at',
     'description',
     'host',
     'id',
     'is_active',
     'name',
     'port',
-    'skip_ssl_verification',
     'updated_at',
   };
 }

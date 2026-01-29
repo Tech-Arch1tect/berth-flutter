@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/operation_log.dart' as models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogStatsWidget extends StatelessWidget {
-  final models.OperationLogStats stats;
+  final berth_api.OperationLogStats stats;
 
   const OperationLogStatsWidget({
     super.key,

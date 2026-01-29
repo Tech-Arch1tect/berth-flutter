@@ -14,7 +14,7 @@ class OperationLogMessage {
   /// Returns a new [OperationLogMessage] instance.
   OperationLogMessage({
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     required this.id,
     required this.messageData,
     required this.messageType,
@@ -27,7 +27,13 @@ class OperationLogMessage {
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   /// Minimum value: 0
   int id;
@@ -64,7 +70,7 @@ class OperationLogMessage {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (id.hashCode) +
     (messageData.hashCode) +
     (messageType.hashCode) +
@@ -80,7 +86,11 @@ class OperationLogMessage {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
       json[r'id'] = this.id;
       json[r'message_data'] = this.messageData;
       json[r'message_type'] = this.messageType;
@@ -112,7 +122,7 @@ class OperationLogMessage {
 
       return OperationLogMessage(
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         id: mapValueOfType<int>(json, r'id')!,
         messageData: mapValueOfType<String>(json, r'message_data')!,
         messageType: mapValueOfType<String>(json, r'message_type')!,
@@ -169,7 +179,6 @@ class OperationLogMessage {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'created_at',
-    'deleted_at',
     'id',
     'message_data',
     'message_type',

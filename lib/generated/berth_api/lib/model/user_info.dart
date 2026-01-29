@@ -15,7 +15,7 @@ class UserInfo {
   UserInfo({
     required this.createdAt,
     required this.email,
-    required this.emailVerifiedAt,
+    this.emailVerifiedAt,
     required this.id,
     required this.lastLoginAt,
     this.roles = const [],
@@ -170,10 +170,8 @@ class UserInfo {
   static const requiredKeys = <String>{
     'created_at',
     'email',
-    'email_verified_at',
     'id',
     'last_login_at',
-    'roles',
     'totp_enabled',
     'updated_at',
     'username',

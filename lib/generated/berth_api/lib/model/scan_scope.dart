@@ -14,7 +14,7 @@ class ScanScope {
   /// Returns a new [ScanScope] instance.
   ScanScope({
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     required this.id,
     required this.imageName,
     required this.scanId,
@@ -23,7 +23,13 @@ class ScanScope {
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   /// Minimum value: 0
   int id;
@@ -48,7 +54,7 @@ class ScanScope {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (id.hashCode) +
     (imageName.hashCode) +
     (scanId.hashCode) +
@@ -60,7 +66,11 @@ class ScanScope {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
       json[r'id'] = this.id;
       json[r'image_name'] = this.imageName;
       json[r'scan_id'] = this.scanId;
@@ -88,7 +98,7 @@ class ScanScope {
 
       return ScanScope(
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         id: mapValueOfType<int>(json, r'id')!,
         imageName: mapValueOfType<String>(json, r'image_name')!,
         scanId: mapValueOfType<int>(json, r'scan_id')!,
@@ -141,7 +151,6 @@ class ScanScope {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'created_at',
-    'deleted_at',
     'id',
     'image_name',
     'scan_id',

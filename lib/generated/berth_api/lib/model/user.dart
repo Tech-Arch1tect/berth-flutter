@@ -14,11 +14,11 @@ class User {
   /// Returns a new [User] instance.
   User({
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     required this.email,
-    required this.emailVerifiedAt,
+    this.emailVerifiedAt,
     required this.id,
-    required this.lastLoginAt,
+    this.lastLoginAt,
     this.roles = const [],
     required this.updatedAt,
     required this.username,
@@ -26,7 +26,13 @@ class User {
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   String email;
 
@@ -59,7 +65,7 @@ class User {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (email.hashCode) +
     (emailVerifiedAt == null ? 0 : emailVerifiedAt!.hashCode) +
     (id.hashCode) +
@@ -74,7 +80,11 @@ class User {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
       json[r'email'] = this.email;
     if (this.emailVerifiedAt != null) {
       json[r'email_verified_at'] = this.emailVerifiedAt!.toUtc().toIso8601String();
@@ -113,7 +123,7 @@ class User {
 
       return User(
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         email: mapValueOfType<String>(json, r'email')!,
         emailVerifiedAt: mapDateTime(json, r'email_verified_at', r''),
         id: mapValueOfType<int>(json, r'id')!,
@@ -169,12 +179,8 @@ class User {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'created_at',
-    'deleted_at',
     'email',
-    'email_verified_at',
     'id',
-    'last_login_at',
-    'roles',
     'updated_at',
     'username',
   };

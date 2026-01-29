@@ -16,7 +16,7 @@ class ImageScan {
     required this.agentScanId,
     this.completedAt,
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     this.errorMessage,
     required this.id,
     this.lastPollError,
@@ -40,7 +40,13 @@ class ImageScan {
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -120,7 +126,7 @@ class ImageScan {
     (agentScanId.hashCode) +
     (completedAt == null ? 0 : completedAt!.hashCode) +
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (errorMessage == null ? 0 : errorMessage!.hashCode) +
     (id.hashCode) +
     (lastPollError == null ? 0 : lastPollError!.hashCode) +
@@ -149,7 +155,11 @@ class ImageScan {
       json[r'completed_at'] = null;
     }
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
     if (this.errorMessage != null) {
       json[r'error_message'] = this.errorMessage;
     } else {
@@ -206,7 +216,7 @@ class ImageScan {
         agentScanId: mapValueOfType<String>(json, r'agent_scan_id')!,
         completedAt: mapDateTime(json, r'completed_at', r''),
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         errorMessage: mapValueOfType<String>(json, r'error_message'),
         id: mapValueOfType<int>(json, r'id')!,
         lastPollError: mapValueOfType<String>(json, r'last_poll_error'),
@@ -271,7 +281,6 @@ class ImageScan {
   static const requiredKeys = <String>{
     'agent_scan_id',
     'created_at',
-    'deleted_at',
     'id',
     'poll_failures',
     'scanned_images',

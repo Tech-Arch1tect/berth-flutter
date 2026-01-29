@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **agentScanId** | **String** |  | 
 **completedAt** | [**DateTime**](DateTime.md) |  | [optional] 
 **createdAt** | [**DateTime**](DateTime.md) |  | 
-**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | 
+**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | [optional] 
 **errorMessage** | **String** |  | [optional] 
 **id** | **int** |  | 
 **lastPollError** | **String** |  | [optional] 

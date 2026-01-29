@@ -1,142 +1,104 @@
-import 'dart:convert';
-import '../models/operation_log.dart' as models;
-import 'api_client.dart';
+import 'package:flutter/foundation.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import 'berth_api_provider.dart';
 
 class OperationLogService {
-  final ApiClient _apiClient;
+  final BerthApiProvider _berthApiProvider;
 
-  OperationLogService(this._apiClient);
+  OperationLogService(this._berthApiProvider);
 
-  Future<models.PaginatedOperationLogs?> getUserOperationLogs({
+  Future<berth_api.PaginatedOperationLogs?> getUserOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
     String? status,
     String? command,
   }) async {
+    debugPrint('[OperationLogService] getUserOperationLogs: page=$page, pageSize=$pageSize');
     try {
-      final queryParams = <String, String>{
-        'page': page.toString(),
-        'page_size': pageSize.toString(),
-      };
-
-      if (searchTerm?.isNotEmpty == true) {
-        queryParams['search'] = searchTerm!;
-      }
-      if (status?.isNotEmpty == true) {
-        queryParams['status'] = status!;
-      }
-      if (command?.isNotEmpty == true) {
-        queryParams['command'] = command!;
-      }
-
-      final queryString = queryParams.entries
-          .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-          .join('&');
-
-      final response = await _apiClient.get('/api/v1/operation-logs?$queryString');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.PaginatedOperationLogs.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1OperationLogsGet(
+        page: page,
+        pageSize: pageSize,
+        search: searchTerm,
+        status: status,
+        command: command,
+      );
+      debugPrint('[OperationLogService] getUserOperationLogs: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getUserOperationLogs: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }
 
-  Future<models.OperationLogStats?> getUserOperationLogStats() async {
+  Future<berth_api.OperationLogStats?> getUserOperationLogStats() async {
+    debugPrint('[OperationLogService] getUserOperationLogStats');
     try {
-      final response = await _apiClient.get('/api/v1/operation-logs/stats');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.OperationLogStats.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1OperationLogsStatsGet();
+      debugPrint('[OperationLogService] getUserOperationLogStats: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getUserOperationLogStats: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }
 
-  Future<models.OperationLogDetail?> getUserOperationLogDetail(int logId) async {
+  Future<berth_api.OperationLogDetail?> getUserOperationLogDetail(int logId) async {
+    debugPrint('[OperationLogService] getUserOperationLogDetail: logId=$logId');
     try {
-      final response = await _apiClient.get('/api/v1/operation-logs/$logId');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.OperationLogDetail.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1OperationLogsIdGet(logId);
+      debugPrint('[OperationLogService] getUserOperationLogDetail: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getUserOperationLogDetail: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }
 
-  Future<models.PaginatedOperationLogs?> getAdminOperationLogs({
+  Future<berth_api.PaginatedOperationLogs?> getAdminOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
     String? status,
     String? command,
   }) async {
+    debugPrint('[OperationLogService] getAdminOperationLogs: page=$page, pageSize=$pageSize');
     try {
-      final queryParams = <String, String>{
-        'page': page.toString(),
-        'page_size': pageSize.toString(),
-      };
-
-      if (searchTerm?.isNotEmpty == true) {
-        queryParams['search'] = searchTerm!;
-      }
-      if (status?.isNotEmpty == true) {
-        queryParams['status'] = status!;
-      }
-      if (command?.isNotEmpty == true) {
-        queryParams['command'] = command!;
-      }
-
-      final queryString = queryParams.entries
-          .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-          .join('&');
-
-      final response = await _apiClient.get('/api/v1/admin/operation-logs?$queryString');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.PaginatedOperationLogs.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsGet(
+        page: page,
+        pageSize: pageSize,
+        search: searchTerm,
+        status: status,
+        command: command,
+      );
+      debugPrint('[OperationLogService] getAdminOperationLogs: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getAdminOperationLogs: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }
 
-  Future<models.OperationLogStats?> getAdminOperationLogStats() async {
+  Future<berth_api.OperationLogStats?> getAdminOperationLogStats() async {
+    debugPrint('[OperationLogService] getAdminOperationLogStats');
     try {
-      final response = await _apiClient.get('/api/v1/admin/operation-logs/stats');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.OperationLogStats.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsStatsGet();
+      debugPrint('[OperationLogService] getAdminOperationLogStats: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getAdminOperationLogStats: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }
 
-  Future<models.OperationLogDetail?> getAdminOperationLogDetail(int logId) async {
+  Future<berth_api.OperationLogDetail?> getAdminOperationLogDetail(int logId) async {
+    debugPrint('[OperationLogService] getAdminOperationLogDetail: logId=$logId');
     try {
-      final response = await _apiClient.get('/api/v1/admin/operation-logs/$logId');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return models.OperationLogDetail.fromJson(data);
-      }
-      return null;
-    } catch (e) {
+      final response = await _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsIdGet(logId);
+      debugPrint('[OperationLogService] getAdminOperationLogDetail: success');
+      return response;
+    } on berth_api.ApiException catch (e) {
+      debugPrint('[OperationLogService] getAdminOperationLogDetail: ApiException - code=${e.code}, message=${e.message}');
       return null;
     }
   }

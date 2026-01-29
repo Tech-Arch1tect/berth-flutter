@@ -10,10 +10,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **createdAt** | **String** |  | 
 **email** | **String** |  | 
-**emailVerifiedAt** | **String** |  | 
+**emailVerifiedAt** | **String** |  | [optional] 
 **id** | **int** |  | 
 **lastLoginAt** | **String** |  | 
-**roles** | [**List<RoleInfo>**](RoleInfo.md) |  | [default to const []]
+**roles** | [**List<RoleInfo>**](RoleInfo.md) |  | [optional] [default to const []]
 **totpEnabled** | **bool** |  | 
 **updatedAt** | **String** |  | 
 **username** | **String** |  | 

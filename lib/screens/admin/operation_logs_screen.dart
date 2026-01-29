@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/operation_log.dart' as models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../../services/operation_log_service.dart';
 import '../../widgets/operation_log_stats.dart';
 import '../../widgets/operation_log_filters.dart';
@@ -19,9 +20,9 @@ class _AdminOperationLogsScreenState extends State<AdminOperationLogsScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
   
-  models.PaginatedOperationLogs? _operationLogs;
-  models.OperationLogStats? _stats;
-  models.OperationLogDetail? _selectedLogDetail;
+  berth_api.PaginatedOperationLogs? _operationLogs;
+  berth_api.OperationLogStats? _stats;
+  berth_api.OperationLogDetail? _selectedLogDetail;
   
   int _currentPage = 1;
   String _searchTerm = '';
@@ -102,14 +103,14 @@ class _AdminOperationLogsScreenState extends State<AdminOperationLogsScreen> {
     }
   }
 
-  void _updateAvailableCommands(List<models.OperationLogEntry> logs) {
+  void _updateAvailableCommands(List<berth_api.OperationLogResponse> logs) {
     final commands = logs.map((log) => log.command).toSet();
     setState(() {
       _availableCommands.addAll(commands);
     });
   }
 
-  Future<void> _loadLogDetail(models.OperationLogEntry log) async {
+  Future<void> _loadLogDetail(berth_api.OperationLogResponse log) async {
     final operationLogService = Provider.of<OperationLogService>(context, listen: false);
     
     try {
@@ -120,8 +121,10 @@ class _AdminOperationLogsScreenState extends State<AdminOperationLogsScreen> {
         });
         _showLogDetailModal();
       }
-    } catch (e) {
-      _showErrorSnackBar('Failed to load operation details');
+    } catch (e, stackTrace) {
+      debugPrint('[AdminOperationLogsScreen] Failed to load operation details: $e');
+      debugPrint('[AdminOperationLogsScreen] Stack trace: $stackTrace');
+      _showErrorSnackBar('Failed to load operation details: $e');
     }
   }
 

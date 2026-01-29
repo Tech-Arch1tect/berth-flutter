@@ -9,7 +9,7 @@ import 'package:berth_api/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **createdAt** | [**DateTime**](DateTime.md) |  | 
-**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | 
+**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | [optional] 
 **id** | **int** |  | 
 **imageName** | **String** |  | 
 **scanId** | **int** |  | 

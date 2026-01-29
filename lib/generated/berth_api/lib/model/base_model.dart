@@ -14,14 +14,20 @@ class BaseModel {
   /// Returns a new [BaseModel] instance.
   BaseModel({
     required this.createdAt,
-    required this.deletedAt,
+    this.deletedAt,
     required this.id,
     required this.updatedAt,
   });
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   /// Minimum value: 0
   int id;
@@ -39,7 +45,7 @@ class BaseModel {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (id.hashCode) +
     (updatedAt.hashCode);
 
@@ -49,7 +55,11 @@ class BaseModel {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
       json[r'id'] = this.id;
       json[r'updated_at'] = this.updatedAt.toUtc().toIso8601String();
     return json;
@@ -75,7 +85,7 @@ class BaseModel {
 
       return BaseModel(
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         id: mapValueOfType<int>(json, r'id')!,
         updatedAt: mapDateTime(json, r'updated_at', r'')!,
       );
@@ -126,7 +136,6 @@ class BaseModel {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'created_at',
-    'deleted_at',
     'id',
     'updated_at',
   };

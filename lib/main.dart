@@ -63,7 +63,7 @@ class _AppInitializerState extends State<AppInitializer> {
     _stackService = StackService(_berthApiProvider);
     _serverService = ServerService(_apiClient, _berthApiProvider);
     _maintenanceService = MaintenanceService(_berthApiProvider);
-    _operationLogService = OperationLogService(_apiClient);
+    _operationLogService = OperationLogService(_berthApiProvider);
 
     _authService.addListener(_syncAuthToken);
 

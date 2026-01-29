@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/operation_log.dart' as models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogDetailModal extends StatelessWidget {
-  final models.OperationLogDetail? logDetail;
+  final berth_api.OperationLogDetail? logDetail;
   final bool showUser;
 
   const OperationLogDetailModal({
@@ -43,7 +43,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, models.OperationLogEntry log) {
+  Widget _buildHeader(BuildContext context, berth_api.OperationLogResponse log) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -128,7 +128,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, models.OperationLogEntry log) {
+  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogResponse log) {
     IconData icon;
     Color color;
     String text;
@@ -182,7 +182,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildMessagesList(BuildContext context, List<models.OperationLogMessage> messages) {
+  Widget _buildMessagesList(BuildContext context, List<berth_api.OperationLogMessage> messages) {
     if (messages.isEmpty) {
       return Center(
         child: Column(
@@ -226,7 +226,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageEntry(BuildContext context, models.OperationLogMessage message) {
+  Widget _buildMessageEntry(BuildContext context, berth_api.OperationLogMessage message) {
     Color backgroundColor = Colors.transparent;
     Color textColor = Theme.of(context).colorScheme.onSurface;
     IconData? icon;
@@ -302,7 +302,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  String _formatDuration(models.OperationLogEntry log) {
+  String _formatDuration(berth_api.OperationLogResponse log) {
     int? duration = log.durationMs ?? log.partialDurationMs;
     
     if (duration == null || duration == 0) return 'N/A';
@@ -326,7 +326,7 @@ class OperationLogDetailModal extends StatelessWidget {
            '${timestamp.second.toString().padLeft(2, '0')}';
   }
 
-  bool _isActualError(models.OperationLogMessage message) {
+  bool _isActualError(berth_api.OperationLogMessage message) {
     final data = message.messageData.toLowerCase();
     final errorPatterns = [
       'error',
@@ -347,7 +347,7 @@ class OperationLogDetailModal extends StatelessWidget {
     return errorPatterns.any((pattern) => data.contains(pattern));
   }
 
-  bool _isDockerComposeInfo(models.OperationLogMessage message) {
+  bool _isDockerComposeInfo(berth_api.OperationLogMessage message) {
     final data = message.messageData.toLowerCase();
     final infoPatterns = [
       RegExp(r'container .+ (running|created|started|stopped)'),

@@ -15,28 +15,28 @@ class OperationLogResponse {
   OperationLogResponse({
     required this.command,
     required this.createdAt,
-    required this.deletedAt,
-    required this.durationMs,
-    required this.endTime,
-    required this.exitCode,
+    this.deletedAt,
+    this.durationMs,
+    this.endTime,
+    this.exitCode,
     required this.formattedDate,
     required this.id,
     required this.isIncomplete,
-    required this.lastMessageAt,
+    this.lastMessageAt,
     required this.messageCount,
     required this.operationId,
-    required this.options,
-    required this.partialDurationMs,
-    required this.queuedAt,
+    this.options,
+    this.partialDurationMs,
+    this.queuedAt,
     required this.server,
     required this.serverId,
     required this.serverName,
-    required this.services,
+    this.services,
     required this.stackName,
-    required this.startTime,
-    required this.status,
-    required this.success,
-    required this.summary,
+    this.startTime,
+    this.status,
+    this.success,
+    this.summary,
     required this.triggerSource,
     required this.updatedAt,
     required this.user,
@@ -48,7 +48,13 @@ class OperationLogResponse {
 
   DateTime createdAt;
 
-  DeletedAt deletedAt;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DeletedAt? deletedAt;
 
   int? durationMs;
 
@@ -69,7 +75,13 @@ class OperationLogResponse {
 
   String operationId;
 
-  String options;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? options;
 
   int? partialDurationMs;
 
@@ -82,17 +94,41 @@ class OperationLogResponse {
 
   String serverName;
 
-  String services;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? services;
 
   String stackName;
 
-  DateTime startTime;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  DateTime? startTime;
 
-  String status;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? status;
 
   bool? success;
 
-  String summary;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? summary;
 
   String triggerSource;
 
@@ -142,7 +178,7 @@ class OperationLogResponse {
     // ignore: unnecessary_parenthesis
     (command.hashCode) +
     (createdAt.hashCode) +
-    (deletedAt.hashCode) +
+    (deletedAt == null ? 0 : deletedAt!.hashCode) +
     (durationMs == null ? 0 : durationMs!.hashCode) +
     (endTime == null ? 0 : endTime!.hashCode) +
     (exitCode == null ? 0 : exitCode!.hashCode) +
@@ -152,18 +188,18 @@ class OperationLogResponse {
     (lastMessageAt == null ? 0 : lastMessageAt!.hashCode) +
     (messageCount.hashCode) +
     (operationId.hashCode) +
-    (options.hashCode) +
+    (options == null ? 0 : options!.hashCode) +
     (partialDurationMs == null ? 0 : partialDurationMs!.hashCode) +
     (queuedAt == null ? 0 : queuedAt!.hashCode) +
     (server.hashCode) +
     (serverId.hashCode) +
     (serverName.hashCode) +
-    (services.hashCode) +
+    (services == null ? 0 : services!.hashCode) +
     (stackName.hashCode) +
-    (startTime.hashCode) +
-    (status.hashCode) +
+    (startTime == null ? 0 : startTime!.hashCode) +
+    (status == null ? 0 : status!.hashCode) +
     (success == null ? 0 : success!.hashCode) +
-    (summary.hashCode) +
+    (summary == null ? 0 : summary!.hashCode) +
     (triggerSource.hashCode) +
     (updatedAt.hashCode) +
     (user.hashCode) +
@@ -177,7 +213,11 @@ class OperationLogResponse {
     final json = <String, dynamic>{};
       json[r'command'] = this.command;
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
+    if (this.deletedAt != null) {
       json[r'deleted_at'] = this.deletedAt;
+    } else {
+      json[r'deleted_at'] = null;
+    }
     if (this.durationMs != null) {
       json[r'duration_ms'] = this.durationMs;
     } else {
@@ -203,7 +243,11 @@ class OperationLogResponse {
     }
       json[r'message_count'] = this.messageCount;
       json[r'operation_id'] = this.operationId;
+    if (this.options != null) {
       json[r'options'] = this.options;
+    } else {
+      json[r'options'] = null;
+    }
     if (this.partialDurationMs != null) {
       json[r'partial_duration_ms'] = this.partialDurationMs;
     } else {
@@ -217,16 +261,32 @@ class OperationLogResponse {
       json[r'server'] = this.server;
       json[r'server_id'] = this.serverId;
       json[r'server_name'] = this.serverName;
+    if (this.services != null) {
       json[r'services'] = this.services;
+    } else {
+      json[r'services'] = null;
+    }
       json[r'stack_name'] = this.stackName;
-      json[r'start_time'] = this.startTime.toUtc().toIso8601String();
+    if (this.startTime != null) {
+      json[r'start_time'] = this.startTime!.toUtc().toIso8601String();
+    } else {
+      json[r'start_time'] = null;
+    }
+    if (this.status != null) {
       json[r'status'] = this.status;
+    } else {
+      json[r'status'] = null;
+    }
     if (this.success != null) {
       json[r'success'] = this.success;
     } else {
       json[r'success'] = null;
     }
+    if (this.summary != null) {
       json[r'summary'] = this.summary;
+    } else {
+      json[r'summary'] = null;
+    }
       json[r'trigger_source'] = this.triggerSource;
       json[r'updated_at'] = this.updatedAt.toUtc().toIso8601String();
       json[r'user'] = this.user;
@@ -256,7 +316,7 @@ class OperationLogResponse {
       return OperationLogResponse(
         command: mapValueOfType<String>(json, r'command')!,
         createdAt: mapDateTime(json, r'created_at', r'')!,
-        deletedAt: DeletedAt.fromJson(json[r'deleted_at'])!,
+        deletedAt: DeletedAt.fromJson(json[r'deleted_at']),
         durationMs: mapValueOfType<int>(json, r'duration_ms'),
         endTime: mapDateTime(json, r'end_time', r''),
         exitCode: mapValueOfType<int>(json, r'exit_code'),
@@ -266,18 +326,18 @@ class OperationLogResponse {
         lastMessageAt: mapDateTime(json, r'last_message_at', r''),
         messageCount: mapValueOfType<int>(json, r'message_count')!,
         operationId: mapValueOfType<String>(json, r'operation_id')!,
-        options: mapValueOfType<String>(json, r'options')!,
+        options: mapValueOfType<String>(json, r'options'),
         partialDurationMs: mapValueOfType<int>(json, r'partial_duration_ms'),
         queuedAt: mapDateTime(json, r'queued_at', r''),
         server: Server.fromJson(json[r'server'])!,
         serverId: mapValueOfType<int>(json, r'server_id')!,
         serverName: mapValueOfType<String>(json, r'server_name')!,
-        services: mapValueOfType<String>(json, r'services')!,
+        services: mapValueOfType<String>(json, r'services'),
         stackName: mapValueOfType<String>(json, r'stack_name')!,
-        startTime: mapDateTime(json, r'start_time', r'')!,
-        status: mapValueOfType<String>(json, r'status')!,
+        startTime: mapDateTime(json, r'start_time', r''),
+        status: mapValueOfType<String>(json, r'status'),
         success: mapValueOfType<bool>(json, r'success'),
-        summary: mapValueOfType<String>(json, r'summary')!,
+        summary: mapValueOfType<String>(json, r'summary'),
         triggerSource: mapValueOfType<String>(json, r'trigger_source')!,
         updatedAt: mapDateTime(json, r'updated_at', r'')!,
         user: User.fromJson(json[r'user'])!,
@@ -332,28 +392,15 @@ class OperationLogResponse {
   static const requiredKeys = <String>{
     'command',
     'created_at',
-    'deleted_at',
-    'duration_ms',
-    'end_time',
-    'exit_code',
     'formatted_date',
     'id',
     'is_incomplete',
-    'last_message_at',
     'message_count',
     'operation_id',
-    'options',
-    'partial_duration_ms',
-    'queued_at',
     'server',
     'server_id',
     'server_name',
-    'services',
     'stack_name',
-    'start_time',
-    'status',
-    'success',
-    'summary',
     'trigger_source',
     'updated_at',
     'user',

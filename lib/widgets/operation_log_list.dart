@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/operation_log.dart' as models;
+import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogList extends StatelessWidget {
-  final List<models.OperationLogEntry> logs;
+  final List<berth_api.OperationLogResponse> logs;
   final bool loading;
-  final models.PaginationInfo? pagination;
+  final berth_api.PaginationInfo? pagination;
   final bool showUser;
-  final Function(models.OperationLogEntry) onTap;
+  final Function(berth_api.OperationLogResponse) onTap;
   final Function(int) onPageChanged;
 
   const OperationLogList({
@@ -82,7 +82,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  Widget _buildLogCard(BuildContext context, models.OperationLogEntry log) {
+  Widget _buildLogCard(BuildContext context, berth_api.OperationLogResponse log) {
     return Card(
       elevation: 2,
       child: InkWell(
@@ -237,7 +237,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, models.OperationLogEntry log) {
+  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogResponse log) {
     IconData icon;
     Color color;
     String text;
@@ -291,7 +291,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  String _formatDuration(models.OperationLogEntry log) {
+  String _formatDuration(berth_api.OperationLogResponse log) {
     int? duration = log.durationMs ?? log.partialDurationMs;
     
     if (duration == null || duration == 0) return 'N/A';

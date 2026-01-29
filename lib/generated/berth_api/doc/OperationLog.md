@@ -10,23 +10,23 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **command** | **String** |  | 
 **createdAt** | [**DateTime**](DateTime.md) |  | 
-**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | 
-**durationMs** | **int** |  | 
-**endTime** | [**DateTime**](DateTime.md) |  | 
-**exitCode** | **int** |  | 
+**deletedAt** | [**DeletedAt**](DeletedAt.md) |  | [optional] 
+**durationMs** | **int** |  | [optional] 
+**endTime** | [**DateTime**](DateTime.md) |  | [optional] 
+**exitCode** | **int** |  | [optional] 
 **id** | **int** |  | 
-**lastMessageAt** | [**DateTime**](DateTime.md) |  | 
+**lastMessageAt** | [**DateTime**](DateTime.md) |  | [optional] 
 **operationId** | **String** |  | 
-**options** | **String** |  | 
-**queuedAt** | [**DateTime**](DateTime.md) |  | 
+**options** | **String** |  | [optional] 
+**queuedAt** | [**DateTime**](DateTime.md) |  | [optional] 
 **server** | [**Server**](Server.md) |  | 
 **serverId** | **int** |  | 
-**services** | **String** |  | 
+**services** | **String** |  | [optional] 
 **stackName** | **String** |  | 
-**startTime** | [**DateTime**](DateTime.md) |  | 
-**status** | **String** |  | 
-**success** | **bool** |  | 
-**summary** | **String** |  | 
+**startTime** | [**DateTime**](DateTime.md) |  | [optional] 
+**status** | **String** |  | [optional] 
+**success** | **bool** |  | [optional] 
+**summary** | **String** |  | [optional] 
 **updatedAt** | [**DateTime**](DateTime.md) |  | 
 **user** | [**User**](User.md) |  | 
 **userId** | **int** |  | 
