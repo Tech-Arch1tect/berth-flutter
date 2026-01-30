@@ -106,10 +106,10 @@ class StackService {
         () => _berthApiProvider.stacksApi.apiV1ServersServeridStacksStacknameEnvironmentGet(serverId, stackName),
       );
       if (response == null) {
-        throw Exception('Failed to fetch stack environment variables: null response');
+        throw Exception('Failed to fetch environment variables: null response');
       }
-      debugPrint('[StackService] getStackEnvironmentVariables: returned ${response.length} services');
-      return response;
+      debugPrint('[StackService] getStackEnvironmentVariables: returned ${response.services.length} services');
+      return response.services;
     } on berth_api.ApiException catch (e) {
       debugPrint('[StackService] getStackEnvironmentVariables: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
