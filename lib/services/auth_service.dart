@@ -2,15 +2,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/user.dart';
-import '../models/role.dart';
 import 'berth_api_provider.dart';
 
 class AuthService extends ChangeNotifier {
   final BerthApiProvider _berthApiProvider;
   static const _secureStorage = FlutterSecureStorage();
 
-  User? _currentUser;
+  berth_api.UserInfo? _currentUser;
   bool _isLoading = false;
   String? _accessToken;
   String? _refreshToken;
@@ -21,36 +19,13 @@ class AuthService extends ChangeNotifier {
     });
   }
 
-  User? get currentUser => _currentUser;
+  berth_api.UserInfo? get currentUser => _currentUser;
   bool get isAuthenticated => _currentUser != null && _accessToken != null;
   bool get isLoading => _isLoading;
 
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
-  }
-
-  User _userInfoToUser(berth_api.UserInfo userInfo) {
-    return User(
-      id: userInfo.id,
-      username: userInfo.username,
-      email: userInfo.email,
-      emailVerifiedAt: userInfo.emailVerifiedAt,
-      lastLoginAt: userInfo.lastLoginAt,
-      totpEnabled: userInfo.totpEnabled,
-      createdAt: userInfo.createdAt,
-      updatedAt: userInfo.updatedAt,
-      roles: userInfo.roles.map((r) => _roleInfoToRole(r)).toList(),
-    );
-  }
-
-  Role _roleInfoToRole(berth_api.RoleInfo roleInfo) {
-    return Role(
-      id: roleInfo.id,
-      name: roleInfo.name,
-      description: roleInfo.description,
-      isAdmin: roleInfo.isAdmin,
-    );
   }
 
   Future<AuthResponse> login(String username, String password) async {
@@ -80,7 +55,7 @@ class AuthService extends ChangeNotifier {
         if (loginResponse != null) {
           _accessToken = loginResponse.accessToken;
           _refreshToken = loginResponse.refreshToken;
-          _currentUser = _userInfoToUser(loginResponse.user);
+          _currentUser = loginResponse.user;
 
           await _saveTokensToStorage(_accessToken!, _refreshToken!);
           await _saveUserToStorage(_currentUser!);
@@ -174,7 +149,7 @@ class AuthService extends ChangeNotifier {
       final response = await _berthApiProvider.profileApi.apiV1ProfileGet();
 
       if (response != null) {
-        _currentUser = _userInfoToUser(response.data);
+        _currentUser = response.data;
         await _saveUserToStorage(_currentUser!);
         notifyListeners();
         return true;
@@ -183,7 +158,7 @@ class AuthService extends ChangeNotifier {
         if (refreshResult) {
           final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
           if (retryResponse != null) {
-            _currentUser = _userInfoToUser(retryResponse.data);
+            _currentUser = retryResponse.data;
             await _saveUserToStorage(_currentUser!);
             notifyListeners();
             return true;
@@ -200,7 +175,7 @@ class AuthService extends ChangeNotifier {
           try {
             final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
             if (retryResponse != null) {
-              _currentUser = _userInfoToUser(retryResponse.data);
+              _currentUser = retryResponse.data;
               await _saveUserToStorage(_currentUser!);
               notifyListeners();
               return true;
@@ -271,15 +246,15 @@ class AuthService extends ChangeNotifier {
     await _secureStorage.delete(key: 'refresh_token');
   }
 
-  Future<void> _saveUserToStorage(User user) async {
+  Future<void> _saveUserToStorage(berth_api.UserInfo user) async {
     await _secureStorage.write(key: 'current_user', value: json.encode(user.toJson()));
   }
 
-  Future<User?> _getUserFromStorage() async {
+  Future<berth_api.UserInfo?> _getUserFromStorage() async {
     final userJson = await _secureStorage.read(key: 'current_user');
     if (userJson != null) {
       try {
-        return User.fromJson(json.decode(userJson));
+        return berth_api.UserInfo.fromJson(json.decode(userJson));
       } catch (e) {
         return null;
       }
@@ -306,7 +281,7 @@ class AuthService extends ChangeNotifier {
       if (response != null) {
         _accessToken = response.accessToken;
         _refreshToken = response.refreshToken;
-        _currentUser = _userInfoToUser(response.user);
+        _currentUser = response.user;
 
         await _saveTokensToStorage(_accessToken!, _refreshToken!);
         await _saveUserToStorage(_currentUser!);
@@ -368,9 +343,7 @@ class AuthService extends ChangeNotifier {
 
       if (response != null) {
         if (_currentUser != null) {
-          final updatedUserJson = _currentUser!.toJson();
-          updatedUserJson['totp_enabled'] = true;
-          _currentUser = User.fromJson(updatedUserJson);
+          _currentUser!.totpEnabled = true;
           await _saveUserToStorage(_currentUser!);
           notifyListeners();
         }
@@ -395,9 +368,7 @@ class AuthService extends ChangeNotifier {
 
       if (response != null) {
         if (_currentUser != null) {
-          final updatedUserJson = _currentUser!.toJson();
-          updatedUserJson['totp_enabled'] = false;
-          _currentUser = User.fromJson(updatedUserJson);
+          _currentUser!.totpEnabled = false;
           await _saveUserToStorage(_currentUser!);
           notifyListeners();
         }
@@ -473,7 +444,7 @@ class AuthService extends ChangeNotifier {
 class AuthResponse {
   final bool success;
   final String message;
-  final User? user;
+  final berth_api.UserInfo? user;
   final bool totpRequired;
   final String? temporaryToken;
 
