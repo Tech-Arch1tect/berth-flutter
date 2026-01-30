@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:berth_api/api.dart' as berth_api;
 import '../models/websocket_message.dart';
-import '../services/api_client.dart';
 import '../services/berth_api_provider.dart';
 import '../services/stack_service.dart';
 import '../services/server_service.dart';
 import '../services/websocket_service.dart';
 import '../services/stack_websocket_service.dart';
-import '../services/config_service.dart';
 import '../widgets/service_card.dart';
 import '../widgets/operations_modal.dart';
 import '../widgets/stack_quick_actions.dart';
@@ -125,10 +123,9 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
   void _showOperationsModal() {
     if (_stackDetails == null) return;
-    
-    final apiClient = context.read<ApiClient>();
-    final configService = context.read<ConfigService>();
-    final operationsService = OperationsService(apiClient, configService);
+
+    final berthApiProvider = context.read<BerthApiProvider>();
+    final operationsService = OperationsService(berthApiProvider);
     
     showDialog(
       context: context,
@@ -171,10 +168,9 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
   Future<void> _handleQuickOperation(OperationRequest request) async {
     if (_isQuickOperationRunning) return;
-    
-    final apiClient = context.read<ApiClient>();
-    final configService = context.read<ConfigService>();
-    _operationsService ??= OperationsService(apiClient, configService);
+
+    final berthApiProvider = context.read<BerthApiProvider>();
+    _operationsService ??= OperationsService(berthApiProvider);
     
     final isStackOperation = request.services.isEmpty;
     final operationKey = isStackOperation 
@@ -381,9 +377,8 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
   Future<void> _initWebSocket() async {
     try {
-      final apiClient = context.read<ApiClient>();
-      final configService = context.read<ConfigService>();
-      final webSocketService = WebSocketService(apiClient, configService);
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final webSocketService = WebSocketService(berthApiProvider);
       
       _wsService = StackWebSocketService(
         webSocketService,

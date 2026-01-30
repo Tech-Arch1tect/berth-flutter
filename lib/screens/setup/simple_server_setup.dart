@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../services/config_service.dart';
-import '../../services/api_client.dart';
+import '../../services/berth_api_provider.dart';
 
 class SimpleServerSetupScreen extends StatefulWidget {
   const SimpleServerSetupScreen({super.key});
@@ -23,16 +23,16 @@ class _SimpleServerSetupScreenState extends State<SimpleServerSetupScreen> {
 
   Future<void> _saveAndContinue() async {
     final url = _urlController.text.trim();
-    
+
     final configService = context.read<ConfigService>();
-    final apiClient = context.read<ApiClient>();
+    final berthApiProvider = context.read<BerthApiProvider>();
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     final success = await configService.setServerUrl(url, skipSslVerification: _skipSslVerification);
-    
+
     if (success && mounted) {
-      apiClient.setBaseUrl(url);
-      apiClient.updateSslVerification(_skipSslVerification);
+      berthApiProvider.setBaseUrl(url);
+      berthApiProvider.updateSslVerification(_skipSslVerification);
       context.go('/login');
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

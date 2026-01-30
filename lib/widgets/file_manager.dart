@@ -9,9 +9,7 @@ import '../extensions/file_entry_extensions.dart';
 import '../models/operation.dart';
 import '../services/files_service.dart';
 import '../services/berth_api_provider.dart';
-import '../services/api_client.dart';
 import '../services/operations_service.dart';
-import '../services/config_service.dart';
 import 'file_editor_dialog.dart';
 import 'archive_operation_dialog.dart';
 import 'operations_modal.dart';
@@ -2129,11 +2127,10 @@ class _FileManagerState extends State<FileManager> {
 
   Future<void> _handleArchiveOperation(OperationRequest request) async {
     try {
-      final apiClient = context.read<ApiClient>();
-      final configService = context.read<ConfigService>();
-      
+      final berthApiProvider = context.read<BerthApiProvider>();
+
       // Show operations modal for real-time feedback
-      final operationsService = OperationsService(apiClient, configService);
+      final operationsService = OperationsService(berthApiProvider);
       
       if (mounted) {
         showDialog(

@@ -19,6 +19,17 @@ class BerthApiProvider {
   BerthApiProvider({bool skipSslVerification = true})
       : _skipSslVerification = skipSslVerification;
 
+  String get baseUrl {
+    if (_baseUrl == null || _baseUrl!.isEmpty) {
+      throw Exception('Server URL not configured');
+    }
+    return _baseUrl!;
+  }
+
+  String? get authToken => _authToken;
+
+  bool get skipSslVerification => _skipSslVerification;
+
   void setTokenRefreshCallback(Future<bool> Function() callback) {
     _tokenRefreshCallback = callback;
   }

@@ -5,12 +5,10 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../models/operation.dart';
-import 'api_client.dart';
-import 'config_service.dart';
+import 'berth_api_provider.dart';
 
 class OperationsService {
-  final ApiClient _apiClient;
-  final ConfigService _configService;
+  final BerthApiProvider _berthApiProvider;
   WebSocketChannel? _channel;
   StreamController<StreamMessage>? _messageController;
   StreamController<bool>? _connectionController;
@@ -22,7 +20,7 @@ class OperationsService {
   Timer? _reconnectTimer;
   Timer? _pingTimer;
 
-  OperationsService(this._apiClient, this._configService) {
+  OperationsService(this._berthApiProvider) {
     _messageController = StreamController<StreamMessage>.broadcast();
     _connectionController = StreamController<bool>.broadcast();
     _errorController = StreamController<String>.broadcast();
@@ -38,31 +36,27 @@ class OperationsService {
     await disconnect();
 
     try {
-      final token = _apiClient.authToken;
+      final token = _berthApiProvider.authToken;
       if (token == null) {
         throw Exception('No authentication token available');
       }
 
-      
-      final baseUrl = _apiClient.baseUrl;
-      
-      
+      final baseUrl = _berthApiProvider.baseUrl;
+
       String wsUrl = baseUrl.replaceFirst('http://', 'ws://').replaceFirst('https://', 'wss://');
-      
-      
+
       String path = '/ws/api/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/operations';
       if (operationId != null) {
         path += '/$operationId';
       }
-      
+
       final uri = Uri.parse('$wsUrl$path');
-      
-      
+
       final headers = <String, String>{
         'Authorization': 'Bearer $token',
       };
-      
-      if (_configService.skipSslVerification) {
+
+      if (_berthApiProvider.skipSslVerification) {
         final webSocket = await WebSocket.connect(
           uri.toString(),
           headers: headers,

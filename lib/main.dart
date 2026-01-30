@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'services/config_service.dart';
 import 'services/auth_service.dart';
-import 'services/api_client.dart';
 import 'services/berth_api_provider.dart';
 import 'screens/setup/simple_server_setup.dart';
 import 'screens/auth/login_screen.dart';
@@ -46,7 +45,6 @@ class AppInitializer extends StatefulWidget {
 class _AppInitializerState extends State<AppInitializer> {
   bool _initialized = false;
   final _configService = ConfigService();
-  late final ApiClient _apiClient;
   late final BerthApiProvider _berthApiProvider;
   late final AuthService _authService;
   late final StackService _stackService;
@@ -57,7 +55,6 @@ class _AppInitializerState extends State<AppInitializer> {
   @override
   void initState() {
     super.initState();
-    _apiClient = ApiClient(skipSslVerification: true);
     _berthApiProvider = BerthApiProvider(skipSslVerification: true);
     _authService = AuthService(_berthApiProvider);
     _stackService = StackService(_berthApiProvider);
@@ -72,9 +69,6 @@ class _AppInitializerState extends State<AppInitializer> {
     await _configService.loadConfiguration();
 
     if (_configService.isConfigured) {
-      _apiClient.setBaseUrl(_configService.serverUrl!);
-      _apiClient.updateSslVerification(_configService.skipSslVerification);
-
       _berthApiProvider.setBaseUrl(_configService.serverUrl!);
       _berthApiProvider.updateSslVerification(_configService.skipSslVerification);
 
@@ -100,7 +94,6 @@ class _AppInitializerState extends State<AppInitializer> {
 
     return BerthApp(
       configService: _configService,
-      apiClient: _apiClient,
       berthApiProvider: _berthApiProvider,
       authService: _authService,
       stackService: _stackService,
@@ -113,7 +106,6 @@ class _AppInitializerState extends State<AppInitializer> {
 
 class BerthApp extends StatelessWidget {
   final ConfigService configService;
-  final ApiClient apiClient;
   final BerthApiProvider berthApiProvider;
   final AuthService authService;
   final StackService stackService;
@@ -124,7 +116,6 @@ class BerthApp extends StatelessWidget {
   const BerthApp({
     super.key,
     required this.configService,
-    required this.apiClient,
     required this.berthApiProvider,
     required this.authService,
     required this.stackService,
@@ -138,7 +129,6 @@ class BerthApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: configService),
-        Provider.value(value: apiClient),
         Provider.value(value: berthApiProvider),
         ChangeNotifierProvider.value(value: authService),
         Provider.value(value: stackService),

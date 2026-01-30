@@ -5,12 +5,10 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../models/websocket_message.dart';
-import 'api_client.dart';
-import 'config_service.dart';
+import 'berth_api_provider.dart';
 
 class WebSocketService {
-  final ApiClient _apiClient;
-  final ConfigService _configService;
+  final BerthApiProvider _berthApiProvider;
   WebSocketChannel? _channel;
   StreamController<Map<String, dynamic>>? _messageController;
   Timer? _reconnectTimer;
@@ -23,10 +21,10 @@ class WebSocketService {
   final int _reconnectInterval = 3000; 
   final int _heartbeatInterval = 30000; 
   
-  final StreamController<WebSocketConnectionStatus> _statusController = 
+  final StreamController<WebSocketConnectionStatus> _statusController =
       StreamController<WebSocketConnectionStatus>.broadcast();
 
-  WebSocketService(this._apiClient, this._configService);
+  WebSocketService(this._berthApiProvider);
 
   WebSocketConnectionStatus get connectionStatus => _status;
   bool get isConnected => _status == WebSocketConnectionStatus.connected;
@@ -43,18 +41,17 @@ class WebSocketService {
     _setStatus(WebSocketConnectionStatus.connecting);
 
     try {
-      final baseUrl = _apiClient.baseUrl;
+      final baseUrl = _berthApiProvider.baseUrl;
       final wsUrl = baseUrl.replaceFirst('http', 'ws');
       final uri = Uri.parse('$wsUrl$endpoint');
-      
-      
-      final token = _apiClient.authToken;
+
+      final token = _berthApiProvider.authToken;
       final Map<String, String> headers = {};
       if (token != null && token.isNotEmpty) {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      if (_configService.skipSslVerification) {
+      if (_berthApiProvider.skipSslVerification) {
         final webSocket = await WebSocket.connect(
           uri.toString(),
           headers: headers,

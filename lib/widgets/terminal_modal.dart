@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:berth_api/api.dart' as berth_api;
+import '../services/berth_api_provider.dart';
 import '../services/terminal_service.dart';
 import 'terminal_widget.dart';
 
@@ -40,7 +41,7 @@ class TerminalModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final terminalService = TerminalService(context.read(), context.read());
+    final terminalService = TerminalService(context.read<BerthApiProvider>());
 
     return Provider<TerminalService>.value(
       value: terminalService,

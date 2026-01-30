@@ -7,12 +7,10 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../models/terminal_message.dart';
 import '../models/websocket_message.dart';
-import 'api_client.dart';
-import 'config_service.dart';
+import 'berth_api_provider.dart';
 
 class TerminalService {
-  final ApiClient _apiClient;
-  final ConfigService _configService;
+  final BerthApiProvider _berthApiProvider;
   WebSocketChannel? _channel;
   StreamController<TerminalOutputMessage>? _outputController;
   StreamController<TerminalSession>? _sessionController;
@@ -31,10 +29,10 @@ class TerminalService {
   );
   
   final int _reconnectInterval = 3000;
-  final StreamController<WebSocketConnectionStatus> _statusController = 
+  final StreamController<WebSocketConnectionStatus> _statusController =
       StreamController<WebSocketConnectionStatus>.broadcast();
 
-  TerminalService(this._apiClient, this._configService);
+  TerminalService(this._berthApiProvider);
 
   // Getters
   WebSocketConnectionStatus get connectionStatus => _status;
@@ -56,17 +54,17 @@ class TerminalService {
     _setStatus(WebSocketConnectionStatus.connecting);
 
     try {
-      final baseUrl = _apiClient.baseUrl;
+      final baseUrl = _berthApiProvider.baseUrl;
       final wsUrl = baseUrl.replaceFirst('http', 'ws');
       final uri = Uri.parse('$wsUrl/ws/api/servers/$serverId/terminal');
-      
-      final token = _apiClient.authToken;
+
+      final token = _berthApiProvider.authToken;
       final Map<String, String> headers = {};
       if (token != null && token.isNotEmpty) {
         headers['Authorization'] = 'Bearer $token';
       }
 
-      if (_configService.skipSslVerification) {
+      if (_berthApiProvider.skipSslVerification) {
         final webSocket = await WebSocket.connect(
           uri.toString(),
           headers: headers,
