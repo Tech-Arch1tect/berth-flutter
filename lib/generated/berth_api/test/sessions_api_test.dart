@@ -17,6 +17,15 @@ void main() {
   // final instance = SessionsApi();
 
   group('tests for SessionsApi', () {
+    // List user sessions
+    //
+    // Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
+    //
+    //Future<GetSessionsResponse> apiV1SessionsPost(GetSessionsRequest getSessionsRequest) async
+    test('test apiV1SessionsPost', () async {
+      // TODO
+    });
+
     // Revoke all other sessions
     //
     // Revokes all sessions except the current one. For JWT authentication, the refresh token must be provided in the request body.

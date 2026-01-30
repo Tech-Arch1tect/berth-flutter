@@ -317,7 +317,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameEnvironmentGet**
-> Map<String, List<ServiceEnvironment>> apiV1ServersServeridStacksStacknameEnvironmentGet(serverid, stackname, unmask)
+> StackEnvironmentResponse apiV1ServersServeridStacksStacknameEnvironmentGet(serverid, stackname, unmask)
 
 Get stack environment variables
 
@@ -364,7 +364,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Map<String, List<ServiceEnvironment>>**](List.md)
+[**StackEnvironmentResponse**](StackEnvironmentResponse.md)
 
 ### Authorization
 

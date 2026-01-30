@@ -62,6 +62,15 @@ void main() {
       // TODO
     });
 
+    // List all roles
+    //
+    // List all roles. Requires admin permissions.
+    //
+    //Future<ListRolesResponse> apiV1AdminRolesGet() async
+    test('test apiV1AdminRolesGet', () async {
+      // TODO
+    });
+
     // Delete a role
     //
     // Deletes a role. Requires admin permissions.
@@ -194,6 +203,24 @@ void main() {
     //
     //Future<AssignRoleResponse> apiV1AdminUsersAssignRolePost(AssignRoleRequest assignRoleRequest) async
     test('test apiV1AdminUsersAssignRolePost', () async {
+      // TODO
+    });
+
+    // List all users
+    //
+    // List all users. Requires admin permissions.
+    //
+    //Future<ListUsersResponse> apiV1AdminUsersGet() async
+    test('test apiV1AdminUsersGet', () async {
+      // TODO
+    });
+
+    // Get user with roles
+    //
+    // Returns user details and all available roles. Requires admin permissions.
+    //
+    //Future<GetUserRolesResponse> apiV1AdminUsersIdRolesGet(int id) async
+    test('test apiV1AdminUsersIdRolesGet', () async {
       // TODO
     });
 

@@ -398,7 +398,7 @@ class StacksApi {
   ///
   /// * [String] unmask:
   ///   Set to true to unmask sensitive values
-  Future<Map<String, List<ServiceEnvironment>>?> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String? unmask, }) async {
+  Future<StackEnvironmentResponse?> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String? unmask, }) async {
     final response = await apiV1ServersServeridStacksStacknameEnvironmentGetWithHttpInfo(serverid, stackname,  unmask: unmask, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -407,8 +407,8 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return Map<String, List<ServiceEnvironment>>.from(await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Map<String, List<ServiceEnvironment>>'),);
-
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackEnvironmentResponse',) as StackEnvironmentResponse;
+    
     }
     return null;
   }

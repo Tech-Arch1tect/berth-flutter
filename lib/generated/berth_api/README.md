@@ -394,6 +394,7 @@ Class | Method | HTTP request | Description
  - [SessionMessageResponse](doc//SessionMessageResponse.md)
  - [Stack](doc//Stack.md)
  - [StackDetails](doc//StackDetails.md)
+ - [StackEnvironmentResponse](doc//StackEnvironmentResponse.md)
  - [StackImagesResponse](doc//StackImagesResponse.md)
  - [StackNetworksResponse](doc//StackNetworksResponse.md)
  - [StackPermissionRule](doc//StackPermissionRule.md)

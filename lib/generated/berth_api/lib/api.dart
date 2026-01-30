@@ -244,6 +244,7 @@ part 'model/session_item.dart';
 part 'model/session_message_response.dart';
 part 'model/stack.dart';
 part 'model/stack_details.dart';
+part 'model/stack_environment_response.dart';
 part 'model/stack_images_response.dart';
 part 'model/stack_networks_response.dart';
 part 'model/stack_permission_rule.dart';

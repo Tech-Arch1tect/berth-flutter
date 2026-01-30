@@ -26,6 +26,24 @@ void main() {
       // TODO
     });
 
+    // List all users
+    //
+    // List all users. Requires admin permissions.
+    //
+    //Future<ListUsersResponse> apiV1AdminUsersGet() async
+    test('test apiV1AdminUsersGet', () async {
+      // TODO
+    });
+
+    // Get user with roles
+    //
+    // Returns user details and all available roles. Requires admin permissions.
+    //
+    //Future<GetUserRolesResponse> apiV1AdminUsersIdRolesGet(int id) async
+    test('test apiV1AdminUsersIdRolesGet', () async {
+      // TODO
+    });
+
     // Create a new user
     //
     // Creates a new user account. Requires admin permissions.

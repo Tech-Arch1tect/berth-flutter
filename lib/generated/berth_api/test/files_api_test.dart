@@ -57,7 +57,7 @@ void main() {
     //
     // Downloads a file from a stack's file system
     //
-    //Future<MultipartFile> apiV1ServersServeridStacksStacknameFilesDownloadGet(int serverid, String stackname, String path, { String filename }) async
+    //Future<MultipartFile> apiV1ServersServeridStacksStacknameFilesDownloadGet(int serverid, String stackname, String filePath, { String filename }) async
     test('test apiV1ServersServeridStacksStacknameFilesDownloadGet', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Returns the contents of a directory within a stack's file system
     //
-    //Future<DirectoryListing> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String path }) async
+    //Future<DirectoryListing> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesGet', () async {
       // TODO
     });
@@ -84,7 +84,7 @@ void main() {
     //
     // Returns the contents of a file within a stack's file system
     //
-    //Future<FileContent> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String path) async
+    //Future<FileContent> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath) async
     test('test apiV1ServersServeridStacksStacknameFilesReadGet', () async {
       // TODO
     });
@@ -102,7 +102,7 @@ void main() {
     //
     // Returns statistics about a directory including most common owner, group, and mode
     //
-    //Future<DirectoryStats> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String path }) async
+    //Future<DirectoryStats> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesStatsGet', () async {
       // TODO
     });
@@ -111,7 +111,7 @@ void main() {
     //
     // Uploads a file to a stack's file system using multipart form data
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String path }) async
+    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesUploadPost', () async {
       // TODO
     });

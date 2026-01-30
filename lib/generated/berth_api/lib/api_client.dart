@@ -570,6 +570,8 @@ class ApiClient {
           return Stack.fromJson(value);
         case 'StackDetails':
           return StackDetails.fromJson(value);
+        case 'StackEnvironmentResponse':
+          return StackEnvironmentResponse.fromJson(value);
         case 'StackImagesResponse':
           return StackImagesResponse.fromJson(value);
         case 'StackNetworksResponse':

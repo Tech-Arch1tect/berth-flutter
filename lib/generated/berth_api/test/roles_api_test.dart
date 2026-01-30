@@ -17,6 +17,15 @@ void main() {
   // final instance = RolesApi();
 
   group('tests for RolesApi', () {
+    // List all roles
+    //
+    // List all roles. Requires admin permissions.
+    //
+    //Future<ListRolesResponse> apiV1AdminRolesGet() async
+    test('test apiV1AdminRolesGet', () async {
+      // TODO
+    });
+
     // Delete a role
     //
     // Deletes a role. Requires admin permissions.

@@ -66,7 +66,7 @@ void main() {
     //
     // Returns environment variables for all services in a stack. Use unmask=true to see sensitive values.
     //
-    //Future<Map<String, List<ServiceEnvironment>>> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String unmask }) async
+    //Future<StackEnvironmentResponse> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String unmask }) async
     test('test apiV1ServersServeridStacksStacknameEnvironmentGet', () async {
       // TODO
     });
