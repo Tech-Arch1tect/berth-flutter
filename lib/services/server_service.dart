@@ -1,15 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/stack_statistics.dart';
-import 'api_client.dart';
 import 'berth_api_provider.dart';
 
 class ServerService {
-  final ApiClient _apiClient;
   final BerthApiProvider _berthApiProvider;
 
-  ServerService(this._apiClient, this._berthApiProvider);
+  ServerService(this._berthApiProvider);
 
   Future<List<berth_api.ServerResponse>> getServers() async {
     try {
@@ -121,21 +118,30 @@ class ServerService {
     }
   }
 
-  Future<StackStatistics?> getServerStatistics(int serverId) async {
+  Future<berth_api.StackStatistics?> getServerStatistics(int serverId) async {
     try {
-      final response = await _apiClient.get('/api/v1/servers/$serverId/statistics');
+      final response = await _berthApiProvider.callWithAutoRefresh(() async {
+        final httpResponse = await _berthApiProvider.apiClient.invokeAPI(
+          '/api/v1/servers/$serverId/statistics',
+          'GET',
+          [],
+          null,
+          {},
+          {},
+          'application/json',
+        );
+        return httpResponse;
+      });
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['statistics'] != null) {
-          final statistics = StackStatistics.fromJson(data['statistics']);
-          return statistics;
-        } else {
-          return null;
+          return berth_api.StackStatistics.fromJson(data['statistics']);
         }
-      } else {
-        return null;
       }
+      return null;
     } catch (e) {
+      debugPrint('[ServerService] getServerStatistics: error - $e');
       return null;
     }
   }

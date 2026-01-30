@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/stack_statistics.dart';
 import '../extensions/server_response_extensions.dart';
 import '../theme/app_theme.dart';
 
 class DashboardServerCard extends StatelessWidget {
   final berth_api.ServerResponse server;
-  final StackStatistics? statistics;
+  final berth_api.StackStatistics? statistics;
   final bool isLoadingStatistics;
   final bool hasStatisticsError;
 
@@ -195,7 +194,7 @@ class DashboardServerCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCompactStatistics(BuildContext context, StackStatistics statistics) {
+  Widget _buildCompactStatistics(BuildContext context, berth_api.StackStatistics statistics) {
     final bool hasUnhealthyStacks = statistics.unhealthyStacks > 0;
     final bool hasStacks = statistics.totalStacks > 0;
     

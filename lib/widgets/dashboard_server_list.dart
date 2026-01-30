@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:berth_api/api.dart' as berth_api;
-import '../models/stack_statistics.dart';
 import '../services/server_service.dart';
 import 'dashboard_server_card.dart';
 import '../theme/app_theme.dart';
@@ -19,7 +18,7 @@ class _DashboardServerListState extends State<DashboardServerList> {
   String? _error;
   late ServerService _serverService;
 
-  final Map<int, StackStatistics?> _statistics = {};
+  final Map<int, berth_api.StackStatistics?> _statistics = {};
   final Set<int> _loadingStatistics = {};
   final Set<int> _statisticsErrors = {};
 
