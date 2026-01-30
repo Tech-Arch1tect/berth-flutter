@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/api_client.dart';
-import '../../models/user.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import '../../services/berth_api_provider.dart';
 import '../../theme/app_theme.dart';
 import 'user_roles_screen.dart';
 
@@ -14,7 +13,7 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  List<User> users = [];
+  List<berth_api.UserInfo> users = [];
   bool isLoading = true;
   String? error;
   bool isCreatingUser = false;
@@ -31,17 +30,19 @@ class _UsersScreenState extends State<UsersScreen> {
         isLoading = true;
         error = null;
       });
-      
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.get('/api/v1/admin/users');
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        final List<dynamic> usersJson = data['users'] ?? [];
-        users = usersJson.map((json) => User.fromJson(json)).toList();
+
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final response = await berthApiProvider.callWithAutoRefresh(
+        () => berthApiProvider.usersApi.apiV1AdminUsersGet(),
+      );
+
+      if (response != null) {
+        users = response.data.users;
       } else {
-        error = 'Failed to load users (${response.statusCode})';
+        error = 'Failed to load users';
       }
+    } on berth_api.ApiException catch (e) {
+      error = 'Failed to load users (${e.code})';
     } catch (e) {
       error = 'Network error: $e';
     } finally {
@@ -62,33 +63,35 @@ class _UsersScreenState extends State<UsersScreen> {
         isCreatingUser = true;
       });
 
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.post(
-        '/api/v1/admin/users',
-        body: {
-          'username': username,
-          'email': email,
-          'password': password,
-          'password_confirm': passwordConfirm,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final request = berth_api.CreateUserRequest(
+        username: username,
+        email: email,
+        password: password,
+        passwordConfirm: passwordConfirm,
       );
 
-      if (response.statusCode == 201) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('User "$username" created successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _loadUsers();
-        }
-      } else {
-        final errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Failed to create user');
+      await berthApiProvider.callWithAutoRefresh(
+        () => berthApiProvider.usersApi.apiV1AdminUsersPost(request),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User "$username" created successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _loadUsers();
+      }
+    } on berth_api.ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create user: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {

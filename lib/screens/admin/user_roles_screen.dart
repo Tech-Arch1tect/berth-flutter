@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/api_client.dart';
-import '../../models/user.dart';
-import '../../models/role.dart';
+import 'package:berth_api/api.dart' as berth_api;
+import '../../services/berth_api_provider.dart';
 import '../../theme/app_theme.dart';
 
 class UserRolesScreen extends StatefulWidget {
@@ -21,8 +19,8 @@ class UserRolesScreen extends StatefulWidget {
 }
 
 class _UserRolesScreenState extends State<UserRolesScreen> {
-  User? user;
-  List<Role> allRoles = [];
+  berth_api.UserInfo? user;
+  List<berth_api.RoleInfo> allRoles = [];
   bool isLoading = true;
   bool isProcessing = false;
   String? error;
@@ -40,18 +38,19 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
         error = null;
       });
 
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.get('/api/v1/admin/users/${widget.userId}/roles');
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final response = await berthApiProvider.callWithAutoRefresh(
+        () => berthApiProvider.usersApi.apiV1AdminUsersIdRolesGet(widget.userId),
+      );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        user = User.fromJson(data['user']);
-        allRoles = (data['all_roles'] as List<dynamic>)
-            .map((json) => Role.fromJson(json))
-            .toList();
+      if (response != null) {
+        user = response.data.user;
+        allRoles = response.data.allRoles;
       } else {
-        error = 'Failed to load user roles (${response.statusCode})';
+        error = 'Failed to load user roles';
       }
+    } on berth_api.ApiException catch (e) {
+      error = 'Failed to load user roles (${e.code})';
     } catch (e) {
       error = 'Network error: $e';
     } finally {
@@ -69,34 +68,33 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
     });
 
     try {
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.post(
-        '/api/v1/admin/users/assign-role',
-        body: {
-          'user_id': widget.userId,
-          'role_id': roleId,
-        },
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final request = berth_api.AssignRoleRequest(
+        userId: widget.userId,
+        roleId: roleId,
       );
 
-      if (response.statusCode == 200) {
-        await _loadUserRoles();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Role assigned successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to assign role (${response.statusCode})'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      await berthApiProvider.callWithAutoRefresh(
+        () => berthApiProvider.usersApi.apiV1AdminUsersAssignRolePost(request),
+      );
+
+      await _loadUserRoles();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Role assigned successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } on berth_api.ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to assign role: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -122,34 +120,33 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
     });
 
     try {
-      final apiClient = context.read<ApiClient>();
-      final response = await apiClient.post(
-        '/api/v1/admin/users/revoke-role',
-        body: {
-          'user_id': widget.userId,
-          'role_id': roleId,
-        },
+      final berthApiProvider = context.read<BerthApiProvider>();
+      final request = berth_api.RevokeRoleRequest(
+        userId: widget.userId,
+        roleId: roleId,
       );
 
-      if (response.statusCode == 200) {
-        await _loadUserRoles();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Role revoked successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to revoke role (${response.statusCode})'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      await berthApiProvider.callWithAutoRefresh(
+        () => berthApiProvider.usersApi.apiV1AdminUsersRevokeRolePost(request),
+      );
+
+      await _loadUserRoles();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Role revoked successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } on berth_api.ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to revoke role: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -167,9 +164,9 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
     }
   }
 
-  List<Role> get userRoles => user?.roles ?? [];
+  List<berth_api.RoleInfo> get userRoles => user?.roles ?? [];
   List<int> get userRoleIds => userRoles.map((role) => role.id).toList();
-  List<Role> get availableRoles => allRoles.where((role) => !userRoleIds.contains(role.id)).toList();
+  List<berth_api.RoleInfo> get availableRoles => allRoles.where((role) => !userRoleIds.contains(role.id)).toList();
 
   @override
   Widget build(BuildContext context) {
