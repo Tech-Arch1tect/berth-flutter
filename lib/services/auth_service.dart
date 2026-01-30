@@ -326,7 +326,9 @@ class AuthService extends ChangeNotifier {
 
   Future<berth_api.TOTPSetupResponse?> getTOTPSetup() async {
     try {
-      return await _berthApiProvider.totpApi.apiV1TotpSetupGet();
+      return await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.totpApi.apiV1TotpSetupGet(),
+      );
     } catch (e) {
       debugPrint('Get TOTP setup error: $e');
       return null;
@@ -339,7 +341,9 @@ class AuthService extends ChangeNotifier {
         code: code,
       );
 
-      final response = await _berthApiProvider.totpApi.apiV1TotpEnablePost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.totpApi.apiV1TotpEnablePost(request),
+      );
 
       if (response != null) {
         if (_currentUser != null) {
@@ -364,7 +368,9 @@ class AuthService extends ChangeNotifier {
         password: password,
       );
 
-      final response = await _berthApiProvider.totpApi.apiV1TotpDisablePost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.totpApi.apiV1TotpDisablePost(request),
+      );
 
       if (response != null) {
         if (_currentUser != null) {
@@ -384,7 +390,9 @@ class AuthService extends ChangeNotifier {
 
   Future<berth_api.TOTPStatusResponse?> getTOTPStatus() async {
     try {
-      return await _berthApiProvider.totpApi.apiV1TotpStatusGet();
+      return await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.totpApi.apiV1TotpStatusGet(),
+      );
     } catch (e) {
       debugPrint('Get TOTP status error: $e');
       return null;
@@ -397,7 +405,9 @@ class AuthService extends ChangeNotifier {
         refreshToken: _refreshToken!,
       );
 
-      final response = await _berthApiProvider.sessionsApi.apiV1SessionsPost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.sessionsApi.apiV1SessionsPost(request),
+      );
 
       if (response != null) {
         return response.sessions;
@@ -416,7 +426,9 @@ class AuthService extends ChangeNotifier {
         sessionId: sessionId,
       );
 
-      final response = await _berthApiProvider.sessionsApi.apiV1SessionsRevokePost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.sessionsApi.apiV1SessionsRevokePost(request),
+      );
 
       return response != null;
     } catch (e) {
@@ -431,7 +443,9 @@ class AuthService extends ChangeNotifier {
         refreshToken: _refreshToken!,
       );
 
-      final response = await _berthApiProvider.sessionsApi.apiV1SessionsRevokeAllOthersPost(request);
+      final response = await _berthApiProvider.callWithAutoRefresh(
+        () => _berthApiProvider.sessionsApi.apiV1SessionsRevokeAllOthersPost(request),
+      );
 
       return response != null;
     } catch (e) {
