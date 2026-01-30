@@ -100,6 +100,8 @@ doc/GetScansHistoryResponse.md
 doc/GetSessionsRequest.md
 doc/GetSessionsResponse.md
 doc/GetStatsAPIResponse.md
+doc/GetUserRolesResponse.md
+doc/GetUserRolesResponseData.md
 doc/GetVersionResponse.md
 doc/HealthLog.md
 doc/HealthStatus.md
@@ -132,6 +134,8 @@ doc/ListRolesResponseData.md
 doc/ListScopesResponse.md
 doc/ListServersResponse.md
 doc/ListStacksResponse.md
+doc/ListUsersResponse.md
+doc/ListUsersResponseData.md
 doc/LogEntry.md
 doc/LogsApi.md
 doc/LogsResponse.md
@@ -376,6 +380,8 @@ lib/model/get_scans_history_response.dart
 lib/model/get_sessions_request.dart
 lib/model/get_sessions_response.dart
 lib/model/get_stats_api_response.dart
+lib/model/get_user_roles_response.dart
+lib/model/get_user_roles_response_data.dart
 lib/model/get_version_response.dart
 lib/model/health_log.dart
 lib/model/health_status.dart
@@ -407,6 +413,8 @@ lib/model/list_roles_response_data.dart
 lib/model/list_scopes_response.dart
 lib/model/list_servers_response.dart
 lib/model/list_stacks_response.dart
+lib/model/list_users_response.dart
+lib/model/list_users_response_data.dart
 lib/model/log_entry.dart
 lib/model/logs_response.dart
 lib/model/maintenance_info.dart

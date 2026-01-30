@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **email** | **String** |  | 
 **emailVerifiedAt** | **String** |  | [optional] 
 **id** | **int** |  | 
-**lastLoginAt** | **String** |  | 
+**lastLoginAt** | **String** |  | [optional] 
 **roles** | [**List<RoleInfo>**](RoleInfo.md) |  | [optional] [default to const []]
 **totpEnabled** | **bool** |  | 
 **updatedAt** | **String** |  | 

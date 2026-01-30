@@ -368,6 +368,10 @@ class ApiClient {
           return GetSessionsResponse.fromJson(value);
         case 'GetStatsAPIResponse':
           return GetStatsAPIResponse.fromJson(value);
+        case 'GetUserRolesResponse':
+          return GetUserRolesResponse.fromJson(value);
+        case 'GetUserRolesResponseData':
+          return GetUserRolesResponseData.fromJson(value);
         case 'GetVersionResponse':
           return GetVersionResponse.fromJson(value);
         case 'HealthLog':
@@ -430,6 +434,10 @@ class ApiClient {
           return ListServersResponse.fromJson(value);
         case 'ListStacksResponse':
           return ListStacksResponse.fromJson(value);
+        case 'ListUsersResponse':
+          return ListUsersResponse.fromJson(value);
+        case 'ListUsersResponseData':
+          return ListUsersResponseData.fromJson(value);
         case 'LogEntry':
           return LogEntry.fromJson(value);
         case 'LogsResponse':

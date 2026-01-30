@@ -1397,6 +1397,113 @@ class AdminApi {
     return null;
   }
 
+  /// List all users
+  ///
+  /// List all users. Requires admin permissions.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  Future<Response> apiV1AdminUsersGetWithHttpInfo() async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/v1/admin/users';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List all users
+  ///
+  /// List all users. Requires admin permissions.
+  Future<ListUsersResponse?> apiV1AdminUsersGet() async {
+    final response = await apiV1AdminUsersGetWithHttpInfo();
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListUsersResponse',) as ListUsersResponse;
+    
+    }
+    return null;
+  }
+
+  /// Get user with roles
+  ///
+  /// Returns user details and all available roles. Requires admin permissions.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] id (required):
+  ///   User ID
+  Future<Response> apiV1AdminUsersIdRolesGetWithHttpInfo(int id,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/v1/admin/users/{id}/roles'
+      .replaceAll('{id}', id.toString());
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get user with roles
+  ///
+  /// Returns user details and all available roles. Requires admin permissions.
+  ///
+  /// Parameters:
+  ///
+  /// * [int] id (required):
+  ///   User ID
+  Future<GetUserRolesResponse?> apiV1AdminUsersIdRolesGet(int id,) async {
+    final response = await apiV1AdminUsersIdRolesGetWithHttpInfo(id,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetUserRolesResponse',) as GetUserRolesResponse;
+    
+    }
+    return null;
+  }
+
   /// Create a new user
   ///
   /// Creates a new user account. Requires admin permissions.

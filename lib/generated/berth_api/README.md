@@ -94,6 +94,8 @@ Class | Method | HTTP request | Description
 *AdminApi* | [**apiV1AdminServersIdTestPost**](doc//AdminApi.md#apiv1adminserversidtestpost) | **POST** /api/v1/admin/servers/{id}/test | Test server connection
 *AdminApi* | [**apiV1AdminServersPost**](doc//AdminApi.md#apiv1adminserverspost) | **POST** /api/v1/admin/servers | Create a new server
 *AdminApi* | [**apiV1AdminUsersAssignRolePost**](doc//AdminApi.md#apiv1adminusersassignrolepost) | **POST** /api/v1/admin/users/assign-role | Assign a role to a user
+*AdminApi* | [**apiV1AdminUsersGet**](doc//AdminApi.md#apiv1adminusersget) | **GET** /api/v1/admin/users | List all users
+*AdminApi* | [**apiV1AdminUsersIdRolesGet**](doc//AdminApi.md#apiv1adminusersidrolesget) | **GET** /api/v1/admin/users/{id}/roles | Get user with roles
 *AdminApi* | [**apiV1AdminUsersPost**](doc//AdminApi.md#apiv1adminuserspost) | **POST** /api/v1/admin/users | Create a new user
 *AdminApi* | [**apiV1AdminUsersRevokeRolePost**](doc//AdminApi.md#apiv1adminusersrevokerolepost) | **POST** /api/v1/admin/users/revoke-role | Revoke a role from a user
 *ApiKeysApi* | [**apiV1ApiKeysGet**](doc//ApiKeysApi.md#apiv1apikeysget) | **GET** /api/v1/api-keys | List API keys
@@ -183,6 +185,8 @@ Class | Method | HTTP request | Description
 *TotpApi* | [**apiV1TotpSetupGet**](doc//TotpApi.md#apiv1totpsetupget) | **GET** /api/v1/totp/setup | Get TOTP setup information
 *TotpApi* | [**apiV1TotpStatusGet**](doc//TotpApi.md#apiv1totpstatusget) | **GET** /api/v1/totp/status | Get TOTP status
 *UsersApi* | [**apiV1AdminUsersAssignRolePost**](doc//UsersApi.md#apiv1adminusersassignrolepost) | **POST** /api/v1/admin/users/assign-role | Assign a role to a user
+*UsersApi* | [**apiV1AdminUsersGet**](doc//UsersApi.md#apiv1adminusersget) | **GET** /api/v1/admin/users | List all users
+*UsersApi* | [**apiV1AdminUsersIdRolesGet**](doc//UsersApi.md#apiv1adminusersidrolesget) | **GET** /api/v1/admin/users/{id}/roles | Get user with roles
 *UsersApi* | [**apiV1AdminUsersPost**](doc//UsersApi.md#apiv1adminuserspost) | **POST** /api/v1/admin/users | Create a new user
 *UsersApi* | [**apiV1AdminUsersRevokeRolePost**](doc//UsersApi.md#apiv1adminusersrevokerolepost) | **POST** /api/v1/admin/users/revoke-role | Revoke a role from a user
 *VulnscanApi* | [**apiV1ServersServeridStacksStacknameVulnscanGet**](doc//VulnscanApi.md#apiv1serversserveridstacksstacknamevulnscanget) | **GET** /api/v1/servers/{serverid}/stacks/{stackname}/vulnscan | Get latest scan for stack
@@ -289,6 +293,8 @@ Class | Method | HTTP request | Description
  - [GetSessionsRequest](doc//GetSessionsRequest.md)
  - [GetSessionsResponse](doc//GetSessionsResponse.md)
  - [GetStatsAPIResponse](doc//GetStatsAPIResponse.md)
+ - [GetUserRolesResponse](doc//GetUserRolesResponse.md)
+ - [GetUserRolesResponseData](doc//GetUserRolesResponseData.md)
  - [GetVersionResponse](doc//GetVersionResponse.md)
  - [HealthLog](doc//HealthLog.md)
  - [HealthStatus](doc//HealthStatus.md)
@@ -320,6 +326,8 @@ Class | Method | HTTP request | Description
  - [ListScopesResponse](doc//ListScopesResponse.md)
  - [ListServersResponse](doc//ListServersResponse.md)
  - [ListStacksResponse](doc//ListStacksResponse.md)
+ - [ListUsersResponse](doc//ListUsersResponse.md)
+ - [ListUsersResponseData](doc//ListUsersResponseData.md)
  - [LogEntry](doc//LogEntry.md)
  - [LogsResponse](doc//LogsResponse.md)
  - [MaintenanceInfo](doc//MaintenanceInfo.md)
