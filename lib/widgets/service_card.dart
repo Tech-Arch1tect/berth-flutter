@@ -679,7 +679,7 @@ class _ServiceCardState extends State<ServiceCard>
     );
   }
 
-  Widget _buildContainerItem(BuildContext context, ColorScheme colorScheme, 
+  Widget _buildContainerItem(BuildContext context, ColorScheme colorScheme,
       berth_api.Container container) {
     final statusInfo = _getContainerStatusInfo(colorScheme, container);
     final uptime = _formatUptime(container.started);
@@ -745,7 +745,7 @@ class _ServiceCardState extends State<ServiceCard>
                     ),
                   ],
                 ),
-                if (uptime.isNotEmpty && !isMobile) ...[
+                if (uptime.isNotEmpty && !isMobile && container.state.toLowerCase() == 'running') ...[
                   const SizedBox(height: 2),
                   Text(
                     'Up $uptime',
