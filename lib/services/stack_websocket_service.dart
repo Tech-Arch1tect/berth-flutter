@@ -10,7 +10,9 @@ class StackWebSocketService {
   Timer? _refreshTimer;
   final int _refreshDebounceMs = 1500;
   bool _isSubscribed = false;
+  bool _isDisposed = false;
   StreamSubscription<WebSocketConnectionStatus>? _statusSubscription;
+  StreamSubscription<Map<String, dynamic>>? _messageSubscription;
   
   final StreamController<WebSocketConnectionStatus> _statusController = 
       StreamController<WebSocketConnectionStatus>.broadcast();
@@ -22,12 +24,14 @@ class StackWebSocketService {
       StreamController<void>.broadcast();
 
   StackWebSocketService(
-    this._webSocketService, 
+    this._webSocketService,
     this.serverId,
     this.stackName,
   ) {
     _statusSubscription = _webSocketService.connectionStatusStream.listen((status) {
-      _statusController.add(status);
+      if (!_isDisposed) {
+        _statusController.add(status);
+      }
     });
   }
 
@@ -41,16 +45,17 @@ class StackWebSocketService {
   Future<bool> connect() async {
     try {
       final success = await _webSocketService.connect('/ws/api/stack-status/$serverId');
-      
+
       if (success) {
         _listenToMessages();
         _subscribe();
-      } else {
+      } else if (!_isDisposed) {
         _errorController.add(Exception('Failed to connect to WebSocket'));
       }
-      
+
       return success;
     } catch (e) {
+      if (_isDisposed) return false;
       if (e.toString().contains('403') || e.toString().contains('Forbidden')) {
         _errorController.add(Exception('Insufficient permissions to access this server'));
       } else if (e.toString().contains('401') || e.toString().contains('Unauthorized')) {
@@ -63,11 +68,14 @@ class StackWebSocketService {
   }
 
   void _listenToMessages() {
-    _webSocketService.messageStream?.listen(
+    _messageSubscription = _webSocketService.messageStream?.listen(
       (message) {
-        _handleMessage(message);
+        if (!_isDisposed) {
+          _handleMessage(message);
+        }
       },
       onError: (error) {
+        if (_isDisposed) return;
         if (error.toString().contains('403')) {
           _errorController.add(Exception('Permission denied for server access'));
         } else {
@@ -96,6 +104,7 @@ class StackWebSocketService {
         break;
         
       case 'error':
+        if (_isDisposed) return;
         final error = WebSocketError.fromJson(message);
         if (error.error.contains('403') || error.error.contains('Forbidden')) {
           _errorController.add(Exception('Permission denied: ${error.error}'));
@@ -122,14 +131,14 @@ class StackWebSocketService {
   }
 
   Future<void> _refreshStackDetails() async {
+    if (_isDisposed) return;
     try {
-      
       _refreshController.add(null);
-      
-      
       _statusController.add(_webSocketService.connectionStatus);
     } catch (e) {
-      _errorController.add(Exception('Failed to refresh stack details: $e'));
+      if (!_isDisposed) {
+        _errorController.add(Exception('Failed to refresh stack details: $e'));
+      }
     }
   }
 
@@ -156,7 +165,9 @@ class StackWebSocketService {
   }
 
   void dispose() {
+    _isDisposed = true;
     disconnect();
+    _messageSubscription?.cancel();
     _statusSubscription?.cancel();
     _statusController.close();
     _errorController.close();
