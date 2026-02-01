@@ -16,7 +16,7 @@ class ListCredentialsData {
     this.credentials = const [],
   });
 
-  List<RegistryCredentialResponse> credentials;
+  List<RegistryCredentialInfo> credentials;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ListCredentialsData &&
@@ -55,7 +55,7 @@ class ListCredentialsData {
       }());
 
       return ListCredentialsData(
-        credentials: RegistryCredentialResponse.listFromJson(json[r'credentials']),
+        credentials: RegistryCredentialInfo.listFromJson(json[r'credentials']),
       );
     }
     return null;

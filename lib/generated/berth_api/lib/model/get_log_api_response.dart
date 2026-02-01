@@ -17,7 +17,7 @@ class GetLogAPIResponse {
     required this.success,
   });
 
-  SecurityAuditLogResponse data;
+  SecurityAuditLogInfo data;
 
   bool success;
 
@@ -61,7 +61,7 @@ class GetLogAPIResponse {
       }());
 
       return GetLogAPIResponse(
-        data: SecurityAuditLogResponse.fromJson(json[r'data'])!,
+        data: SecurityAuditLogInfo.fromJson(json[r'data'])!,
         success: mapValueOfType<bool>(json, r'success')!,
       );
     }

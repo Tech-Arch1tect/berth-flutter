@@ -9,7 +9,6 @@ import 'package:berth_api/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **data** | [**CreateAPIKeyResponseData**](CreateAPIKeyResponseData.md) |  | 
-**message** | **String** |  | [optional] 
 **success** | **bool** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

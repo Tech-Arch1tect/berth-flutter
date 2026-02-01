@@ -16,8 +16,13 @@ void main() {
   // final instance = ListStacksResponse();
 
   group('test ListStacksResponse', () {
-    // List<Stack> stacks (default value: const [])
-    test('to test the property `stacks`', () async {
+    // ListStacksData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

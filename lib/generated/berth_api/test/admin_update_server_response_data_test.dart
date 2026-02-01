@@ -16,7 +16,7 @@ void main() {
   // final instance = AdminUpdateServerResponseData();
 
   group('test AdminUpdateServerResponseData', () {
-    // ServerResponse server
+    // ServerInfo server
     test('to test the property `server`', () async {
       // TODO
     });

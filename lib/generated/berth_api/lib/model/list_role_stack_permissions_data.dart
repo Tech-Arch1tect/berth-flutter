@@ -25,7 +25,7 @@ class ListRoleStackPermissionsData {
 
   RoleInfo role;
 
-  List<ServerInfo> servers;
+  List<ServerInfo2> servers;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ListRoleStackPermissionsData &&
@@ -76,7 +76,7 @@ class ListRoleStackPermissionsData {
         permissionRules: StackPermissionRule.listFromJson(json[r'permissionRules']),
         permissions: PermissionInfo.listFromJson(json[r'permissions']),
         role: RoleInfo.fromJson(json[r'role'])!,
-        servers: ServerInfo.listFromJson(json[r'servers']),
+        servers: ServerInfo2.listFromJson(json[r'servers']),
       );
     }
     return null;

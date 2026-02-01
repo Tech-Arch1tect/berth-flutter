@@ -8,7 +8,7 @@ import 'package:berth_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**logs** | [**List<SecurityAuditLogResponse>**](SecurityAuditLogResponse.md) |  | [default to const []]
+**logs** | [**List<SecurityAuditLogInfo>**](SecurityAuditLogInfo.md) |  | [default to const []]
 **page** | **int** |  | 
 **perPage** | **int** |  | 
 **total** | **int** |  | 

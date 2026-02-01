@@ -16,7 +16,7 @@ class AdminListServersResponseData {
     this.servers = const [],
   });
 
-  List<ServerResponse> servers;
+  List<ServerInfo> servers;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AdminListServersResponseData &&
@@ -55,7 +55,7 @@ class AdminListServersResponseData {
       }());
 
       return AdminListServersResponseData(
-        servers: ServerResponse.listFromJson(json[r'servers']),
+        servers: ServerInfo.listFromJson(json[r'servers']),
       );
     }
     return null;

@@ -16,8 +16,13 @@ void main() {
   // final instance = StackPermissionsResponse();
 
   group('test StackPermissionsResponse', () {
-    // List<String> permissions (default value: const [])
-    test('to test the property `permissions`', () async {
+    // StackPermissionsData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

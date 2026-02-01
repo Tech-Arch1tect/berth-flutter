@@ -16,7 +16,7 @@ void main() {
   // final instance = GetLogAPIResponse();
 
   group('test GetLogAPIResponse', () {
-    // SecurityAuditLogResponse data
+    // SecurityAuditLogInfo data
     test('to test the property `data`', () async {
       // TODO
     });

@@ -16,8 +16,13 @@ void main() {
   // final instance = RunningOperationsResponse();
 
   group('test RunningOperationsResponse', () {
-    // List<OperationLogResponse> operations (default value: const [])
-    test('to test the property `operations`', () async {
+    // RunningOperationsData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

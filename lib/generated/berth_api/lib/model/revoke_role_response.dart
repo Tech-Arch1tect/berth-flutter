@@ -13,31 +13,31 @@ part of openapi.api;
 class RevokeRoleResponse {
   /// Returns a new [RevokeRoleResponse] instance.
   RevokeRoleResponse({
-    required this.message,
+    required this.data,
     required this.success,
   });
 
-  String message;
+  MessageData data;
 
   bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RevokeRoleResponse &&
-    other.message == message &&
+    other.data == data &&
     other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (message.hashCode) +
+    (data.hashCode) +
     (success.hashCode);
 
   @override
-  String toString() => 'RevokeRoleResponse[message=$message, success=$success]';
+  String toString() => 'RevokeRoleResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'message'] = this.message;
+      json[r'data'] = this.data;
       json[r'success'] = this.success;
     return json;
   }
@@ -61,7 +61,7 @@ class RevokeRoleResponse {
       }());
 
       return RevokeRoleResponse(
-        message: mapValueOfType<String>(json, r'message')!,
+        data: MessageData.fromJson(json[r'data'])!,
         success: mapValueOfType<bool>(json, r'success')!,
       );
     }
@@ -110,7 +110,7 @@ class RevokeRoleResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'message',
+    'data',
     'success',
   };
 }

@@ -16,8 +16,13 @@ void main() {
   // final instance = CreateAPIKeyResponseData();
 
   group('test CreateAPIKeyResponseData', () {
-    // APIKeyResponse apiKey
+    // APIKeyInfo apiKey
     test('to test the property `apiKey`', () async {
+      // TODO
+    });
+
+    // String message
+    test('to test the property `message`', () async {
       // TODO
     });
 

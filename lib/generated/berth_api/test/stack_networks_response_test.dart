@@ -16,8 +16,13 @@ void main() {
   // final instance = StackNetworksResponse();
 
   group('test StackNetworksResponse', () {
-    // List<Network> networks (default value: const [])
-    test('to test the property `networks`', () async {
+    // StackNetworksData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

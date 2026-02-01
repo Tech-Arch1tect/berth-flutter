@@ -16,8 +16,8 @@ void main() {
   // final instance = DeleteCredentialResponse();
 
   group('test DeleteCredentialResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // DeleteCredentialMessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

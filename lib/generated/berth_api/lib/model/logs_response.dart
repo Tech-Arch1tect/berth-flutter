@@ -13,26 +13,32 @@ part of openapi.api;
 class LogsResponse {
   /// Returns a new [LogsResponse] instance.
   LogsResponse({
-    this.logs = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<LogEntry> logs;
+  LogsData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is LogsResponse &&
-    _deepEquality.equals(other.logs, logs);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (logs.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'LogsResponse[logs=$logs]';
+  String toString() => 'LogsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'logs'] = this.logs;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class LogsResponse {
       }());
 
       return LogsResponse(
-        logs: LogEntry.listFromJson(json[r'logs']),
+        data: LogsData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class LogsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'logs',
+    'data',
+    'success',
   };
 }
 

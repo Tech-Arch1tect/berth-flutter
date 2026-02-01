@@ -4,7 +4,7 @@
 
 name: 'berth_api'
 version: '1.0.0'
-description: 'Berth API Client'
+description: 'OpenAPI API client'
 homepage: 'homepage'
 environment:
   sdk: '>=2.12.0 <4.0.0'

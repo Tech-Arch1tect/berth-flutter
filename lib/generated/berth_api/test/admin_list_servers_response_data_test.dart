@@ -16,7 +16,7 @@ void main() {
   // final instance = AdminListServersResponseData();
 
   group('test AdminListServersResponseData', () {
-    // List<ServerResponse> servers (default value: const [])
+    // List<ServerInfo> servers (default value: const [])
     test('to test the property `servers`', () async {
       // TODO
     });

@@ -16,8 +16,8 @@ void main() {
   // final instance = TOTPMessageResponse();
 
   group('test TOTPMessageResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // TOTPMessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

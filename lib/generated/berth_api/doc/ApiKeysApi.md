@@ -68,7 +68,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ApiKeysIdDelete**
-> MessageResponse2 apiV1ApiKeysIdDelete(id)
+> MessageResponse apiV1ApiKeysIdDelete(id)
 
 Revoke API key
 
@@ -107,7 +107,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse2**](MessageResponse2.md)
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 
@@ -227,7 +227,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ApiKeysIdScopesPost**
-> MessageResponse2 apiV1ApiKeysIdScopesPost(id, addScopeRequest)
+> MessageResponse apiV1ApiKeysIdScopesPost(id, addScopeRequest)
 
 Add scope to API key
 
@@ -268,7 +268,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse2**](MessageResponse2.md)
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 
@@ -282,7 +282,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ApiKeysIdScopesScopeIdDelete**
-> MessageResponse2 apiV1ApiKeysIdScopesScopeIdDelete(id, scopeId)
+> MessageResponse apiV1ApiKeysIdScopesScopeIdDelete(id, scopeId)
 
 Remove scope from API key
 
@@ -323,7 +323,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse2**](MessageResponse2.md)
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 

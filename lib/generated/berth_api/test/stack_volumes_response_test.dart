@@ -16,8 +16,13 @@ void main() {
   // final instance = StackVolumesResponse();
 
   group('test StackVolumesResponse', () {
-    // List<Volume> volumes (default value: const [])
-    test('to test the property `volumes`', () async {
+    // StackVolumesData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

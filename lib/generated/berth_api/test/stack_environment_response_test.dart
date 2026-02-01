@@ -16,8 +16,13 @@ void main() {
   // final instance = StackEnvironmentResponse();
 
   group('test StackEnvironmentResponse', () {
-    // Map<String, List<ServiceEnvironment>> services (default value: const {})
-    test('to test the property `services`', () async {
+    // StackEnvironmentData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

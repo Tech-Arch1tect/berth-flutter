@@ -73,7 +73,7 @@ class FilesApi {
   ///
   /// * [ChmodRequest] chmodRequest (required):
   ///   Chmod request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesChmodPost(int serverid, String stackname, ChmodRequest chmodRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesChmodPost(int serverid, String stackname, ChmodRequest chmodRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesChmodPostWithHttpInfo(serverid, stackname, chmodRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -82,7 +82,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -145,7 +145,7 @@ class FilesApi {
   ///
   /// * [ChownRequest] chownRequest (required):
   ///   Chown request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesChownPost(int serverid, String stackname, ChownRequest chownRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesChownPost(int serverid, String stackname, ChownRequest chownRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesChownPostWithHttpInfo(serverid, stackname, chownRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -154,7 +154,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -217,7 +217,7 @@ class FilesApi {
   ///
   /// * [CopyRequest] copyRequest (required):
   ///   Copy request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesCopyPost(int serverid, String stackname, CopyRequest copyRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesCopyPost(int serverid, String stackname, CopyRequest copyRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesCopyPostWithHttpInfo(serverid, stackname, copyRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -226,7 +226,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -289,7 +289,7 @@ class FilesApi {
   ///
   /// * [DeleteRequest2] deleteRequest2 (required):
   ///   Delete request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesDeleteDelete(int serverid, String stackname, DeleteRequest2 deleteRequest2,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesDeleteDelete(int serverid, String stackname, DeleteRequest2 deleteRequest2,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesDeleteDeleteWithHttpInfo(serverid, stackname, deleteRequest2,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -298,7 +298,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -448,7 +448,7 @@ class FilesApi {
   ///
   /// * [String] filePath:
   ///   Directory path to list
-  Future<DirectoryListing?> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String? filePath, }) async {
+  Future<DirectoryListingResponse?> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String? filePath, }) async {
     final response = await apiV1ServersServeridStacksStacknameFilesGetWithHttpInfo(serverid, stackname,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -457,7 +457,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DirectoryListing',) as DirectoryListing;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DirectoryListingResponse',) as DirectoryListingResponse;
     
     }
     return null;
@@ -520,7 +520,7 @@ class FilesApi {
   ///
   /// * [CreateDirectoryRequest] createDirectoryRequest (required):
   ///   Directory creation request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesMkdirPost(int serverid, String stackname, CreateDirectoryRequest createDirectoryRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesMkdirPost(int serverid, String stackname, CreateDirectoryRequest createDirectoryRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesMkdirPostWithHttpInfo(serverid, stackname, createDirectoryRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -529,7 +529,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -594,7 +594,7 @@ class FilesApi {
   ///
   /// * [String] filePath (required):
   ///   File path to read
-  Future<FileContent?> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath,) async {
+  Future<FileContentResponse?> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesReadGetWithHttpInfo(serverid, stackname, filePath,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -603,7 +603,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileContent',) as FileContent;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileContentResponse',) as FileContentResponse;
     
     }
     return null;
@@ -666,7 +666,7 @@ class FilesApi {
   ///
   /// * [RenameRequest] renameRequest (required):
   ///   Rename request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesRenamePost(int serverid, String stackname, RenameRequest renameRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesRenamePost(int serverid, String stackname, RenameRequest renameRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesRenamePostWithHttpInfo(serverid, stackname, renameRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -675,7 +675,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -742,7 +742,7 @@ class FilesApi {
   ///
   /// * [String] filePath:
   ///   Directory path
-  Future<DirectoryStats?> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String? filePath, }) async {
+  Future<DirectoryStatsResponse?> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String? filePath, }) async {
     final response = await apiV1ServersServeridStacksStacknameFilesStatsGetWithHttpInfo(serverid, stackname,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -751,7 +751,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DirectoryStats',) as DirectoryStats;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DirectoryStatsResponse',) as DirectoryStatsResponse;
     
     }
     return null;
@@ -830,7 +830,7 @@ class FilesApi {
   /// * [MultipartFile] file (required):
   ///
   /// * [String] filePath:
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String? filePath, }) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String? filePath, }) async {
     final response = await apiV1ServersServeridStacksStacknameFilesUploadPostWithHttpInfo(serverid, stackname, file,  filePath: filePath, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -839,7 +839,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;
@@ -902,7 +902,7 @@ class FilesApi {
   ///
   /// * [WriteFileRequest] writeFileRequest (required):
   ///   File write request
-  Future<MessageResponse?> apiV1ServersServeridStacksStacknameFilesWritePost(int serverid, String stackname, WriteFileRequest writeFileRequest,) async {
+  Future<FileMessageResponse?> apiV1ServersServeridStacksStacknameFilesWritePost(int serverid, String stackname, WriteFileRequest writeFileRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameFilesWritePostWithHttpInfo(serverid, stackname, writeFileRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -911,7 +911,7 @@ class FilesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'FileMessageResponse',) as FileMessageResponse;
     
     }
     return null;

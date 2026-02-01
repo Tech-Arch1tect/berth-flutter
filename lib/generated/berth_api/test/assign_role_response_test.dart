@@ -16,8 +16,8 @@ void main() {
   // final instance = AssignRoleResponse();
 
   group('test AssignRoleResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // MessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

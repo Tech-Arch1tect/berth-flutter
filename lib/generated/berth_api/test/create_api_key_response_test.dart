@@ -21,11 +21,6 @@ void main() {
       // TODO
     });
 
-    // String message
-    test('to test the property `message`', () async {
-      // TODO
-    });
-
     // bool success
     test('to test the property `success`', () async {
       // TODO

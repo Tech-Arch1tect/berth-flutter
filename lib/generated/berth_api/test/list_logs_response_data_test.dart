@@ -16,7 +16,7 @@ void main() {
   // final instance = ListLogsResponseData();
 
   group('test ListLogsResponseData', () {
-    // List<SecurityAuditLogResponse> logs (default value: const [])
+    // List<SecurityAuditLogInfo> logs (default value: const [])
     test('to test the property `logs`', () async {
       // TODO
     });

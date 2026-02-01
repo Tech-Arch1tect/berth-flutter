@@ -16,8 +16,13 @@ void main() {
   // final instance = ServerStatisticsResponse();
 
   group('test ServerStatisticsResponse', () {
-    // StackStatistics statistics
-    test('to test the property `statistics`', () async {
+    // ServerStatisticsResponseData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

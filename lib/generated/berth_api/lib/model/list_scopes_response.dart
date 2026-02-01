@@ -17,7 +17,7 @@ class ListScopesResponse {
     required this.success,
   });
 
-  List<APIKeyScopeResponse> data;
+  List<APIKeyScopeInfo> data;
 
   bool success;
 
@@ -61,7 +61,7 @@ class ListScopesResponse {
       }());
 
       return ListScopesResponse(
-        data: APIKeyScopeResponse.listFromJson(json[r'data']),
+        data: APIKeyScopeInfo.listFromJson(json[r'data']),
         success: mapValueOfType<bool>(json, r'success')!,
       );
     }

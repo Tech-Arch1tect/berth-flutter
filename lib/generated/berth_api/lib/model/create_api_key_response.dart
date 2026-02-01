@@ -14,46 +14,30 @@ class CreateAPIKeyResponse {
   /// Returns a new [CreateAPIKeyResponse] instance.
   CreateAPIKeyResponse({
     required this.data,
-    this.message,
     required this.success,
   });
 
   CreateAPIKeyResponseData data;
-
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? message;
 
   bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is CreateAPIKeyResponse &&
     other.data == data &&
-    other.message == message &&
     other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (data.hashCode) +
-    (message == null ? 0 : message!.hashCode) +
     (success.hashCode);
 
   @override
-  String toString() => 'CreateAPIKeyResponse[data=$data, message=$message, success=$success]';
+  String toString() => 'CreateAPIKeyResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'data'] = this.data;
-    if (this.message != null) {
-      json[r'message'] = this.message;
-    } else {
-      json[r'message'] = null;
-    }
       json[r'success'] = this.success;
     return json;
   }
@@ -78,7 +62,6 @@ class CreateAPIKeyResponse {
 
       return CreateAPIKeyResponse(
         data: CreateAPIKeyResponseData.fromJson(json[r'data'])!,
-        message: mapValueOfType<String>(json, r'message'),
         success: mapValueOfType<bool>(json, r'success')!,
       );
     }

@@ -13,26 +13,32 @@ part of openapi.api;
 class RunningOperationsResponse {
   /// Returns a new [RunningOperationsResponse] instance.
   RunningOperationsResponse({
-    this.operations = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<OperationLogResponse> operations;
+  RunningOperationsData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is RunningOperationsResponse &&
-    _deepEquality.equals(other.operations, operations);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (operations.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'RunningOperationsResponse[operations=$operations]';
+  String toString() => 'RunningOperationsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'operations'] = this.operations;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class RunningOperationsResponse {
       }());
 
       return RunningOperationsResponse(
-        operations: OperationLogResponse.listFromJson(json[r'operations']),
+        data: RunningOperationsData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class RunningOperationsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'operations',
+    'data',
+    'success',
   };
 }
 

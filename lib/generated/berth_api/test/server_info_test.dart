@@ -16,6 +16,11 @@ void main() {
   // final instance = ServerInfo();
 
   group('test ServerInfo', () {
+    // String createdAt
+    test('to test the property `createdAt`', () async {
+      // TODO
+    });
+
     // String description
     test('to test the property `description`', () async {
       // TODO
@@ -43,6 +48,16 @@ void main() {
 
     // int port
     test('to test the property `port`', () async {
+      // TODO
+    });
+
+    // bool skipSslVerification
+    test('to test the property `skipSslVerification`', () async {
+      // TODO
+    });
+
+    // String updatedAt
+    test('to test the property `updatedAt`', () async {
       // TODO
     });
 

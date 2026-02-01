@@ -16,8 +16,8 @@ void main() {
   // final instance = AdminTestConnectionResponse();
 
   group('test AdminTestConnectionResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // AdminTestConnectionResponseData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

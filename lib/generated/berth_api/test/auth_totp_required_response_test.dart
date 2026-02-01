@@ -16,18 +16,13 @@ void main() {
   // final instance = AuthTOTPRequiredResponse();
 
   group('test AuthTOTPRequiredResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // AuthTOTPRequiredData data
+    test('to test the property `data`', () async {
       // TODO
     });
 
-    // String temporaryToken
-    test('to test the property `temporaryToken`', () async {
-      // TODO
-    });
-
-    // bool totpRequired
-    test('to test the property `totpRequired`', () async {
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

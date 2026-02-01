@@ -16,8 +16,13 @@ void main() {
   // final instance = MessageResponse();
 
   group('test MessageResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // MessageData2 data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

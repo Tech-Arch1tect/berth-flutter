@@ -13,26 +13,32 @@ part of openapi.api;
 class ServerStatisticsResponse {
   /// Returns a new [ServerStatisticsResponse] instance.
   ServerStatisticsResponse({
-    required this.statistics,
+    required this.data,
+    required this.success,
   });
 
-  StackStatistics statistics;
+  ServerStatisticsResponseData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ServerStatisticsResponse &&
-    other.statistics == statistics;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (statistics.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'ServerStatisticsResponse[statistics=$statistics]';
+  String toString() => 'ServerStatisticsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'statistics'] = this.statistics;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class ServerStatisticsResponse {
       }());
 
       return ServerStatisticsResponse(
-        statistics: StackStatistics.fromJson(json[r'statistics'])!,
+        data: ServerStatisticsResponseData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class ServerStatisticsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'statistics',
+    'data',
+    'success',
   };
 }
 

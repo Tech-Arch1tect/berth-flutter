@@ -13,26 +13,32 @@ part of openapi.api;
 class GetSessionsResponse {
   /// Returns a new [GetSessionsResponse] instance.
   GetSessionsResponse({
-    this.sessions = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<SessionItem> sessions;
+  GetSessionsData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is GetSessionsResponse &&
-    _deepEquality.equals(other.sessions, sessions);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (sessions.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'GetSessionsResponse[sessions=$sessions]';
+  String toString() => 'GetSessionsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'sessions'] = this.sessions;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class GetSessionsResponse {
       }());
 
       return GetSessionsResponse(
-        sessions: SessionItem.listFromJson(json[r'sessions']),
+        data: GetSessionsData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class GetSessionsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'sessions',
+    'data',
+    'success',
   };
 }
 

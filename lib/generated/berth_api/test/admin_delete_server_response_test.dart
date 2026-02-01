@@ -16,8 +16,8 @@ void main() {
   // final instance = AdminDeleteServerResponse();
 
   group('test AdminDeleteServerResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // AdminDeleteServerResponseData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

@@ -16,13 +16,13 @@ void main() {
   // final instance = CreateStackResponse();
 
   group('test CreateStackResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // CreateStackData data
+    test('to test the property `data`', () async {
       // TODO
     });
 
-    // Stack stack
-    test('to test the property `stack`', () async {
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

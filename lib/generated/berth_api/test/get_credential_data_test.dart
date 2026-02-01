@@ -16,7 +16,7 @@ void main() {
   // final instance = GetCredentialData();
 
   group('test GetCredentialData', () {
-    // RegistryCredentialResponse credential
+    // RegistryCredentialInfo credential
     test('to test the property `credential`', () async {
       // TODO
     });

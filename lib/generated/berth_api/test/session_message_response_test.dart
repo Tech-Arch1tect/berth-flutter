@@ -16,8 +16,8 @@ void main() {
   // final instance = SessionMessageResponse();
 
   group('test SessionMessageResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // SessionMessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

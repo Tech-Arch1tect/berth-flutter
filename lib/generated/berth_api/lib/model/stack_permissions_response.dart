@@ -13,26 +13,32 @@ part of openapi.api;
 class StackPermissionsResponse {
   /// Returns a new [StackPermissionsResponse] instance.
   StackPermissionsResponse({
-    this.permissions = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<String> permissions;
+  StackPermissionsData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is StackPermissionsResponse &&
-    _deepEquality.equals(other.permissions, permissions);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (permissions.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'StackPermissionsResponse[permissions=$permissions]';
+  String toString() => 'StackPermissionsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'permissions'] = this.permissions;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,9 +61,8 @@ class StackPermissionsResponse {
       }());
 
       return StackPermissionsResponse(
-        permissions: json[r'permissions'] is Iterable
-            ? (json[r'permissions'] as Iterable).cast<String>().toList(growable: false)
-            : const [],
+        data: StackPermissionsData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -105,7 +110,8 @@ class StackPermissionsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'permissions',
+    'data',
+    'success',
   };
 }
 

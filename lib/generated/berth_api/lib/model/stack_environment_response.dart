@@ -13,26 +13,32 @@ part of openapi.api;
 class StackEnvironmentResponse {
   /// Returns a new [StackEnvironmentResponse] instance.
   StackEnvironmentResponse({
-    this.services = const {},
+    required this.data,
+    required this.success,
   });
 
-  Map<String, List<ServiceEnvironment>> services;
+  StackEnvironmentData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is StackEnvironmentResponse &&
-    _deepEquality.equals(other.services, services);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (services.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'StackEnvironmentResponse[services=$services]';
+  String toString() => 'StackEnvironmentResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'services'] = this.services;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,9 +61,8 @@ class StackEnvironmentResponse {
       }());
 
       return StackEnvironmentResponse(
-        services: json[r'services'] == null
-          ? const {}
-            : ServiceEnvironment.mapListFromJson(json[r'services']),
+        data: StackEnvironmentData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -105,7 +110,8 @@ class StackEnvironmentResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'services',
+    'data',
+    'success',
   };
 }
 

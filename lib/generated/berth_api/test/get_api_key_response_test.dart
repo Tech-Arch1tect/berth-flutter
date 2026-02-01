@@ -16,7 +16,7 @@ void main() {
   // final instance = GetAPIKeyResponse();
 
   group('test GetAPIKeyResponse', () {
-    // APIKeyResponse data
+    // APIKeyInfo data
     test('to test the property `data`', () async {
       // TODO
     });

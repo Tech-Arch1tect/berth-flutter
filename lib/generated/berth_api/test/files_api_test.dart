@@ -21,7 +21,7 @@ void main() {
     //
     // Changes the permissions (mode) of a file or directory
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesChmodPost(int serverid, String stackname, ChmodRequest chmodRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesChmodPost(int serverid, String stackname, ChmodRequest chmodRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesChmodPost', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Changes the owner and/or group of a file or directory
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesChownPost(int serverid, String stackname, ChownRequest chownRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesChownPost(int serverid, String stackname, ChownRequest chownRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesChownPost', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Copies a file or directory within a stack's file system
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesCopyPost(int serverid, String stackname, CopyRequest copyRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesCopyPost(int serverid, String stackname, CopyRequest copyRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesCopyPost', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Deletes a file or directory from a stack's file system
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesDeleteDelete(int serverid, String stackname, DeleteRequest2 deleteRequest2) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesDeleteDelete(int serverid, String stackname, DeleteRequest2 deleteRequest2) async
     test('test apiV1ServersServeridStacksStacknameFilesDeleteDelete', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Returns the contents of a directory within a stack's file system
     //
-    //Future<DirectoryListing> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String filePath }) async
+    //Future<DirectoryListingResponse> apiV1ServersServeridStacksStacknameFilesGet(int serverid, String stackname, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesGet', () async {
       // TODO
     });
@@ -75,7 +75,7 @@ void main() {
     //
     // Creates a new directory within a stack's file system
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesMkdirPost(int serverid, String stackname, CreateDirectoryRequest createDirectoryRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesMkdirPost(int serverid, String stackname, CreateDirectoryRequest createDirectoryRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesMkdirPost', () async {
       // TODO
     });
@@ -84,7 +84,7 @@ void main() {
     //
     // Returns the contents of a file within a stack's file system
     //
-    //Future<FileContent> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath) async
+    //Future<FileContentResponse> apiV1ServersServeridStacksStacknameFilesReadGet(int serverid, String stackname, String filePath) async
     test('test apiV1ServersServeridStacksStacknameFilesReadGet', () async {
       // TODO
     });
@@ -93,7 +93,7 @@ void main() {
     //
     // Renames or moves a file or directory within a stack's file system
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesRenamePost(int serverid, String stackname, RenameRequest renameRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesRenamePost(int serverid, String stackname, RenameRequest renameRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesRenamePost', () async {
       // TODO
     });
@@ -102,7 +102,7 @@ void main() {
     //
     // Returns statistics about a directory including most common owner, group, and mode
     //
-    //Future<DirectoryStats> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String filePath }) async
+    //Future<DirectoryStatsResponse> apiV1ServersServeridStacksStacknameFilesStatsGet(int serverid, String stackname, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesStatsGet', () async {
       // TODO
     });
@@ -111,7 +111,7 @@ void main() {
     //
     // Uploads a file to a stack's file system using multipart form data
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String filePath }) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesUploadPost(int serverid, String stackname, MultipartFile file, { String filePath }) async
     test('test apiV1ServersServeridStacksStacknameFilesUploadPost', () async {
       // TODO
     });
@@ -120,7 +120,7 @@ void main() {
     //
     // Writes content to a file within a stack's file system
     //
-    //Future<MessageResponse> apiV1ServersServeridStacksStacknameFilesWritePost(int serverid, String stackname, WriteFileRequest writeFileRequest) async
+    //Future<FileMessageResponse> apiV1ServersServeridStacksStacknameFilesWritePost(int serverid, String stackname, WriteFileRequest writeFileRequest) async
     test('test apiV1ServersServeridStacksStacknameFilesWritePost', () async {
       // TODO
     });

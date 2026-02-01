@@ -13,26 +13,32 @@ part of openapi.api;
 class StackNetworksResponse {
   /// Returns a new [StackNetworksResponse] instance.
   StackNetworksResponse({
-    this.networks = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<Network> networks;
+  StackNetworksData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is StackNetworksResponse &&
-    _deepEquality.equals(other.networks, networks);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (networks.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'StackNetworksResponse[networks=$networks]';
+  String toString() => 'StackNetworksResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'networks'] = this.networks;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class StackNetworksResponse {
       }());
 
       return StackNetworksResponse(
-        networks: Network.listFromJson(json[r'networks']),
+        data: StackNetworksData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class StackNetworksResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'networks',
+    'data',
+    'success',
   };
 }
 

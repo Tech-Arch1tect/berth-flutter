@@ -16,8 +16,8 @@ void main() {
   // final instance = DeleteStackPermissionResponse();
 
   group('test DeleteStackPermissionResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // MessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

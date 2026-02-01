@@ -16,13 +16,13 @@ void main() {
   // final instance = AuthLogoutResponse();
 
   group('test AuthLogoutResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // AuthLogoutData data
+    test('to test the property `data`', () async {
       // TODO
     });
 
-    // List<String> revokedTokens (default value: const [])
-    test('to test the property `revokedTokens`', () async {
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

@@ -16,8 +16,13 @@ void main() {
   // final instance = GetSessionsResponse();
 
   group('test GetSessionsResponse', () {
-    // List<SessionItem> sessions (default value: const [])
-    test('to test the property `sessions`', () async {
+    // GetSessionsData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

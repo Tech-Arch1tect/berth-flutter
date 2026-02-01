@@ -13,32 +13,32 @@ part of openapi.api;
 class AuthLogoutResponse {
   /// Returns a new [AuthLogoutResponse] instance.
   AuthLogoutResponse({
-    required this.message,
-    this.revokedTokens = const [],
+    required this.data,
+    required this.success,
   });
 
-  String message;
+  AuthLogoutData data;
 
-  List<String> revokedTokens;
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthLogoutResponse &&
-    other.message == message &&
-    _deepEquality.equals(other.revokedTokens, revokedTokens);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (message.hashCode) +
-    (revokedTokens.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'AuthLogoutResponse[message=$message, revokedTokens=$revokedTokens]';
+  String toString() => 'AuthLogoutResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'message'] = this.message;
-      json[r'revoked_tokens'] = this.revokedTokens;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -61,10 +61,8 @@ class AuthLogoutResponse {
       }());
 
       return AuthLogoutResponse(
-        message: mapValueOfType<String>(json, r'message')!,
-        revokedTokens: json[r'revoked_tokens'] is Iterable
-            ? (json[r'revoked_tokens'] as Iterable).cast<String>().toList(growable: false)
-            : const [],
+        data: AuthLogoutData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -112,8 +110,8 @@ class AuthLogoutResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'message',
-    'revoked_tokens',
+    'data',
+    'success',
   };
 }
 

@@ -14,30 +14,46 @@ class CreateAPIKeyResponseData {
   /// Returns a new [CreateAPIKeyResponseData] instance.
   CreateAPIKeyResponseData({
     required this.apiKey,
+    this.message,
     required this.plainKey,
   });
 
-  APIKeyResponse apiKey;
+  APIKeyInfo apiKey;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? message;
 
   String plainKey;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is CreateAPIKeyResponseData &&
     other.apiKey == apiKey &&
+    other.message == message &&
     other.plainKey == plainKey;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (apiKey.hashCode) +
+    (message == null ? 0 : message!.hashCode) +
     (plainKey.hashCode);
 
   @override
-  String toString() => 'CreateAPIKeyResponseData[apiKey=$apiKey, plainKey=$plainKey]';
+  String toString() => 'CreateAPIKeyResponseData[apiKey=$apiKey, message=$message, plainKey=$plainKey]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'api_key'] = this.apiKey;
+    if (this.message != null) {
+      json[r'message'] = this.message;
+    } else {
+      json[r'message'] = null;
+    }
       json[r'plain_key'] = this.plainKey;
     return json;
   }
@@ -61,7 +77,8 @@ class CreateAPIKeyResponseData {
       }());
 
       return CreateAPIKeyResponseData(
-        apiKey: APIKeyResponse.fromJson(json[r'api_key'])!,
+        apiKey: APIKeyInfo.fromJson(json[r'api_key'])!,
+        message: mapValueOfType<String>(json, r'message'),
         plainKey: mapValueOfType<String>(json, r'plain_key')!,
       );
     }

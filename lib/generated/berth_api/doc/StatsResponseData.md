@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **eventsLast24Hours** | **int** |  | 
 **eventsLast7Days** | **int** |  | 
 **failedEvents** | **int** |  | 
-**recentEventTypes** | [**List<EventTypeCountResponse>**](EventTypeCountResponse.md) |  | [default to const []]
+**recentEventTypes** | [**List<EventTypeCount>**](EventTypeCount.md) |  | [default to const []]
 **totalEvents** | **int** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

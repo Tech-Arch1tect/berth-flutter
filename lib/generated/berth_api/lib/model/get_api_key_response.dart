@@ -17,7 +17,7 @@ class GetAPIKeyResponse {
     required this.success,
   });
 
-  APIKeyResponse data;
+  APIKeyInfo data;
 
   bool success;
 
@@ -61,7 +61,7 @@ class GetAPIKeyResponse {
       }());
 
       return GetAPIKeyResponse(
-        data: APIKeyResponse.fromJson(json[r'data'])!,
+        data: APIKeyInfo.fromJson(json[r'data'])!,
         success: mapValueOfType<bool>(json, r'success')!,
       );
     }

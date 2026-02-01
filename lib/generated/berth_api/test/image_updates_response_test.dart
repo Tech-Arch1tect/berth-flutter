@@ -16,8 +16,13 @@ void main() {
   // final instance = ImageUpdatesResponse();
 
   group('test ImageUpdatesResponse', () {
-    // List<ImageUpdate> updates (default value: const [])
-    test('to test the property `updates`', () async {
+    // ImageUpdatesDataInner data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

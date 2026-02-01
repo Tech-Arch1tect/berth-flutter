@@ -30,7 +30,7 @@ void main() {
     //
     // Revokes (deletes) an API key. This action cannot be undone.
     //
-    //Future<MessageResponse2> apiV1ApiKeysIdDelete(int id) async
+    //Future<MessageResponse> apiV1ApiKeysIdDelete(int id) async
     test('test apiV1ApiKeysIdDelete', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Adds a new permission scope to an API key. The scope limits what the API key can access.
     //
-    //Future<MessageResponse2> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest) async
+    //Future<MessageResponse> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest) async
     test('test apiV1ApiKeysIdScopesPost', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Removes a permission scope from an API key.
     //
-    //Future<MessageResponse2> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId) async
+    //Future<MessageResponse> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId) async
     test('test apiV1ApiKeysIdScopesScopeIdDelete', () async {
       // TODO
     });

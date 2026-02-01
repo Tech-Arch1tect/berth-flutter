@@ -24,7 +24,7 @@ Method | HTTP request | Description
 
 
 # **apiV1ServersServeridStacksStacknameFilesChmodPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesChmodPost(serverid, stackname, chmodRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesChmodPost(serverid, stackname, chmodRequest)
 
 Change file permissions
 
@@ -71,7 +71,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -85,7 +85,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesChownPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesChownPost(serverid, stackname, chownRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesChownPost(serverid, stackname, chownRequest)
 
 Change file ownership
 
@@ -132,7 +132,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -146,7 +146,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesCopyPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesCopyPost(serverid, stackname, copyRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesCopyPost(serverid, stackname, copyRequest)
 
 Copy file or directory
 
@@ -193,7 +193,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -207,7 +207,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesDeleteDelete**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesDeleteDelete(serverid, stackname, deleteRequest2)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesDeleteDelete(serverid, stackname, deleteRequest2)
 
 Delete file or directory
 
@@ -254,7 +254,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -331,7 +331,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesGet**
-> DirectoryListing apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, filePath)
+> DirectoryListingResponse apiV1ServersServeridStacksStacknameFilesGet(serverid, stackname, filePath)
 
 List directory contents
 
@@ -378,7 +378,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**DirectoryListing**](DirectoryListing.md)
+[**DirectoryListingResponse**](DirectoryListingResponse.md)
 
 ### Authorization
 
@@ -392,7 +392,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesMkdirPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesMkdirPost(serverid, stackname, createDirectoryRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesMkdirPost(serverid, stackname, createDirectoryRequest)
 
 Create directory
 
@@ -439,7 +439,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -453,7 +453,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesReadGet**
-> FileContent apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, filePath)
+> FileContentResponse apiV1ServersServeridStacksStacknameFilesReadGet(serverid, stackname, filePath)
 
 Read file contents
 
@@ -500,7 +500,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**FileContent**](FileContent.md)
+[**FileContentResponse**](FileContentResponse.md)
 
 ### Authorization
 
@@ -514,7 +514,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesRenamePost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesRenamePost(serverid, stackname, renameRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesRenamePost(serverid, stackname, renameRequest)
 
 Rename file or directory
 
@@ -561,7 +561,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -575,7 +575,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesStatsGet**
-> DirectoryStats apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, filePath)
+> DirectoryStatsResponse apiV1ServersServeridStacksStacknameFilesStatsGet(serverid, stackname, filePath)
 
 Get directory statistics
 
@@ -622,7 +622,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**DirectoryStats**](DirectoryStats.md)
+[**DirectoryStatsResponse**](DirectoryStatsResponse.md)
 
 ### Authorization
 
@@ -636,7 +636,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesUploadPost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, filePath)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesUploadPost(serverid, stackname, file, filePath)
 
 Upload a file
 
@@ -685,7 +685,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 
@@ -699,7 +699,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1ServersServeridStacksStacknameFilesWritePost**
-> MessageResponse apiV1ServersServeridStacksStacknameFilesWritePost(serverid, stackname, writeFileRequest)
+> FileMessageResponse apiV1ServersServeridStacksStacknameFilesWritePost(serverid, stackname, writeFileRequest)
 
 Write file contents
 
@@ -746,7 +746,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MessageResponse**](MessageResponse.md)
+[**FileMessageResponse**](FileMessageResponse.md)
 
 ### Authorization
 

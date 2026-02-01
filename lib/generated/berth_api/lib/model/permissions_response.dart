@@ -13,26 +13,32 @@ part of openapi.api;
 class PermissionsResponse {
   /// Returns a new [PermissionsResponse] instance.
   PermissionsResponse({
-    required this.maintenance,
+    required this.data,
+    required this.success,
   });
 
-  MaintenancePermissions maintenance;
+  PermissionsResponseData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is PermissionsResponse &&
-    other.maintenance == maintenance;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (maintenance.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'PermissionsResponse[maintenance=$maintenance]';
+  String toString() => 'PermissionsResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'maintenance'] = this.maintenance;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class PermissionsResponse {
       }());
 
       return PermissionsResponse(
-        maintenance: MaintenancePermissions.fromJson(json[r'maintenance'])!,
+        data: PermissionsResponseData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class PermissionsResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'maintenance',
+    'data',
+    'success',
   };
 }
 

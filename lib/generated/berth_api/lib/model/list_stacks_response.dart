@@ -13,26 +13,32 @@ part of openapi.api;
 class ListStacksResponse {
   /// Returns a new [ListStacksResponse] instance.
   ListStacksResponse({
-    this.stacks = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<Stack> stacks;
+  ListStacksData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ListStacksResponse &&
-    _deepEquality.equals(other.stacks, stacks);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (stacks.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'ListStacksResponse[stacks=$stacks]';
+  String toString() => 'ListStacksResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'stacks'] = this.stacks;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class ListStacksResponse {
       }());
 
       return ListStacksResponse(
-        stacks: Stack.listFromJson(json[r'stacks']),
+        data: ListStacksData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class ListStacksResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'stacks',
+    'data',
+    'success',
   };
 }
 

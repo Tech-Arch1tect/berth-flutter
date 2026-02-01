@@ -21,7 +21,7 @@ void main() {
     //
     // Returns paginated list of all operation logs. Requires admin permissions.
     //
-    //Future<PaginatedOperationLogs> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
+    //Future<PaginatedOperationLogsResponse> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
     test('test apiV1AdminOperationLogsGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns detailed information about a specific operation log including all messages. Requires admin permissions.
     //
-    //Future<OperationLogDetail> apiV1AdminOperationLogsIdGet(int id) async
+    //Future<OperationLogDetailResponse> apiV1AdminOperationLogsIdGet(int id) async
     test('test apiV1AdminOperationLogsIdGet', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Returns aggregated statistics for all operation logs. Requires admin permissions.
     //
-    //Future<OperationLogStats> apiV1AdminOperationLogsStatsGet() async
+    //Future<OperationLogStatsResponse> apiV1AdminOperationLogsStatsGet() async
     test('test apiV1AdminOperationLogsStatsGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns detailed information about a specific operation log by its operation ID. Only returns logs belonging to the authenticated user.
     //
-    //Future<OperationLogDetail> apiV1OperationLogsByOperationIdOperationIdGet(String operationId) async
+    //Future<OperationLogDetailResponse> apiV1OperationLogsByOperationIdOperationIdGet(String operationId) async
     test('test apiV1OperationLogsByOperationIdOperationIdGet', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Returns paginated list of operation logs for the authenticated user.
     //
-    //Future<PaginatedOperationLogs> apiV1OperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
+    //Future<PaginatedOperationLogsResponse> apiV1OperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
     test('test apiV1OperationLogsGet', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Returns detailed information about a specific operation log including all messages. Only returns logs belonging to the authenticated user.
     //
-    //Future<OperationLogDetail> apiV1OperationLogsIdGet(int id) async
+    //Future<OperationLogDetailResponse> apiV1OperationLogsIdGet(int id) async
     test('test apiV1OperationLogsIdGet', () async {
       // TODO
     });
@@ -75,7 +75,7 @@ void main() {
     //
     // Returns aggregated statistics for the authenticated user's operation logs.
     //
-    //Future<OperationLogStats> apiV1OperationLogsStatsGet() async
+    //Future<OperationLogStatsResponse> apiV1OperationLogsStatsGet() async
     test('test apiV1OperationLogsStatsGet', () async {
       // TODO
     });

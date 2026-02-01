@@ -16,7 +16,7 @@ void main() {
   // final instance = ListAPIKeysResponse();
 
   group('test ListAPIKeysResponse', () {
-    // List<APIKeyResponse> data (default value: const [])
+    // List<APIKeyInfo> data (default value: const [])
     test('to test the property `data`', () async {
       // TODO
     });

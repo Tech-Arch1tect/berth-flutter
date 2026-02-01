@@ -16,8 +16,13 @@ void main() {
   // final instance = CanCreateStackResponse();
 
   group('test CanCreateStackResponse', () {
-    // bool canCreate
-    test('to test the property `canCreate`', () async {
+    // CanCreateStackData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

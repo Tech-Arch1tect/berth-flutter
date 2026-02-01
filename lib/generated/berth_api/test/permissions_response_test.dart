@@ -16,8 +16,13 @@ void main() {
   // final instance = PermissionsResponse();
 
   group('test PermissionsResponse', () {
-    // MaintenancePermissions maintenance
-    test('to test the property `maintenance`', () async {
+    // PermissionsResponseData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

@@ -153,7 +153,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1AdminOperationLogsGet**
-> PaginatedOperationLogs apiV1AdminOperationLogsGet(page, pageSize, search, serverId, stackName, command, status, daysBack)
+> PaginatedOperationLogsResponse apiV1AdminOperationLogsGet(page, pageSize, search, serverId, stackName, command, status, daysBack)
 
 List all operation logs
 
@@ -210,7 +210,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**PaginatedOperationLogs**](PaginatedOperationLogs.md)
+[**PaginatedOperationLogsResponse**](PaginatedOperationLogsResponse.md)
 
 ### Authorization
 
@@ -224,7 +224,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1AdminOperationLogsIdGet**
-> OperationLogDetail apiV1AdminOperationLogsIdGet(id)
+> OperationLogDetailResponse apiV1AdminOperationLogsIdGet(id)
 
 Get operation log details
 
@@ -267,7 +267,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OperationLogDetail**](OperationLogDetail.md)
+[**OperationLogDetailResponse**](OperationLogDetailResponse.md)
 
 ### Authorization
 
@@ -281,7 +281,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1AdminOperationLogsStatsGet**
-> OperationLogStats apiV1AdminOperationLogsStatsGet()
+> OperationLogStatsResponse apiV1AdminOperationLogsStatsGet()
 
 Get operation logs statistics
 
@@ -320,7 +320,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**OperationLogStats**](OperationLogStats.md)
+[**OperationLogStatsResponse**](OperationLogStatsResponse.md)
 
 ### Authorization
 

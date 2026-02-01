@@ -16,7 +16,7 @@ class GetCredentialData {
     required this.credential,
   });
 
-  RegistryCredentialResponse credential;
+  RegistryCredentialInfo credential;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is GetCredentialData &&
@@ -55,7 +55,7 @@ class GetCredentialData {
       }());
 
       return GetCredentialData(
-        credential: RegistryCredentialResponse.fromJson(json[r'credential'])!,
+        credential: RegistryCredentialInfo.fromJson(json[r'credential'])!,
       );
     }
     return null;

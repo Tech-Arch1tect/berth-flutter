@@ -16,7 +16,7 @@ void main() {
   // final instance = ListCredentialsData();
 
   group('test ListCredentialsData', () {
-    // List<RegistryCredentialResponse> credentials (default value: const [])
+    // List<RegistryCredentialInfo> credentials (default value: const [])
     test('to test the property `credentials`', () async {
       // TODO
     });

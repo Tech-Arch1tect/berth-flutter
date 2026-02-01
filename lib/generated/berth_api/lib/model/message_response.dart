@@ -13,26 +13,32 @@ part of openapi.api;
 class MessageResponse {
   /// Returns a new [MessageResponse] instance.
   MessageResponse({
-    required this.message,
+    required this.data,
+    required this.success,
   });
 
-  String message;
+  MessageData2 data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is MessageResponse &&
-    other.message == message;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (message.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'MessageResponse[message=$message]';
+  String toString() => 'MessageResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'message'] = this.message;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class MessageResponse {
       }());
 
       return MessageResponse(
-        message: mapValueOfType<String>(json, r'message')!,
+        data: MessageData2.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class MessageResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'message',
+    'data',
+    'success',
   };
 }
 

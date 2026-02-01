@@ -16,8 +16,8 @@ void main() {
   // final instance = DeleteRoleResponse();
 
   group('test DeleteRoleResponse', () {
-    // String message
-    test('to test the property `message`', () async {
+    // MessageData data
+    test('to test the property `data`', () async {
       // TODO
     });
 

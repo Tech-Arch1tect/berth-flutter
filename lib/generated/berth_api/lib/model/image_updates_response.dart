@@ -13,26 +13,32 @@ part of openapi.api;
 class ImageUpdatesResponse {
   /// Returns a new [ImageUpdatesResponse] instance.
   ImageUpdatesResponse({
-    this.updates = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<ImageUpdate> updates;
+  ImageUpdatesDataInner data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ImageUpdatesResponse &&
-    _deepEquality.equals(other.updates, updates);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (updates.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'ImageUpdatesResponse[updates=$updates]';
+  String toString() => 'ImageUpdatesResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'updates'] = this.updates;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class ImageUpdatesResponse {
       }());
 
       return ImageUpdatesResponse(
-        updates: ImageUpdate.listFromJson(json[r'updates']),
+        data: ImageUpdatesDataInner.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class ImageUpdatesResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'updates',
+    'data',
+    'success',
   };
 }
 

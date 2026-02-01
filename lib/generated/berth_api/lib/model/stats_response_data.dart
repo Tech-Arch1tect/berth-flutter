@@ -32,7 +32,7 @@ class StatsResponseData {
 
   int failedEvents;
 
-  List<EventTypeCountResponse> recentEventTypes;
+  List<EventTypeCount> recentEventTypes;
 
   int totalEvents;
 
@@ -96,7 +96,7 @@ class StatsResponseData {
         eventsLast24Hours: mapValueOfType<int>(json, r'events_last_24_hours')!,
         eventsLast7Days: mapValueOfType<int>(json, r'events_last_7_days')!,
         failedEvents: mapValueOfType<int>(json, r'failed_events')!,
-        recentEventTypes: EventTypeCountResponse.listFromJson(json[r'recent_event_types']),
+        recentEventTypes: EventTypeCount.listFromJson(json[r'recent_event_types']),
         totalEvents: mapValueOfType<int>(json, r'total_events')!,
       );
     }

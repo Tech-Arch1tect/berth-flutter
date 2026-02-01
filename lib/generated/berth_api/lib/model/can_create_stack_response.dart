@@ -13,26 +13,32 @@ part of openapi.api;
 class CanCreateStackResponse {
   /// Returns a new [CanCreateStackResponse] instance.
   CanCreateStackResponse({
-    required this.canCreate,
+    required this.data,
+    required this.success,
   });
 
-  bool canCreate;
+  CanCreateStackData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is CanCreateStackResponse &&
-    other.canCreate == canCreate;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (canCreate.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'CanCreateStackResponse[canCreate=$canCreate]';
+  String toString() => 'CanCreateStackResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'canCreate'] = this.canCreate;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class CanCreateStackResponse {
       }());
 
       return CanCreateStackResponse(
-        canCreate: mapValueOfType<bool>(json, r'canCreate')!,
+        data: CanCreateStackData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class CanCreateStackResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'canCreate',
+    'data',
+    'success',
   };
 }
 

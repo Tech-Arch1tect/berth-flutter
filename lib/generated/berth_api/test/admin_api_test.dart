@@ -39,7 +39,7 @@ void main() {
     //
     // Returns paginated list of all operation logs. Requires admin permissions.
     //
-    //Future<PaginatedOperationLogs> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
+    //Future<PaginatedOperationLogsResponse> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
     test('test apiV1AdminOperationLogsGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns detailed information about a specific operation log including all messages. Requires admin permissions.
     //
-    //Future<OperationLogDetail> apiV1AdminOperationLogsIdGet(int id) async
+    //Future<OperationLogDetailResponse> apiV1AdminOperationLogsIdGet(int id) async
     test('test apiV1AdminOperationLogsIdGet', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Returns aggregated statistics for all operation logs. Requires admin permissions.
     //
-    //Future<OperationLogStats> apiV1AdminOperationLogsStatsGet() async
+    //Future<OperationLogStatsResponse> apiV1AdminOperationLogsStatsGet() async
     test('test apiV1AdminOperationLogsStatsGet', () async {
       // TODO
     });

@@ -16,7 +16,7 @@ void main() {
   // final instance = ListScopesResponse();
 
   group('test ListScopesResponse', () {
-    // List<APIKeyScopeResponse> data (default value: const [])
+    // List<APIKeyScopeInfo> data (default value: const [])
     test('to test the property `data`', () async {
       // TODO
     });

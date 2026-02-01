@@ -13,26 +13,32 @@ part of openapi.api;
 class ListServersResponse {
   /// Returns a new [ListServersResponse] instance.
   ListServersResponse({
-    this.servers = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<ServerResponse> servers;
+  ListServersResponseData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ListServersResponse &&
-    _deepEquality.equals(other.servers, servers);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (servers.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'ListServersResponse[servers=$servers]';
+  String toString() => 'ListServersResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'servers'] = this.servers;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class ListServersResponse {
       }());
 
       return ListServersResponse(
-        servers: ServerResponse.listFromJson(json[r'servers']),
+        data: ListServersResponseData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class ListServersResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'servers',
+    'data',
+    'success',
   };
 }
 

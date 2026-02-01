@@ -13,38 +13,32 @@ part of openapi.api;
 class AuthTOTPRequiredResponse {
   /// Returns a new [AuthTOTPRequiredResponse] instance.
   AuthTOTPRequiredResponse({
-    required this.message,
-    required this.temporaryToken,
-    required this.totpRequired,
+    required this.data,
+    required this.success,
   });
 
-  String message;
+  AuthTOTPRequiredData data;
 
-  String temporaryToken;
-
-  bool totpRequired;
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthTOTPRequiredResponse &&
-    other.message == message &&
-    other.temporaryToken == temporaryToken &&
-    other.totpRequired == totpRequired;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (message.hashCode) +
-    (temporaryToken.hashCode) +
-    (totpRequired.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'AuthTOTPRequiredResponse[message=$message, temporaryToken=$temporaryToken, totpRequired=$totpRequired]';
+  String toString() => 'AuthTOTPRequiredResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'message'] = this.message;
-      json[r'temporary_token'] = this.temporaryToken;
-      json[r'totp_required'] = this.totpRequired;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -67,9 +61,8 @@ class AuthTOTPRequiredResponse {
       }());
 
       return AuthTOTPRequiredResponse(
-        message: mapValueOfType<String>(json, r'message')!,
-        temporaryToken: mapValueOfType<String>(json, r'temporary_token')!,
-        totpRequired: mapValueOfType<bool>(json, r'totp_required')!,
+        data: AuthTOTPRequiredData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -117,9 +110,8 @@ class AuthTOTPRequiredResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'message',
-    'temporary_token',
-    'totp_required',
+    'data',
+    'success',
   };
 }
 

@@ -13,13 +13,18 @@ part of openapi.api;
 class ServerInfo {
   /// Returns a new [ServerInfo] instance.
   ServerInfo({
+    required this.createdAt,
     required this.description,
     required this.host,
     required this.id,
     required this.isActive,
     required this.name,
     required this.port,
+    required this.skipSslVerification,
+    required this.updatedAt,
   });
+
+  String createdAt;
 
   String description;
 
@@ -34,36 +39,49 @@ class ServerInfo {
 
   int port;
 
+  bool skipSslVerification;
+
+  String updatedAt;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is ServerInfo &&
+    other.createdAt == createdAt &&
     other.description == description &&
     other.host == host &&
     other.id == id &&
     other.isActive == isActive &&
     other.name == name &&
-    other.port == port;
+    other.port == port &&
+    other.skipSslVerification == skipSslVerification &&
+    other.updatedAt == updatedAt;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (createdAt.hashCode) +
     (description.hashCode) +
     (host.hashCode) +
     (id.hashCode) +
     (isActive.hashCode) +
     (name.hashCode) +
-    (port.hashCode);
+    (port.hashCode) +
+    (skipSslVerification.hashCode) +
+    (updatedAt.hashCode);
 
   @override
-  String toString() => 'ServerInfo[description=$description, host=$host, id=$id, isActive=$isActive, name=$name, port=$port]';
+  String toString() => 'ServerInfo[createdAt=$createdAt, description=$description, host=$host, id=$id, isActive=$isActive, name=$name, port=$port, skipSslVerification=$skipSslVerification, updatedAt=$updatedAt]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'created_at'] = this.createdAt;
       json[r'description'] = this.description;
       json[r'host'] = this.host;
       json[r'id'] = this.id;
       json[r'is_active'] = this.isActive;
       json[r'name'] = this.name;
       json[r'port'] = this.port;
+      json[r'skip_ssl_verification'] = this.skipSslVerification;
+      json[r'updated_at'] = this.updatedAt;
     return json;
   }
 
@@ -86,12 +104,15 @@ class ServerInfo {
       }());
 
       return ServerInfo(
+        createdAt: mapValueOfType<String>(json, r'created_at')!,
         description: mapValueOfType<String>(json, r'description')!,
         host: mapValueOfType<String>(json, r'host')!,
         id: mapValueOfType<int>(json, r'id')!,
         isActive: mapValueOfType<bool>(json, r'is_active')!,
         name: mapValueOfType<String>(json, r'name')!,
         port: mapValueOfType<int>(json, r'port')!,
+        skipSslVerification: mapValueOfType<bool>(json, r'skip_ssl_verification')!,
+        updatedAt: mapValueOfType<String>(json, r'updated_at')!,
       );
     }
     return null;
@@ -139,12 +160,15 @@ class ServerInfo {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'created_at',
     'description',
     'host',
     'id',
     'is_active',
     'name',
     'port',
+    'skip_ssl_verification',
+    'updated_at',
   };
 }
 

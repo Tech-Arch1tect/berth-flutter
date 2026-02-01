@@ -13,26 +13,32 @@ part of openapi.api;
 class StackVolumesResponse {
   /// Returns a new [StackVolumesResponse] instance.
   StackVolumesResponse({
-    this.volumes = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<Volume> volumes;
+  StackVolumesData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is StackVolumesResponse &&
-    _deepEquality.equals(other.volumes, volumes);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (volumes.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'StackVolumesResponse[volumes=$volumes]';
+  String toString() => 'StackVolumesResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'volumes'] = this.volumes;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class StackVolumesResponse {
       }());
 
       return StackVolumesResponse(
-        volumes: Volume.listFromJson(json[r'volumes']),
+        data: StackVolumesData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,6 +110,8 @@ class StackVolumesResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'data',
+    'success',
   };
 }
 

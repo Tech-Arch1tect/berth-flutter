@@ -31,7 +31,7 @@ void main() {
       // TODO
     });
 
-    // List<ServerInfo> servers (default value: const [])
+    // List<ServerInfo2> servers (default value: const [])
     test('to test the property `servers`', () async {
       // TODO
     });

@@ -16,8 +16,13 @@ void main() {
   // final instance = ListServersResponse();
 
   group('test ListServersResponse', () {
-    // List<ServerResponse> servers (default value: const [])
-    test('to test the property `servers`', () async {
+    // ListServersResponseData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

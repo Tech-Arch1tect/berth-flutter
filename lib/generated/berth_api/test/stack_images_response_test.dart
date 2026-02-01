@@ -16,8 +16,13 @@ void main() {
   // final instance = StackImagesResponse();
 
   group('test StackImagesResponse', () {
-    // List<ContainerImageDetails> images (default value: const [])
-    test('to test the property `images`', () async {
+    // StackImagesData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

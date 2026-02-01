@@ -15,30 +15,36 @@ class AuthErrorResponse {
   AuthErrorResponse({
     required this.error,
     required this.message,
+    required this.success,
   });
 
   String error;
 
   String message;
 
+  bool success;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthErrorResponse &&
     other.error == error &&
-    other.message == message;
+    other.message == message &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (error.hashCode) +
-    (message.hashCode);
+    (message.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'AuthErrorResponse[error=$error, message=$message]';
+  String toString() => 'AuthErrorResponse[error=$error, message=$message, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'error'] = this.error;
       json[r'message'] = this.message;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -63,6 +69,7 @@ class AuthErrorResponse {
       return AuthErrorResponse(
         error: mapValueOfType<String>(json, r'error')!,
         message: mapValueOfType<String>(json, r'message')!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -112,6 +119,7 @@ class AuthErrorResponse {
   static const requiredKeys = <String>{
     'error',
     'message',
+    'success',
   };
 }
 

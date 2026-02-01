@@ -16,28 +16,13 @@ void main() {
   // final instance = AuthRefreshResponse();
 
   group('test AuthRefreshResponse', () {
-    // String accessToken
-    test('to test the property `accessToken`', () async {
+    // AuthRefreshData data
+    test('to test the property `data`', () async {
       // TODO
     });
 
-    // int expiresIn
-    test('to test the property `expiresIn`', () async {
-      // TODO
-    });
-
-    // int refreshExpiresIn
-    test('to test the property `refreshExpiresIn`', () async {
-      // TODO
-    });
-
-    // String refreshToken
-    test('to test the property `refreshToken`', () async {
-      // TODO
-    });
-
-    // String tokenType
-    test('to test the property `tokenType`', () async {
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

@@ -13,36 +13,32 @@ part of openapi.api;
 class CreateStackResponse {
   /// Returns a new [CreateStackResponse] instance.
   CreateStackResponse({
-    required this.message,
-    required this.stack,
+    required this.data,
+    required this.success,
   });
 
-  String message;
+  CreateStackData data;
 
-  Stack? stack;
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is CreateStackResponse &&
-    other.message == message &&
-    other.stack == stack;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (message.hashCode) +
-    (stack == null ? 0 : stack!.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'CreateStackResponse[message=$message, stack=$stack]';
+  String toString() => 'CreateStackResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'message'] = this.message;
-    if (this.stack != null) {
-      json[r'stack'] = this.stack;
-    } else {
-      json[r'stack'] = null;
-    }
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -65,8 +61,8 @@ class CreateStackResponse {
       }());
 
       return CreateStackResponse(
-        message: mapValueOfType<String>(json, r'message')!,
-        stack: Stack.fromJson(json[r'stack']),
+        data: CreateStackData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -114,8 +110,8 @@ class CreateStackResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'message',
-    'stack',
+    'data',
+    'success',
   };
 }
 

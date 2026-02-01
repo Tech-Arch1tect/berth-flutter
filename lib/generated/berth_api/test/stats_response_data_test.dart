@@ -41,7 +41,7 @@ void main() {
       // TODO
     });
 
-    // List<EventTypeCountResponse> recentEventTypes (default value: const [])
+    // List<EventTypeCount> recentEventTypes (default value: const [])
     test('to test the property `recentEventTypes`', () async {
       // TODO
     });

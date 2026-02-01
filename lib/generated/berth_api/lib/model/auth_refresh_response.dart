@@ -13,50 +13,32 @@ part of openapi.api;
 class AuthRefreshResponse {
   /// Returns a new [AuthRefreshResponse] instance.
   AuthRefreshResponse({
-    required this.accessToken,
-    required this.expiresIn,
-    required this.refreshExpiresIn,
-    required this.refreshToken,
-    required this.tokenType,
+    required this.data,
+    required this.success,
   });
 
-  String accessToken;
+  AuthRefreshData data;
 
-  int expiresIn;
-
-  int refreshExpiresIn;
-
-  String refreshToken;
-
-  String tokenType;
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthRefreshResponse &&
-    other.accessToken == accessToken &&
-    other.expiresIn == expiresIn &&
-    other.refreshExpiresIn == refreshExpiresIn &&
-    other.refreshToken == refreshToken &&
-    other.tokenType == tokenType;
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (accessToken.hashCode) +
-    (expiresIn.hashCode) +
-    (refreshExpiresIn.hashCode) +
-    (refreshToken.hashCode) +
-    (tokenType.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'AuthRefreshResponse[accessToken=$accessToken, expiresIn=$expiresIn, refreshExpiresIn=$refreshExpiresIn, refreshToken=$refreshToken, tokenType=$tokenType]';
+  String toString() => 'AuthRefreshResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'access_token'] = this.accessToken;
-      json[r'expires_in'] = this.expiresIn;
-      json[r'refresh_expires_in'] = this.refreshExpiresIn;
-      json[r'refresh_token'] = this.refreshToken;
-      json[r'token_type'] = this.tokenType;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -79,11 +61,8 @@ class AuthRefreshResponse {
       }());
 
       return AuthRefreshResponse(
-        accessToken: mapValueOfType<String>(json, r'access_token')!,
-        expiresIn: mapValueOfType<int>(json, r'expires_in')!,
-        refreshExpiresIn: mapValueOfType<int>(json, r'refresh_expires_in')!,
-        refreshToken: mapValueOfType<String>(json, r'refresh_token')!,
-        tokenType: mapValueOfType<String>(json, r'token_type')!,
+        data: AuthRefreshData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -131,11 +110,8 @@ class AuthRefreshResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'access_token',
-    'expires_in',
-    'refresh_expires_in',
-    'refresh_token',
-    'token_type',
+    'data',
+    'success',
   };
 }
 

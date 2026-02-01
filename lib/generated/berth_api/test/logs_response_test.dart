@@ -16,8 +16,13 @@ void main() {
   // final instance = LogsResponse();
 
   group('test LogsResponse', () {
-    // List<LogEntry> logs (default value: const [])
-    test('to test the property `logs`', () async {
+    // LogsData data
+    test('to test the property `data`', () async {
+      // TODO
+    });
+
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 

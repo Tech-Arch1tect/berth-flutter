@@ -258,7 +258,7 @@ class AdminApi {
   ///
   /// * [int] daysBack:
   ///   Only return logs from the last N days
-  Future<PaginatedOperationLogs?> apiV1AdminOperationLogsGet({ int? page, int? pageSize, String? search, String? serverId, String? stackName, String? command, String? status, int? daysBack, }) async {
+  Future<PaginatedOperationLogsResponse?> apiV1AdminOperationLogsGet({ int? page, int? pageSize, String? search, String? serverId, String? stackName, String? command, String? status, int? daysBack, }) async {
     final response = await apiV1AdminOperationLogsGetWithHttpInfo( page: page, pageSize: pageSize, search: search, serverId: serverId, stackName: stackName, command: command, status: status, daysBack: daysBack, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -267,7 +267,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PaginatedOperationLogs',) as PaginatedOperationLogs;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PaginatedOperationLogsResponse',) as PaginatedOperationLogsResponse;
     
     }
     return null;
@@ -317,7 +317,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Operation log ID
-  Future<OperationLogDetail?> apiV1AdminOperationLogsIdGet(int id,) async {
+  Future<OperationLogDetailResponse?> apiV1AdminOperationLogsIdGet(int id,) async {
     final response = await apiV1AdminOperationLogsIdGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -326,7 +326,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogDetail',) as OperationLogDetail;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogDetailResponse',) as OperationLogDetailResponse;
     
     }
     return null;
@@ -365,7 +365,7 @@ class AdminApi {
   /// Get operation logs statistics
   ///
   /// Returns aggregated statistics for all operation logs. Requires admin permissions.
-  Future<OperationLogStats?> apiV1AdminOperationLogsStatsGet() async {
+  Future<OperationLogStatsResponse?> apiV1AdminOperationLogsStatsGet() async {
     final response = await apiV1AdminOperationLogsStatsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -374,7 +374,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogStats',) as OperationLogStats;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogStatsResponse',) as OperationLogStatsResponse;
     
     }
     return null;

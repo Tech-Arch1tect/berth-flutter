@@ -16,7 +16,7 @@ class AdminUpdateServerResponseData {
     required this.server,
   });
 
-  ServerResponse server;
+  ServerInfo server;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AdminUpdateServerResponseData &&
@@ -55,7 +55,7 @@ class AdminUpdateServerResponseData {
       }());
 
       return AdminUpdateServerResponseData(
-        server: ServerResponse.fromJson(json[r'server'])!,
+        server: ServerInfo.fromJson(json[r'server'])!,
       );
     }
     return null;

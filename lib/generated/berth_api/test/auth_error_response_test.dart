@@ -26,6 +26,11 @@ void main() {
       // TODO
     });
 
+    // bool success
+    test('to test the property `success`', () async {
+      // TODO
+    });
+
 
   });
 

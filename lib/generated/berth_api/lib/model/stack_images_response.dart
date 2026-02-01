@@ -13,26 +13,32 @@ part of openapi.api;
 class StackImagesResponse {
   /// Returns a new [StackImagesResponse] instance.
   StackImagesResponse({
-    this.images = const [],
+    required this.data,
+    required this.success,
   });
 
-  List<ContainerImageDetails> images;
+  StackImagesData data;
+
+  bool success;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is StackImagesResponse &&
-    _deepEquality.equals(other.images, images);
+    other.data == data &&
+    other.success == success;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (images.hashCode);
+    (data.hashCode) +
+    (success.hashCode);
 
   @override
-  String toString() => 'StackImagesResponse[images=$images]';
+  String toString() => 'StackImagesResponse[data=$data, success=$success]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'images'] = this.images;
+      json[r'data'] = this.data;
+      json[r'success'] = this.success;
     return json;
   }
 
@@ -55,7 +61,8 @@ class StackImagesResponse {
       }());
 
       return StackImagesResponse(
-        images: ContainerImageDetails.listFromJson(json[r'images']),
+        data: StackImagesData.fromJson(json[r'data'])!,
+        success: mapValueOfType<bool>(json, r'success')!,
       );
     }
     return null;
@@ -103,7 +110,8 @@ class StackImagesResponse {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'images',
+    'data',
+    'success',
   };
 }
 

@@ -20,7 +20,7 @@ class ListLogsResponseData {
     required this.totalPages,
   });
 
-  List<SecurityAuditLogResponse> logs;
+  List<SecurityAuditLogInfo> logs;
 
   int page;
 
@@ -79,7 +79,7 @@ class ListLogsResponseData {
       }());
 
       return ListLogsResponseData(
-        logs: SecurityAuditLogResponse.listFromJson(json[r'logs']),
+        logs: SecurityAuditLogInfo.listFromJson(json[r'logs']),
         page: mapValueOfType<int>(json, r'page')!,
         perPage: mapValueOfType<int>(json, r'per_page')!,
         total: mapValueOfType<int>(json, r'total')!,

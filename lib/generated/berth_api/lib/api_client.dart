@@ -182,10 +182,10 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'APIKeyResponse':
-          return APIKeyResponse.fromJson(value);
-        case 'APIKeyScopeResponse':
-          return APIKeyScopeResponse.fromJson(value);
+        case 'APIKeyInfo':
+          return APIKeyInfo.fromJson(value);
+        case 'APIKeyScopeInfo':
+          return APIKeyScopeInfo.fromJson(value);
         case 'AddScopeRequest':
           return AddScopeRequest.fromJson(value);
         case 'AdminCreateServerResponse':
@@ -194,12 +194,16 @@ class ApiClient {
           return AdminCreateServerResponseData.fromJson(value);
         case 'AdminDeleteServerResponse':
           return AdminDeleteServerResponse.fromJson(value);
+        case 'AdminDeleteServerResponseData':
+          return AdminDeleteServerResponseData.fromJson(value);
         case 'AdminListServersResponse':
           return AdminListServersResponse.fromJson(value);
         case 'AdminListServersResponseData':
           return AdminListServersResponseData.fromJson(value);
         case 'AdminTestConnectionResponse':
           return AdminTestConnectionResponse.fromJson(value);
+        case 'AdminTestConnectionResponseData':
+          return AdminTestConnectionResponseData.fromJson(value);
         case 'AdminUpdateServerResponse':
           return AdminUpdateServerResponse.fromJson(value);
         case 'AdminUpdateServerResponseData':
@@ -210,18 +214,26 @@ class ApiClient {
           return AssignRoleResponse.fromJson(value);
         case 'AuthErrorResponse':
           return AuthErrorResponse.fromJson(value);
+        case 'AuthLoginData':
+          return AuthLoginData.fromJson(value);
         case 'AuthLoginRequest':
           return AuthLoginRequest.fromJson(value);
         case 'AuthLoginResponse':
           return AuthLoginResponse.fromJson(value);
+        case 'AuthLogoutData':
+          return AuthLogoutData.fromJson(value);
         case 'AuthLogoutRequest':
           return AuthLogoutRequest.fromJson(value);
         case 'AuthLogoutResponse':
           return AuthLogoutResponse.fromJson(value);
+        case 'AuthRefreshData':
+          return AuthRefreshData.fromJson(value);
         case 'AuthRefreshRequest':
           return AuthRefreshRequest.fromJson(value);
         case 'AuthRefreshResponse':
           return AuthRefreshResponse.fromJson(value);
+        case 'AuthTOTPRequiredData':
+          return AuthTOTPRequiredData.fromJson(value);
         case 'AuthTOTPRequiredResponse':
           return AuthTOTPRequiredResponse.fromJson(value);
         case 'AuthTOTPVerifyRequest':
@@ -234,6 +246,8 @@ class ApiClient {
           return BuildCacheSummary.fromJson(value);
         case 'BuildConfig':
           return BuildConfig.fromJson(value);
+        case 'CanCreateStackData':
+          return CanCreateStackData.fromJson(value);
         case 'CanCreateStackResponse':
           return CanCreateStackResponse.fromJson(value);
         case 'ChmodRequest':
@@ -284,6 +298,8 @@ class ApiClient {
           return CreateRoleRequest.fromJson(value);
         case 'CreateRoleResponse':
           return CreateRoleResponse.fromJson(value);
+        case 'CreateStackData':
+          return CreateStackData.fromJson(value);
         case 'CreateStackPermissionRequest':
           return CreateStackPermissionRequest.fromJson(value);
         case 'CreateStackPermissionResponse':
@@ -296,6 +312,8 @@ class ApiClient {
           return CreateUserRequest.fromJson(value);
         case 'CreateUserResponse':
           return CreateUserResponse.fromJson(value);
+        case 'DeleteCredentialMessageData':
+          return DeleteCredentialMessageData.fromJson(value);
         case 'DeleteCredentialResponse':
           return DeleteCredentialResponse.fromJson(value);
         case 'DeleteRequest':
@@ -316,22 +334,32 @@ class ApiClient {
           return DeployConfig.fromJson(value);
         case 'DirectoryListing':
           return DirectoryListing.fromJson(value);
+        case 'DirectoryListingResponse':
+          return DirectoryListingResponse.fromJson(value);
         case 'DirectoryStats':
           return DirectoryStats.fromJson(value);
+        case 'DirectoryStatsResponse':
+          return DirectoryStatsResponse.fromJson(value);
         case 'DiskUsage':
           return DiskUsage.fromJson(value);
         case 'EnvironmentVariable':
           return EnvironmentVariable.fromJson(value);
         case 'ErrorResponse':
           return ErrorResponse.fromJson(value);
-        case 'EventTypeCountResponse':
-          return EventTypeCountResponse.fromJson(value);
+        case 'EventTypeCount':
+          return EventTypeCount.fromJson(value);
         case 'ExportRequest':
           return ExportRequest.fromJson(value);
         case 'FileContent':
           return FileContent.fromJson(value);
+        case 'FileContentResponse':
+          return FileContentResponse.fromJson(value);
         case 'FileEntry':
           return FileEntry.fromJson(value);
+        case 'FileMessageData':
+          return FileMessageData.fromJson(value);
+        case 'FileMessageResponse':
+          return FileMessageResponse.fromJson(value);
         case 'GetAPIKeyResponse':
           return GetAPIKeyResponse.fromJson(value);
         case 'GetCredentialData':
@@ -362,6 +390,8 @@ class ApiClient {
           return GetScansHistoryData.fromJson(value);
         case 'GetScansHistoryResponse':
           return GetScansHistoryResponse.fromJson(value);
+        case 'GetSessionsData':
+          return GetSessionsData.fromJson(value);
         case 'GetSessionsRequest':
           return GetSessionsRequest.fromJson(value);
         case 'GetSessionsResponse':
@@ -396,6 +426,8 @@ class ApiClient {
           return ImageTrendPoint.fromJson(value);
         case 'ImageUpdate':
           return ImageUpdate.fromJson(value);
+        case 'ImageUpdatesDataInner':
+          return ImageUpdatesDataInner.fromJson(value);
         case 'ImageUpdatesResponse':
           return ImageUpdatesResponse.fromJson(value);
         case 'ImageVulnerability':
@@ -432,6 +464,10 @@ class ApiClient {
           return ListScopesResponse.fromJson(value);
         case 'ListServersResponse':
           return ListServersResponse.fromJson(value);
+        case 'ListServersResponseData':
+          return ListServersResponseData.fromJson(value);
+        case 'ListStacksData':
+          return ListStacksData.fromJson(value);
         case 'ListStacksResponse':
           return ListStacksResponse.fromJson(value);
         case 'ListUsersResponse':
@@ -440,16 +476,20 @@ class ApiClient {
           return ListUsersResponseData.fromJson(value);
         case 'LogEntry':
           return LogEntry.fromJson(value);
+        case 'LogsData':
+          return LogsData.fromJson(value);
         case 'LogsResponse':
           return LogsResponse.fromJson(value);
         case 'MaintenanceInfo':
           return MaintenanceInfo.fromJson(value);
         case 'MaintenancePermissions':
           return MaintenancePermissions.fromJson(value);
+        case 'MessageData':
+          return MessageData.fromJson(value);
+        case 'MessageData2':
+          return MessageData2.fromJson(value);
         case 'MessageResponse':
           return MessageResponse.fromJson(value);
-        case 'MessageResponse2':
-          return MessageResponse2.fromJson(value);
         case 'Network':
           return Network.fromJson(value);
         case 'NetworkConfig':
@@ -468,16 +508,22 @@ class ApiClient {
           return NewServiceConfig.fromJson(value);
         case 'OperationLog':
           return OperationLog.fromJson(value);
-        case 'OperationLogDetail':
-          return OperationLogDetail.fromJson(value);
+        case 'OperationLogDetailData':
+          return OperationLogDetailData.fromJson(value);
+        case 'OperationLogDetailResponse':
+          return OperationLogDetailResponse.fromJson(value);
+        case 'OperationLogInfo':
+          return OperationLogInfo.fromJson(value);
         case 'OperationLogMessage':
           return OperationLogMessage.fromJson(value);
-        case 'OperationLogResponse':
-          return OperationLogResponse.fromJson(value);
-        case 'OperationLogStats':
-          return OperationLogStats.fromJson(value);
-        case 'PaginatedOperationLogs':
-          return PaginatedOperationLogs.fromJson(value);
+        case 'OperationLogStatsData':
+          return OperationLogStatsData.fromJson(value);
+        case 'OperationLogStatsResponse':
+          return OperationLogStatsResponse.fromJson(value);
+        case 'PaginatedOperationLogsData':
+          return PaginatedOperationLogsData.fromJson(value);
+        case 'PaginatedOperationLogsResponse':
+          return PaginatedOperationLogsResponse.fromJson(value);
         case 'PaginationInfo':
           return PaginationInfo.fromJson(value);
         case 'PerImageTrend':
@@ -486,6 +532,8 @@ class ApiClient {
           return PermissionInfo.fromJson(value);
         case 'PermissionsResponse':
           return PermissionsResponse.fromJson(value);
+        case 'PermissionsResponseData':
+          return PermissionsResponseData.fromJson(value);
         case 'PlacementConfig':
           return PlacementConfig.fromJson(value);
         case 'PlacementPreference':
@@ -500,8 +548,8 @@ class ApiClient {
           return PruneResult.fromJson(value);
         case 'RawComposeConfig':
           return RawComposeConfig.fromJson(value);
-        case 'RegistryCredentialResponse':
-          return RegistryCredentialResponse.fromJson(value);
+        case 'RegistryCredentialInfo':
+          return RegistryCredentialInfo.fromJson(value);
         case 'RenameRequest':
           return RenameRequest.fromJson(value);
         case 'ResourceLimits':
@@ -530,6 +578,8 @@ class ApiClient {
           return RoleWithPermissions.fromJson(value);
         case 'RootFS':
           return RootFS.fromJson(value);
+        case 'RunningOperationsData':
+          return RunningOperationsData.fromJson(value);
         case 'RunningOperationsResponse':
           return RunningOperationsResponse.fromJson(value);
         case 'ScanComparison':
@@ -542,18 +592,20 @@ class ApiClient {
           return ScanWithSummary.fromJson(value);
         case 'SecretConfig':
           return SecretConfig.fromJson(value);
-        case 'SecurityAuditLogResponse':
-          return SecurityAuditLogResponse.fromJson(value);
+        case 'SecurityAuditLogInfo':
+          return SecurityAuditLogInfo.fromJson(value);
         case 'Server':
           return Server.fromJson(value);
         case 'ServerCreateRequest':
           return ServerCreateRequest.fromJson(value);
         case 'ServerInfo':
           return ServerInfo.fromJson(value);
-        case 'ServerResponse':
-          return ServerResponse.fromJson(value);
+        case 'ServerInfo2':
+          return ServerInfo2.fromJson(value);
         case 'ServerStatisticsResponse':
           return ServerStatisticsResponse.fromJson(value);
+        case 'ServerStatisticsResponseData':
+          return ServerStatisticsResponseData.fromJson(value);
         case 'ServerUpdateRequest':
           return ServerUpdateRequest.fromJson(value);
         case 'ServiceChanges':
@@ -564,28 +616,42 @@ class ApiClient {
           return ServiceNetworkConfig.fromJson(value);
         case 'SessionItem':
           return SessionItem.fromJson(value);
+        case 'SessionMessageData':
+          return SessionMessageData.fromJson(value);
         case 'SessionMessageResponse':
           return SessionMessageResponse.fromJson(value);
         case 'Stack':
           return Stack.fromJson(value);
         case 'StackDetails':
           return StackDetails.fromJson(value);
+        case 'StackEnvironmentData':
+          return StackEnvironmentData.fromJson(value);
         case 'StackEnvironmentResponse':
           return StackEnvironmentResponse.fromJson(value);
+        case 'StackImagesData':
+          return StackImagesData.fromJson(value);
         case 'StackImagesResponse':
           return StackImagesResponse.fromJson(value);
+        case 'StackNetworksData':
+          return StackNetworksData.fromJson(value);
         case 'StackNetworksResponse':
           return StackNetworksResponse.fromJson(value);
         case 'StackPermissionRule':
           return StackPermissionRule.fromJson(value);
+        case 'StackPermissionsData':
+          return StackPermissionsData.fromJson(value);
         case 'StackPermissionsResponse':
           return StackPermissionsResponse.fromJson(value);
         case 'StackStatistics':
           return StackStatistics.fromJson(value);
         case 'StackStats':
           return StackStats.fromJson(value);
+        case 'StackStatsData':
+          return StackStatsData.fromJson(value);
         case 'StackStatsResponse':
           return StackStatsResponse.fromJson(value);
+        case 'StackVolumesData':
+          return StackVolumesData.fromJson(value);
         case 'StackVolumesResponse':
           return StackVolumesResponse.fromJson(value);
         case 'StartScanData':
@@ -602,6 +668,8 @@ class ApiClient {
           return TOTPDisableRequest.fromJson(value);
         case 'TOTPEnableRequest':
           return TOTPEnableRequest.fromJson(value);
+        case 'TOTPMessageData':
+          return TOTPMessageData.fromJson(value);
         case 'TOTPMessageResponse':
           return TOTPMessageResponse.fromJson(value);
         case 'TOTPSetupData':

@@ -16,13 +16,13 @@ void main() {
   // final instance = StackStatsResponse();
 
   group('test StackStatsResponse', () {
-    // List<ContainerStats> containers (default value: const [])
-    test('to test the property `containers`', () async {
+    // StackStatsData data
+    test('to test the property `data`', () async {
       // TODO
     });
 
-    // String stackName
-    test('to test the property `stackName`', () async {
+    // bool success
+    test('to test the property `success`', () async {
       // TODO
     });
 
