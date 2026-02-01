@@ -19,7 +19,7 @@ class ServerMaintenanceScreen extends StatefulWidget {
 
 class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
   berth_api.MaintenanceInfo? _maintenanceInfo;
-  berth_api.ServerResponse? _server;
+  berth_api.ServerInfo? _server;
   bool _isLoading = true;
   String? _error;
 
@@ -44,7 +44,7 @@ class _ServerMaintenanceScreenState extends State<ServerMaintenanceScreen> {
         maintenanceService.getMaintenanceInfo(widget.serverId),
       ]);
 
-      final server = futures[0] as berth_api.ServerResponse;
+      final server = futures[0] as berth_api.ServerInfo;
       final maintenanceInfo = futures[1] as berth_api.MaintenanceInfo;
 
       setState(() {

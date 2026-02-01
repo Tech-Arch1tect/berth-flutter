@@ -139,7 +139,7 @@ class _StackStatsModalState extends State<StackStatsModal> {
                   controller: scrollController,
                   child: _stackStats != null
                       ? StackStatsList(
-                          containers: _stackStats!.containers,
+                          containers: _stackStats!.data.containers,
                           isLoading: _isStatsLoading,
                           error: _statsError,
                         )

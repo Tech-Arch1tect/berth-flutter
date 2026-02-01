@@ -8,7 +8,7 @@ class ServerService {
 
   ServerService(this._berthApiProvider);
 
-  Future<List<berth_api.ServerResponse>> getServers() async {
+  Future<List<berth_api.ServerInfo>> getServers() async {
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
         () => _berthApiProvider.adminApi.apiV1AdminServersGet(),
@@ -23,7 +23,7 @@ class ServerService {
     }
   }
 
-  Future<List<berth_api.ServerResponse>> getUserServers() async {
+  Future<List<berth_api.ServerInfo>> getUserServers() async {
     try {
       debugPrint('[ServerService] getUserServers: calling API...');
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -33,8 +33,8 @@ class ServerService {
         debugPrint('[ServerService] getUserServers: API returned null response');
         throw Exception('Failed to load servers: null response');
       }
-      debugPrint('[ServerService] getUserServers: got ${response.servers.length} servers');
-      return response.servers;
+      debugPrint('[ServerService] getUserServers: got ${response.data.servers.length} servers');
+      return response.data.servers;
     } on berth_api.ApiException catch (e) {
       debugPrint('[ServerService] getUserServers: ApiException - code=${e.code}, message=${e.message}');
       rethrow;
@@ -44,7 +44,7 @@ class ServerService {
     }
   }
 
-  Future<berth_api.ServerResponse> getUserServer(int id) async {
+  Future<berth_api.ServerInfo> getUserServer(int id) async {
     final servers = await getUserServers();
     try {
       return servers.firstWhere((server) => server.id == id);
@@ -53,7 +53,7 @@ class ServerService {
     }
   }
 
-  Future<berth_api.ServerResponse> getServer(int id) async {
+  Future<berth_api.ServerInfo> getServer(int id) async {
     final servers = await getServers();
     try {
       return servers.firstWhere((server) => server.id == id);
@@ -62,7 +62,7 @@ class ServerService {
     }
   }
 
-  Future<berth_api.ServerResponse> createServer(berth_api.ServerCreateRequest request) async {
+  Future<berth_api.ServerInfo> createServer(berth_api.ServerCreateRequest request) async {
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
         () => _berthApiProvider.adminApi.apiV1AdminServersPost(request),
@@ -77,7 +77,7 @@ class ServerService {
     }
   }
 
-  Future<berth_api.ServerResponse> updateServer(int id, berth_api.ServerUpdateRequest request) async {
+  Future<berth_api.ServerInfo> updateServer(int id, berth_api.ServerUpdateRequest request) async {
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
         () => _berthApiProvider.adminApi.apiV1AdminServersIdPut(id, request),

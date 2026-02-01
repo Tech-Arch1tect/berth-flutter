@@ -3,11 +3,11 @@ import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogList extends StatelessWidget {
-  final List<berth_api.OperationLogResponse> logs;
+  final List<berth_api.OperationLogInfo> logs;
   final bool loading;
   final berth_api.PaginationInfo? pagination;
   final bool showUser;
-  final Function(berth_api.OperationLogResponse) onTap;
+  final Function(berth_api.OperationLogInfo) onTap;
   final Function(int) onPageChanged;
 
   const OperationLogList({
@@ -82,7 +82,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  Widget _buildLogCard(BuildContext context, berth_api.OperationLogResponse log) {
+  Widget _buildLogCard(BuildContext context, berth_api.OperationLogInfo log) {
     return Card(
       elevation: 2,
       child: InkWell(
@@ -237,7 +237,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogResponse log) {
+  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogInfo log) {
     IconData icon;
     Color color;
     String text;
@@ -291,7 +291,7 @@ class OperationLogList extends StatelessWidget {
     );
   }
 
-  String _formatDuration(berth_api.OperationLogResponse log) {
+  String _formatDuration(berth_api.OperationLogInfo log) {
     int? duration = log.durationMs ?? log.partialDurationMs;
     
     if (duration == null || duration == 0) return 'N/A';

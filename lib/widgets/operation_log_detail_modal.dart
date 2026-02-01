@@ -3,7 +3,7 @@ import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogDetailModal extends StatelessWidget {
-  final berth_api.OperationLogDetail? logDetail;
+  final berth_api.OperationLogDetailData? logDetail;
   final bool showUser;
 
   const OperationLogDetailModal({
@@ -43,7 +43,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, berth_api.OperationLogResponse log) {
+  Widget _buildHeader(BuildContext context, berth_api.OperationLogInfo log) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -128,7 +128,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogResponse log) {
+  Widget _buildStatusBadge(BuildContext context, berth_api.OperationLogInfo log) {
     IconData icon;
     Color color;
     String text;
@@ -302,7 +302,7 @@ class OperationLogDetailModal extends StatelessWidget {
     );
   }
 
-  String _formatDuration(berth_api.OperationLogResponse log) {
+  String _formatDuration(berth_api.OperationLogInfo log) {
     int? duration = log.durationMs ?? log.partialDurationMs;
     
     if (duration == null || duration == 0) return 'N/A';

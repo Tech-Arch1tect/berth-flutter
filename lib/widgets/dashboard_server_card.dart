@@ -5,7 +5,7 @@ import '../extensions/server_response_extensions.dart';
 import '../theme/app_theme.dart';
 
 class DashboardServerCard extends StatelessWidget {
-  final berth_api.ServerResponse server;
+  final berth_api.ServerInfo server;
   final berth_api.StackStatistics? statistics;
   final bool isLoadingStatistics;
   final bool hasStatisticsError;

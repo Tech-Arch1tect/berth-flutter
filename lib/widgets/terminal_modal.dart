@@ -6,7 +6,7 @@ import '../services/terminal_service.dart';
 import 'terminal_widget.dart';
 
 class TerminalModal extends StatelessWidget {
-  final berth_api.ServerResponse server;
+  final berth_api.ServerInfo server;
   final berth_api.Stack stack;
   final String serviceName;
   final String? containerName;
@@ -21,7 +21,7 @@ class TerminalModal extends StatelessWidget {
 
   static Future<void> show({
     required BuildContext context,
-    required berth_api.ServerResponse server,
+    required berth_api.ServerInfo server,
     required berth_api.Stack stack,
     required String serviceName,
     String? containerName,

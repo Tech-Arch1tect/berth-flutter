@@ -7,7 +7,7 @@ class OperationLogService {
 
   OperationLogService(this._berthApiProvider);
 
-  Future<berth_api.PaginatedOperationLogs?> getUserOperationLogs({
+  Future<berth_api.PaginatedOperationLogsResponse?> getUserOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
@@ -33,7 +33,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogStats?> getUserOperationLogStats() async {
+  Future<berth_api.OperationLogStatsResponse?> getUserOperationLogStats() async {
     debugPrint('[OperationLogService] getUserOperationLogStats');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -47,7 +47,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogDetail?> getUserOperationLogDetail(int logId) async {
+  Future<berth_api.OperationLogDetailResponse?> getUserOperationLogDetail(int logId) async {
     debugPrint('[OperationLogService] getUserOperationLogDetail: logId=$logId');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -61,7 +61,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.PaginatedOperationLogs?> getAdminOperationLogs({
+  Future<berth_api.PaginatedOperationLogsResponse?> getAdminOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
@@ -87,7 +87,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogStats?> getAdminOperationLogStats() async {
+  Future<berth_api.OperationLogStatsResponse?> getAdminOperationLogStats() async {
     debugPrint('[OperationLogService] getAdminOperationLogStats');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -101,7 +101,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogDetail?> getAdminOperationLogDetail(int logId) async {
+  Future<berth_api.OperationLogDetailResponse?> getAdminOperationLogDetail(int logId) async {
     debugPrint('[OperationLogService] getAdminOperationLogDetail: logId=$logId');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(

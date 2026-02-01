@@ -53,9 +53,9 @@ class AuthService extends ChangeNotifier {
 
         final loginResponse = berth_api.AuthLoginResponse.fromJson(data);
         if (loginResponse != null) {
-          _accessToken = loginResponse.accessToken;
-          _refreshToken = loginResponse.refreshToken;
-          _currentUser = loginResponse.user;
+          _accessToken = loginResponse.data.accessToken;
+          _refreshToken = loginResponse.data.refreshToken;
+          _currentUser = loginResponse.data.user;
 
           await _saveTokensToStorage(_accessToken!, _refreshToken!);
           await _saveUserToStorage(_currentUser!);
@@ -209,8 +209,8 @@ class AuthService extends ChangeNotifier {
       final response = await _berthApiProvider.authApi.apiV1AuthRefreshPost(request);
 
       if (response != null) {
-        _accessToken = response.accessToken;
-        _refreshToken = response.refreshToken;
+        _accessToken = response.data.accessToken;
+        _refreshToken = response.data.refreshToken;
 
         await _saveTokensToStorage(_accessToken!, _refreshToken!);
         _berthApiProvider.setAuthToken(_accessToken!);
@@ -279,9 +279,9 @@ class AuthService extends ChangeNotifier {
       final response = await _berthApiProvider.authApi.apiV1AuthTotpVerifyPost(request);
 
       if (response != null) {
-        _accessToken = response.accessToken;
-        _refreshToken = response.refreshToken;
-        _currentUser = response.user;
+        _accessToken = response.data.accessToken;
+        _refreshToken = response.data.refreshToken;
+        _currentUser = response.data.user;
 
         await _saveTokensToStorage(_accessToken!, _refreshToken!);
         await _saveUserToStorage(_currentUser!);
@@ -410,7 +410,7 @@ class AuthService extends ChangeNotifier {
       );
 
       if (response != null) {
-        return response.sessions;
+        return response.data.sessions;
       } else {
         return null;
       }

@@ -23,7 +23,7 @@ class ServerStacksScreen extends StatefulWidget {
 
 class _ServerStacksScreenState extends State<ServerStacksScreen> {
   List<berth_api.Stack>? _stacks;
-  berth_api.ServerResponse? _server;
+  berth_api.ServerInfo? _server;
   bool _isLoading = true;
   String? _error;
 
@@ -47,7 +47,7 @@ class _ServerStacksScreenState extends State<ServerStacksScreen> {
         widget.stackService.getServerStacks(widget.serverId),
       ]);
       
-      final server = futures[0] as berth_api.ServerResponse;
+      final server = futures[0] as berth_api.ServerInfo;
       final stacks = futures[1] as List<berth_api.Stack>;
       
       setState(() {

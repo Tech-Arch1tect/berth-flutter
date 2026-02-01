@@ -13,7 +13,7 @@ class ServersScreen extends StatefulWidget {
 }
 
 class _ServersScreenState extends State<ServersScreen> {
-  List<berth_api.ServerResponse> servers = [];
+  List<berth_api.ServerInfo> servers = [];
   bool isLoading = true;
   String? error;
   late ServerService _serverService;
@@ -42,7 +42,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  Future<void> _deleteServer(berth_api.ServerResponse server) async {
+  Future<void> _deleteServer(berth_api.ServerInfo server) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -88,7 +88,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  Future<void> _testConnection(berth_api.ServerResponse server) async {
+  Future<void> _testConnection(berth_api.ServerInfo server) async {
     final serverId = server.id;
 
     try {
@@ -119,7 +119,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
   }
 
-  void _showServerForm([berth_api.ServerResponse? server]) {
+  void _showServerForm([berth_api.ServerInfo? server]) {
     showDialog(
       context: context,
       builder: (context) => _ServerFormDialog(
@@ -415,7 +415,7 @@ class _ServersScreenState extends State<ServersScreen> {
 }
 
 class _ServerFormDialog extends StatefulWidget {
-  final berth_api.ServerResponse? server;
+  final berth_api.ServerInfo? server;
   final VoidCallback onSaved;
 
   const _ServerFormDialog({

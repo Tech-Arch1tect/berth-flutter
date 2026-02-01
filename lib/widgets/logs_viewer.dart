@@ -78,7 +78,7 @@ class _LogsViewerState extends State<LogsViewer> {
       }
 
       setState(() {
-        _logs = response.logs;
+        _logs = response.data.logs;
         _isLoading = false;
       });
     } catch (e) {

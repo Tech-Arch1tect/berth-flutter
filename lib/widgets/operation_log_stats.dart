@@ -3,7 +3,7 @@ import 'package:berth_api/api.dart' as berth_api;
 import '../theme/app_theme.dart';
 
 class OperationLogStatsWidget extends StatelessWidget {
-  final berth_api.OperationLogStats stats;
+  final berth_api.OperationLogStatsData stats;
 
   const OperationLogStatsWidget({
     super.key,

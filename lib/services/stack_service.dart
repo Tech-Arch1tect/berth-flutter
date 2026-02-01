@@ -16,7 +16,7 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch server stacks: null response');
       }
-      final stacks = response.stacks.toList();
+      final stacks = response.data.stacks.toList();
       stacks.sort((a, b) => a.name.compareTo(b.name));
       debugPrint('[StackService] getServerStacks: returned ${stacks.length} stacks');
       return stacks;
@@ -60,7 +60,7 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch stack networks: null response');
       }
-      final networks = response.networks.toList();
+      final networks = response.data.networks.toList();
       networks.sort((a, b) => a.name.compareTo(b.name));
       debugPrint('[StackService] getStackNetworks: returned ${networks.length} networks');
       return networks;
@@ -84,7 +84,7 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch stack volumes: null response');
       }
-      final volumes = response.volumes.toList();
+      final volumes = response.data.volumes.toList();
       volumes.sort((a, b) => a.name.compareTo(b.name));
       debugPrint('[StackService] getStackVolumes: returned ${volumes.length} volumes');
       return volumes;
@@ -108,8 +108,8 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch environment variables: null response');
       }
-      debugPrint('[StackService] getStackEnvironmentVariables: returned ${response.services.length} services');
-      return response.services;
+      debugPrint('[StackService] getStackEnvironmentVariables: returned ${response.data.services.length} services');
+      return response.data.services;
     } on berth_api.ApiException catch (e) {
       debugPrint('[StackService] getStackEnvironmentVariables: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -130,7 +130,7 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch stack stats: null response');
       }
-      debugPrint('[StackService] getStackStats: returned stats with ${response.containers.length} containers');
+      debugPrint('[StackService] getStackStats: returned stats with ${response.data.containers.length} containers');
       return response;
     } on berth_api.ApiException catch (e) {
       debugPrint('[StackService] getStackStats: ApiException - code=${e.code}, message=${e.message}');

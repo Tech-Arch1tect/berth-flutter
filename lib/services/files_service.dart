@@ -23,8 +23,8 @@ class FilesService {
       if (response == null) {
         throw Exception('Failed to list directory: null response');
       }
-      debugPrint('[FilesService] listDirectory: returned ${response.entries.length} entries');
-      return response;
+      debugPrint('[FilesService] listDirectory: returned ${response.data.entries.length} entries');
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[FilesService] listDirectory: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -51,8 +51,8 @@ class FilesService {
       if (response == null) {
         throw Exception('Failed to read file: null response');
       }
-      debugPrint('[FilesService] readFile: returned file with ${response.size} bytes');
-      return response;
+      debugPrint('[FilesService] readFile: returned file with ${response.data.size} bytes');
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[FilesService] readFile: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -297,7 +297,7 @@ class FilesService {
         throw Exception('Failed to get directory stats: null response');
       }
       debugPrint('[FilesService] getDirectoryStats: success');
-      return response;
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[FilesService] getDirectoryStats: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {

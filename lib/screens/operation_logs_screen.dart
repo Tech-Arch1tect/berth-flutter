@@ -20,9 +20,9 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
   
-  berth_api.PaginatedOperationLogs? _operationLogs;
-  berth_api.OperationLogStats? _stats;
-  berth_api.OperationLogDetail? _selectedLogDetail;
+  berth_api.PaginatedOperationLogsResponse? _operationLogs;
+  berth_api.OperationLogStatsResponse? _stats;
+  berth_api.OperationLogDetailResponse? _selectedLogDetail;
   
   int _currentPage = 1;
   String _searchTerm = '';
@@ -71,7 +71,7 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
       if (result != null) {
         setState(() {
           _operationLogs = result;
-          _updateAvailableCommands(result.data);
+          _updateAvailableCommands(result.data.data);
           _errorMessage = '';
         });
       } else {
@@ -105,14 +105,14 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
     }
   }
 
-  void _updateAvailableCommands(List<berth_api.OperationLogResponse> logs) {
+  void _updateAvailableCommands(List<berth_api.OperationLogInfo> logs) {
     final commands = logs.map((log) => log.command).toSet();
     setState(() {
       _availableCommands.addAll(commands);
     });
   }
 
-  Future<void> _loadLogDetail(berth_api.OperationLogResponse log) async {
+  Future<void> _loadLogDetail(berth_api.OperationLogInfo log) async {
     final operationLogService = Provider.of<OperationLogService>(context, listen: false);
     
     try {
@@ -134,7 +134,7 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
     showDialog(
       context: context,
       builder: (context) => OperationLogDetailModal(
-        logDetail: _selectedLogDetail,
+        logDetail: _selectedLogDetail?.data,
         showUser: false,
       ),
     ).then((_) {
@@ -212,7 +212,7 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
         child: Column(
           children: [
             if (_stats != null)
-              OperationLogStatsWidget(stats: _stats!),
+              OperationLogStatsWidget(stats: _stats!.data),
             
             OperationLogFilters(
               searchTerm: _searchTerm,
@@ -255,9 +255,9 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
             
             Expanded(
               child: OperationLogList(
-                logs: _operationLogs?.data ?? [],
+                logs: _operationLogs?.data.data ?? [],
                 loading: _isLoading,
-                pagination: _operationLogs?.pagination,
+                pagination: _operationLogs?.data.pagination,
                 showUser: false,
                 onTap: _loadLogDetail,
                 onPageChanged: _onPageChanged,

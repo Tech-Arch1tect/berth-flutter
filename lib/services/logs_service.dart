@@ -28,7 +28,7 @@ class LogsService {
       if (response == null) {
         throw Exception('Failed to fetch stack logs: null response');
       }
-      debugPrint('[LogsService] getStackLogs: success, ${response.logs.length} entries');
+      debugPrint('[LogsService] getStackLogs: success, ${response.data.logs.length} entries');
       return response;
     } on berth_api.ApiException catch (e) {
       debugPrint('[LogsService] getStackLogs: ApiException - code=${e.code}, message=${e.message}');
@@ -62,7 +62,7 @@ class LogsService {
       if (response == null) {
         throw Exception('Failed to fetch container logs: null response');
       }
-      debugPrint('[LogsService] getContainerLogs: success, ${response.logs.length} entries');
+      debugPrint('[LogsService] getContainerLogs: success, ${response.data.logs.length} entries');
       return response;
     } on berth_api.ApiException catch (e) {
       debugPrint('[LogsService] getContainerLogs: ApiException - code=${e.code}, message=${e.message}');

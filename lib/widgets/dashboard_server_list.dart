@@ -13,7 +13,7 @@ class DashboardServerList extends StatefulWidget {
 }
 
 class _DashboardServerListState extends State<DashboardServerList> {
-  List<berth_api.ServerResponse> _servers = [];
+  List<berth_api.ServerInfo> _servers = [];
   bool _isLoading = true;
   String? _error;
   late ServerService _serverService;

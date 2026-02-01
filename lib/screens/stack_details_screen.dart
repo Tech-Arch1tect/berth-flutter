@@ -46,7 +46,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   List<berth_api.Network>? _networks;
   List<berth_api.Volume>? _volumes;
   Map<String, List<berth_api.ServiceEnvironment>>? _environmentVariables;
-  berth_api.ServerResponse? _server;
+  berth_api.ServerInfo? _server;
   bool _isLoading = true;
   bool _isNetworksLoading = false;
   bool _isVolumesLoading = false;
@@ -103,7 +103,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         widget.stackService.getStackDetails(widget.serverId, widget.stackName),
       ]);
       
-      final server = futures[0] as berth_api.ServerResponse;
+      final server = futures[0] as berth_api.ServerInfo;
       final stackDetails = futures[1] as berth_api.StackDetails;
 
       setState(() {
@@ -356,7 +356,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         widget.stackService.getStackDetails(widget.serverId, widget.stackName),
       ]);
       
-      final server = futures[0] as berth_api.ServerResponse;
+      final server = futures[0] as berth_api.ServerInfo;
       final stackDetails = futures[1] as berth_api.StackDetails;
 
       if (mounted) {
