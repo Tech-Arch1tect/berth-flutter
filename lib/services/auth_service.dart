@@ -51,7 +51,7 @@ class AuthService extends ChangeNotifier {
           );
         }
 
-        final loginResponse = berth_api.AuthLoginResponse.fromJson(data);
+        final loginResponse = berth_api.ResponseAuthLoginData.fromJson(data);
         if (loginResponse != null) {
           _accessToken = loginResponse.data.accessToken;
           _refreshToken = loginResponse.data.refreshToken;
@@ -146,20 +146,20 @@ class AuthService extends ChangeNotifier {
 
       _currentUser = await _getUserFromStorage();
 
-      final response = await _berthApiProvider.profileApi.apiV1ProfileGet();
+      final user = await _fetchProfileUser();
 
-      if (response != null) {
-        _currentUser = response.data;
-        await _saveUserToStorage(_currentUser!);
+      if (user != null) {
+        _currentUser = user;
+        await _saveUserToStorage(user);
         notifyListeners();
         return true;
       } else {
         final refreshResult = await _refreshAccessToken();
         if (refreshResult) {
-          final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
-          if (retryResponse != null) {
-            _currentUser = retryResponse.data;
-            await _saveUserToStorage(_currentUser!);
+          final retryUser = await _fetchProfileUser();
+          if (retryUser != null) {
+            _currentUser = retryUser;
+            await _saveUserToStorage(retryUser);
             notifyListeners();
             return true;
           }
@@ -173,10 +173,10 @@ class AuthService extends ChangeNotifier {
         final refreshResult = await _refreshAccessToken();
         if (refreshResult) {
           try {
-            final retryResponse = await _berthApiProvider.profileApi.apiV1ProfileGet();
-            if (retryResponse != null) {
-              _currentUser = retryResponse.data;
-              await _saveUserToStorage(_currentUser!);
+            final retryUser = await _fetchProfileUser();
+            if (retryUser != null) {
+              _currentUser = retryUser;
+              await _saveUserToStorage(retryUser);
               notifyListeners();
               return true;
             }
@@ -192,6 +192,20 @@ class AuthService extends ChangeNotifier {
       await logout();
       return false;
     }
+  }
+
+  Future<berth_api.UserInfo?> _fetchProfileUser() async {
+    final response =
+        await _berthApiProvider.profileApi.apiV1ProfileGetWithHttpInfo();
+    if (response.statusCode >= 400) {
+      throw berth_api.ApiException(response.statusCode, response.body);
+    }
+    if (response.body.isEmpty) {
+      return null;
+    }
+    final parsed =
+        berth_api.ResponseUserInfo.fromJson(json.decode(response.body));
+    return parsed?.data;
   }
 
   Future<bool> _refreshAccessToken() async {
@@ -324,7 +338,7 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<berth_api.TOTPSetupResponse?> getTOTPSetup() async {
+  Future<berth_api.ResponseTOTPSetupData?> getTOTPSetup() async {
     try {
       return await _berthApiProvider.callWithAutoRefresh(
         () => _berthApiProvider.totpApi.apiV1TotpSetupGet(),
@@ -388,7 +402,7 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<berth_api.TOTPStatusResponse?> getTOTPStatus() async {
+  Future<berth_api.ResponseTOTPStatusData?> getTOTPStatus() async {
     try {
       return await _berthApiProvider.callWithAutoRefresh(
         () => _berthApiProvider.totpApi.apiV1TotpStatusGet(),
@@ -401,12 +415,8 @@ class AuthService extends ChangeNotifier {
 
   Future<List<berth_api.SessionItem>?> getSessions() async {
     try {
-      final request = berth_api.GetSessionsRequest(
-        refreshToken: _refreshToken!,
-      );
-
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.sessionsApi.apiV1SessionsPost(request),
+        () => _berthApiProvider.sessionsApi.apiV1SessionsGet(),
       );
 
       if (response != null) {
@@ -439,12 +449,10 @@ class AuthService extends ChangeNotifier {
 
   Future<bool> revokeAllOtherSessions() async {
     try {
-      final request = berth_api.RevokeAllOtherSessionsRequest(
-        refreshToken: _refreshToken!,
-      );
-
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.sessionsApi.apiV1SessionsRevokeAllOthersPost(request),
+        () => _berthApiProvider.sessionsApi.apiV1SessionsRevokeAllOthersPost(
+          const <String, dynamic>{},
+        ),
       );
 
       return response != null;

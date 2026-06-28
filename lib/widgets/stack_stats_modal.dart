@@ -22,7 +22,7 @@ class StackStatsModal extends StatefulWidget {
 }
 
 class _StackStatsModalState extends State<StackStatsModal> {
-  berth_api.StackStatsResponse? _stackStats;
+  berth_api.ResponseStackStats? _stackStats;
   bool _isStatsLoading = false;
   String? _statsError;
   Timer? _statsTimer;

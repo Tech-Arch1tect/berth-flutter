@@ -17,7 +17,7 @@ class TOTPSetupScreen extends StatefulWidget {
 class _TOTPSetupScreenState extends State<TOTPSetupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
-  berth_api.TOTPSetupResponse? _setupData;
+  berth_api.ResponseTOTPSetupData? _setupData;
   bool _isLoading = true;
   String? _errorMessage;
   bool _isEnabling = false;

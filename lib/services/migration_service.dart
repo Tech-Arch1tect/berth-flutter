@@ -15,7 +15,7 @@ class MigrationService {
     try {
       final request = berth_api.ExportRequest(password: password);
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.migrationApi.apiV1AdminMigrationExportPostWithHttpInfo(request),
+        () => _berthApiProvider.adminApi.apiV1AdminMigrationExportPostWithHttpInfo(request),
       );
 
       if (response.statusCode >= 400) {
@@ -46,7 +46,7 @@ class MigrationService {
     }
   }
 
-  Future<berth_api.ImportResponse> importData(File backupFile, String password) async {
+  Future<berth_api.ResponseImportData> importData(File backupFile, String password) async {
     debugPrint('[MigrationService] importData: starting import from ${backupFile.path}');
     try {
       final bytes = await backupFile.readAsBytes();
@@ -57,7 +57,7 @@ class MigrationService {
       );
 
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.migrationApi.apiV1AdminMigrationImportPost(
+        () => _berthApiProvider.adminApi.apiV1AdminMigrationImportPost(
           multipartFile,
           password,
         ),

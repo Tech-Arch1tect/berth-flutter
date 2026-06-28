@@ -56,7 +56,7 @@ class _LogsViewerState extends State<LogsViewer> {
     });
 
     try {
-      berth_api.LogsResponse response;
+      berth_api.ResponseLogsData response;
       
       if (_selectedContainer.isNotEmpty) {
         response = await widget.logsService.getContainerLogs(

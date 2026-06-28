@@ -7,7 +7,7 @@ class LogsService {
 
   LogsService(this._berthApiProvider);
 
-  Future<berth_api.LogsResponse> getStackLogs({
+  Future<berth_api.ResponseLogsData> getStackLogs({
     required int serverId,
     required String stackName,
     int? tail,
@@ -39,7 +39,7 @@ class LogsService {
     }
   }
 
-  Future<berth_api.LogsResponse> getContainerLogs({
+  Future<berth_api.ResponseLogsData> getContainerLogs({
     required int serverId,
     required String stackName,
     required String containerName,

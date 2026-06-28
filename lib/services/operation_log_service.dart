@@ -7,7 +7,7 @@ class OperationLogService {
 
   OperationLogService(this._berthApiProvider);
 
-  Future<berth_api.PaginatedOperationLogsResponse?> getUserOperationLogs({
+  Future<berth_api.ResponseOperationLogInfo?> getUserOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
@@ -33,7 +33,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogStatsResponse?> getUserOperationLogStats() async {
+  Future<berth_api.ResponseOperationLogStatsData?> getUserOperationLogStats() async {
     debugPrint('[OperationLogService] getUserOperationLogStats');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -47,7 +47,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogDetailResponse?> getUserOperationLogDetail(int logId) async {
+  Future<berth_api.ResponseOperationLogDetailData?> getUserOperationLogDetail(int logId) async {
     debugPrint('[OperationLogService] getUserOperationLogDetail: logId=$logId');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
@@ -61,7 +61,7 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.PaginatedOperationLogsResponse?> getAdminOperationLogs({
+  Future<berth_api.ResponseOperationLogInfo?> getAdminOperationLogs({
     int page = 1,
     int pageSize = 20,
     String? searchTerm,
@@ -71,7 +71,7 @@ class OperationLogService {
     debugPrint('[OperationLogService] getAdminOperationLogs: page=$page, pageSize=$pageSize');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsGet(
+        () => _berthApiProvider.adminApi.apiV1AdminOperationLogsGet(
           page: page,
           pageSize: pageSize,
           search: searchTerm,
@@ -87,11 +87,11 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogStatsResponse?> getAdminOperationLogStats() async {
+  Future<berth_api.ResponseOperationLogStatsData?> getAdminOperationLogStats() async {
     debugPrint('[OperationLogService] getAdminOperationLogStats');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsStatsGet(),
+        () => _berthApiProvider.adminApi.apiV1AdminOperationLogsStatsGet(),
       );
       debugPrint('[OperationLogService] getAdminOperationLogStats: success');
       return response;
@@ -101,11 +101,11 @@ class OperationLogService {
     }
   }
 
-  Future<berth_api.OperationLogDetailResponse?> getAdminOperationLogDetail(int logId) async {
+  Future<berth_api.ResponseOperationLogDetailData?> getAdminOperationLogDetail(int logId) async {
     debugPrint('[OperationLogService] getAdminOperationLogDetail: logId=$logId');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
-        () => _berthApiProvider.operationLogsApi.apiV1AdminOperationLogsIdGet(logId),
+        () => _berthApiProvider.adminApi.apiV1AdminOperationLogsIdGet(logId),
       );
       debugPrint('[OperationLogService] getAdminOperationLogDetail: success');
       return response;

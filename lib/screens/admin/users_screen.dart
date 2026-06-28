@@ -33,7 +33,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
       final berthApiProvider = context.read<BerthApiProvider>();
       final response = await berthApiProvider.callWithAutoRefresh(
-        () => berthApiProvider.usersApi.apiV1AdminUsersGet(),
+        () => berthApiProvider.adminApi.apiV1AdminUsersGet(),
       );
 
       if (response != null) {
@@ -72,7 +72,7 @@ class _UsersScreenState extends State<UsersScreen> {
       );
 
       await berthApiProvider.callWithAutoRefresh(
-        () => berthApiProvider.usersApi.apiV1AdminUsersPost(request),
+        () => berthApiProvider.adminApi.apiV1AdminUsersPost(request),
       );
 
       if (mounted) {

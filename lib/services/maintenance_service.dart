@@ -17,7 +17,7 @@ class MaintenanceService {
         throw Exception('Failed to fetch maintenance info: null response');
       }
       debugPrint('[MaintenanceService] getMaintenanceInfo: success');
-      return response;
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[MaintenanceService] getMaintenanceInfo: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -37,7 +37,7 @@ class MaintenanceService {
         throw Exception('Failed to prune resources: null response');
       }
       debugPrint('[MaintenanceService] pruneResources: success');
-      return response;
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[MaintenanceService] pruneResources: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -57,7 +57,7 @@ class MaintenanceService {
         throw Exception('Failed to delete resource: null response');
       }
       debugPrint('[MaintenanceService] deleteResource: success');
-      return response;
+      return response.data;
     } on berth_api.ApiException catch (e) {
       debugPrint('[MaintenanceService] deleteResource: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {

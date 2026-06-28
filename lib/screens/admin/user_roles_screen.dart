@@ -40,7 +40,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
 
       final berthApiProvider = context.read<BerthApiProvider>();
       final response = await berthApiProvider.callWithAutoRefresh(
-        () => berthApiProvider.usersApi.apiV1AdminUsersIdRolesGet(widget.userId),
+        () => berthApiProvider.adminApi.apiV1AdminUsersIdRolesGet(widget.userId),
       );
 
       if (response != null) {
@@ -75,7 +75,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
       );
 
       await berthApiProvider.callWithAutoRefresh(
-        () => berthApiProvider.usersApi.apiV1AdminUsersAssignRolePost(request),
+        () => berthApiProvider.adminApi.apiV1AdminUsersAssignRolePost(request),
       );
 
       await _loadUserRoles();
@@ -127,7 +127,7 @@ class _UserRolesScreenState extends State<UserRolesScreen> {
       );
 
       await berthApiProvider.callWithAutoRefresh(
-        () => berthApiProvider.usersApi.apiV1AdminUsersRevokeRolePost(request),
+        () => berthApiProvider.adminApi.apiV1AdminUsersRevokeRolePost(request),
       );
 
       await _loadUserRoles();

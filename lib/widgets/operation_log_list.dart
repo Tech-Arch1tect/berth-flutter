@@ -5,7 +5,7 @@ import '../theme/app_theme.dart';
 class OperationLogList extends StatelessWidget {
   final List<berth_api.OperationLogInfo> logs;
   final bool loading;
-  final berth_api.PaginationInfo? pagination;
+  final berth_api.Meta? pagination;
   final bool showUser;
   final Function(berth_api.OperationLogInfo) onTap;
   final Function(int) onPageChanged;
@@ -313,7 +313,13 @@ class OperationLogList extends StatelessWidget {
     if (pagination == null) return const SizedBox.shrink();
     
     final pag = pagination!;
-    
+    final pageSize = pag.pageSize ?? 0;
+    final currentPage = pag.page ?? 1;
+    final total = pag.totalCount ?? 0;
+    final totalPages = pageSize > 0 ? ((total + pageSize - 1) ~/ pageSize) : 1;
+    final hasPrev = currentPage > 1;
+    final hasNext = currentPage < totalPages;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -327,7 +333,7 @@ class OperationLogList extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Page ${pag.currentPage} of ${pag.totalPages} (${pag.total} total)',
+            'Page $currentPage of $totalPages ($total total)',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const Spacer(),
@@ -335,12 +341,12 @@ class OperationLogList extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                onPressed: pag.hasPrev ? () => onPageChanged(pag.currentPage - 1) : null,
+                onPressed: hasPrev ? () => onPageChanged(currentPage - 1) : null,
                 icon: const Icon(Icons.chevron_left),
               ),
               const SizedBox(width: AppSpacing.sm),
               IconButton(
-                onPressed: pag.hasNext ? () => onPageChanged(pag.currentPage + 1) : null,
+                onPressed: hasNext ? () => onPageChanged(currentPage + 1) : null,
                 icon: const Icon(Icons.chevron_right),
               ),
             ],

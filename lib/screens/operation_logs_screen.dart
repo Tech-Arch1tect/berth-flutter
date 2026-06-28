@@ -20,9 +20,9 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
   
-  berth_api.PaginatedOperationLogsResponse? _operationLogs;
-  berth_api.OperationLogStatsResponse? _stats;
-  berth_api.OperationLogDetailResponse? _selectedLogDetail;
+  berth_api.ResponseOperationLogInfo? _operationLogs;
+  berth_api.ResponseOperationLogStatsData? _stats;
+  berth_api.ResponseOperationLogDetailData? _selectedLogDetail;
   
   int _currentPage = 1;
   String _searchTerm = '';
@@ -71,7 +71,7 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
       if (result != null) {
         setState(() {
           _operationLogs = result;
-          _updateAvailableCommands(result.data.data);
+          _updateAvailableCommands(result.data);
           _errorMessage = '';
         });
       } else {
@@ -255,9 +255,9 @@ class _OperationLogsScreenState extends State<OperationLogsScreen> {
             
             Expanded(
               child: OperationLogList(
-                logs: _operationLogs?.data.data ?? [],
+                logs: _operationLogs?.data ?? [],
                 loading: _isLoading,
-                pagination: _operationLogs?.data.pagination,
+                pagination: _operationLogs?.meta,
                 showUser: false,
                 onTap: _loadLogDetail,
                 onPageChanged: _onPageChanged,

@@ -38,8 +38,9 @@ class StackService {
       if (response == null) {
         throw Exception('Failed to fetch stack details: null response');
       }
-      debugPrint('[StackService] getStackDetails: returned stack with ${response.services.length} services');
-      return response;
+      final stack = response.data;
+      debugPrint('[StackService] getStackDetails: returned stack with ${stack.services.length} services');
+      return stack;
     } on berth_api.ApiException catch (e) {
       debugPrint('[StackService] getStackDetails: ApiException - code=${e.code}, message=${e.message}');
       if (e.code == 401) {
@@ -121,7 +122,7 @@ class StackService {
     }
   }
 
-  Future<berth_api.StackStatsResponse> getStackStats(int serverId, String stackName) async {
+  Future<berth_api.ResponseStackStats> getStackStats(int serverId, String stackName) async {
     debugPrint('[StackService] getStackStats: serverId=$serverId, stackName=$stackName');
     try {
       final response = await _berthApiProvider.callWithAutoRefresh(
