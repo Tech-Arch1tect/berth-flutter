@@ -4,50 +4,6 @@ part 'websocket_message.g.dart';
 
 
 @JsonSerializable()
-class SubscribeMessage {
-  final String type;
-  final String resource;
-  @JsonKey(name: 'server_id')
-  final int serverId;
-  @JsonKey(name: 'stack_name')
-  final String? stackName;
-
-  const SubscribeMessage({
-    this.type = 'subscribe',
-    required this.resource,
-    required this.serverId,
-    this.stackName,
-  });
-
-  factory SubscribeMessage.fromJson(Map<String, dynamic> json) =>
-      _$SubscribeMessageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SubscribeMessageToJson(this);
-}
-
-@JsonSerializable()
-class UnsubscribeMessage {
-  final String type;
-  final String resource;
-  @JsonKey(name: 'server_id')
-  final int serverId;
-  @JsonKey(name: 'stack_name')
-  final String? stackName;
-
-  const UnsubscribeMessage({
-    this.type = 'unsubscribe',
-    required this.resource,
-    required this.serverId,
-    this.stackName,
-  });
-
-  factory UnsubscribeMessage.fromJson(Map<String, dynamic> json) =>
-      _$UnsubscribeMessageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UnsubscribeMessageToJson(this);
-}
-
-@JsonSerializable()
 class ContainerStatusEvent {
   final String type;
   @JsonKey(name: 'server_id')

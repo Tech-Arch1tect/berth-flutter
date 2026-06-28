@@ -9,7 +9,6 @@ class StackWebSocketService {
   
   Timer? _refreshTimer;
   final int _refreshDebounceMs = 1500;
-  bool _isSubscribed = false;
   bool _isDisposed = false;
   StreamSubscription<WebSocketConnectionStatus>? _statusSubscription;
   StreamSubscription<Map<String, dynamic>>? _messageSubscription;
@@ -44,11 +43,12 @@ class StackWebSocketService {
 
   Future<bool> connect() async {
     try {
-      final success = await _webSocketService.connect('/ws/api/stack-status/$serverId');
+      final success = await _webSocketService.connect(
+        '/ws/api/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/events',
+      );
 
       if (success) {
         _listenToMessages();
-        _subscribe();
       } else if (!_isDisposed) {
         _errorController.add(Exception('Failed to connect to WebSocket'));
       }
@@ -68,7 +68,7 @@ class StackWebSocketService {
   }
 
   void _listenToMessages() {
-    _messageSubscription = _webSocketService.messageStream?.listen(
+    _messageSubscription = _webSocketService.messageStream.listen(
       (message) {
         if (!_isDisposed) {
           _handleMessage(message);
@@ -142,26 +142,9 @@ class StackWebSocketService {
     }
   }
 
-  void _subscribe() {
-    if (_webSocketService.isConnected && !_isSubscribed) {
-      final success = _webSocketService.subscribe('stack_status', serverId, stackName);
-      if (success) {
-        _isSubscribed = true;
-      } else {
-      }
-    }
-  }
-
-  void _unsubscribe() {
-    if (_isSubscribed) {
-      _webSocketService.unsubscribe('stack_status', serverId, stackName);
-      _isSubscribed = false;
-    }
-  }
-
   void disconnect() {
     _refreshTimer?.cancel();
-    _unsubscribe();
+    _webSocketService.disconnect();
   }
 
   void dispose() {
@@ -169,6 +152,7 @@ class StackWebSocketService {
     disconnect();
     _messageSubscription?.cancel();
     _statusSubscription?.cancel();
+    _webSocketService.dispose();
     _statusController.close();
     _errorController.close();
     _refreshController.close();

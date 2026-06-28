@@ -10,17 +10,16 @@ import 'berth_api_provider.dart';
 class WebSocketService {
   final BerthApiProvider _berthApiProvider;
   WebSocketChannel? _channel;
-  StreamController<Map<String, dynamic>>? _messageController;
   Timer? _reconnectTimer;
-  Timer? _heartbeatTimer;
   bool _isConnecting = false;
   bool _shouldReconnect = true;
+  String? _endpoint;
   WebSocketConnectionStatus _status = WebSocketConnectionStatus.disconnected;
-  
-  final Set<String> _subscriptions = <String>{};
-  final int _reconnectInterval = 3000; 
-  final int _heartbeatInterval = 30000; 
-  
+
+  static const int _reconnectInterval = 3000;
+
+  final StreamController<Map<String, dynamic>> _messageController =
+      StreamController<Map<String, dynamic>>.broadcast();
   final StreamController<WebSocketConnectionStatus> _statusController =
       StreamController<WebSocketConnectionStatus>.broadcast();
 
@@ -29,7 +28,7 @@ class WebSocketService {
   WebSocketConnectionStatus get connectionStatus => _status;
   bool get isConnected => _status == WebSocketConnectionStatus.connected;
 
-  Stream<Map<String, dynamic>>? get messageStream => _messageController?.stream;
+  Stream<Map<String, dynamic>> get messageStream => _messageController.stream;
   Stream<WebSocketConnectionStatus> get connectionStatusStream => _statusController.stream;
 
   Future<bool> connect(String endpoint) async {
@@ -37,6 +36,7 @@ class WebSocketService {
       return isConnected;
     }
 
+    _endpoint = endpoint;
     _isConnecting = true;
     _setStatus(WebSocketConnectionStatus.connecting);
 
@@ -59,37 +59,24 @@ class WebSocketService {
         );
         _channel = IOWebSocketChannel(webSocket);
       } else {
-        _channel = IOWebSocketChannel.connect(
-          uri,
-          headers: headers,
-        );
+        _channel = IOWebSocketChannel.connect(uri, headers: headers);
       }
-
-      _messageController = StreamController<Map<String, dynamic>>.broadcast();
 
       await _channel!.ready;
       _setStatus(WebSocketConnectionStatus.connected);
       _isConnecting = false;
-      _lastEndpoint = endpoint;
 
-      
       _channel!.stream.listen(
         _handleMessage,
         onError: _handleError,
         onDone: _handleDisconnection,
       );
 
-      
-      _startHeartbeat();
-
-      
-      _resubscribe();
-
       return true;
     } catch (e) {
       _isConnecting = false;
       _setStatus(WebSocketConnectionStatus.error);
-      _scheduleReconnect(endpoint);
+      _scheduleReconnect();
       return false;
     }
   }
@@ -97,9 +84,11 @@ class WebSocketService {
   void _handleMessage(dynamic message) {
     try {
       final Map<String, dynamic> data = json.decode(message.toString());
-      _messageController?.add(data);
+      if (!_messageController.isClosed) {
+        _messageController.add(data);
+      }
     } catch (e) {
-      // Ignore
+      // Ignore malformed frames.
     }
   }
 
@@ -109,139 +98,42 @@ class WebSocketService {
 
   void _handleDisconnection() {
     _setStatus(WebSocketConnectionStatus.disconnected);
-    _stopHeartbeat();
-    
     if (_shouldReconnect) {
-      _scheduleReconnect(_lastEndpoint);
+      _scheduleReconnect();
     }
   }
 
-  String? _lastEndpoint;
-  
-  void _scheduleReconnect(String? endpoint) {
-    if (!_shouldReconnect || endpoint == null) {
+  void _scheduleReconnect() {
+    if (!_shouldReconnect || _endpoint == null) {
       return;
     }
-    
-    _lastEndpoint = endpoint;
     _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(Duration(milliseconds: _reconnectInterval), () {
+    _reconnectTimer = Timer(const Duration(milliseconds: _reconnectInterval), () {
       if (_shouldReconnect) {
-        connect(endpoint);
+        connect(_endpoint!);
       }
     });
   }
 
-  void _startHeartbeat() {
-    _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(
-      Duration(milliseconds: _heartbeatInterval), 
-      (timer) {
-        if (isConnected) {
-          if (!_sendMessage({'type': 'ping'})) {
-_handleDisconnection();
-          }
-        }
-      },
-    );
-  }
-
-  void _stopHeartbeat() {
-    _heartbeatTimer?.cancel();
-    _heartbeatTimer = null;
-  }
-
-  void _setStatus(WebSocketConnectionStatus status) {
-    if (_status != status) {
-      _status = status;
-      _statusController.add(status);
-    }
-  }
-
-  bool subscribe(String resource, int serverId, [String? stackName]) {    
-    if (!isConnected) {
-      return false;
-    }
-
-    final message = SubscribeMessage(
-      resource: resource,
-      serverId: serverId,
-      stackName: stackName,
-    );
-    
-    final subscriptionKey = _getSubscriptionKey(resource, serverId, stackName);
-    if (_sendMessage(message.toJson())) {
-      _subscriptions.add(subscriptionKey);
-      return true;
-    }
-    return false;
-  }
-
-  bool unsubscribe(String resource, int serverId, [String? stackName]) {
-    if (!isConnected) return false;
-
-    final message = UnsubscribeMessage(
-      resource: resource,
-      serverId: serverId,
-      stackName: stackName,
-    );
-
-    final subscriptionKey = _getSubscriptionKey(resource, serverId, stackName);
-    if (_sendMessage(message.toJson())) {
-      _subscriptions.remove(subscriptionKey);
-      return true;
-    }
-    return false;
-  }
-
-  String _getSubscriptionKey(String resource, int serverId, String? stackName) {
-    return stackName != null
-        ? '$resource:$serverId:$stackName'
-        : '$resource:$serverId';
-  }
-
-  void _resubscribe() {
-    final subscriptions = List<String>.from(_subscriptions);
-    _subscriptions.clear();
-    
-    for (final subscription in subscriptions) {
-      final parts = subscription.split(':');
-      if (parts.length >= 2) {
-        final resource = parts[0];
-        final serverId = int.tryParse(parts[1]);
-        final stackName = parts.length > 2 ? parts[2] : null;
-        
-        if (serverId != null) {
-          subscribe(resource, serverId, stackName);
-        }
+  void _setStatus(WebSocketConnectionStatus newStatus) {
+    if (_status != newStatus) {
+      _status = newStatus;
+      if (!_statusController.isClosed) {
+        _statusController.add(newStatus);
       }
-    }
-  }
-
-  bool _sendMessage(Map<String, dynamic> message) {
-    if (!isConnected || _channel == null) return false;
-
-    try {
-      _channel!.sink.add(json.encode(message));
-      return true;
-    } catch (e) {
-_setStatus(WebSocketConnectionStatus.error);
-      return false;
     }
   }
 
   void disconnect() {
     _shouldReconnect = false;
     _reconnectTimer?.cancel();
-    _stopHeartbeat();
     _channel?.sink.close(status.goingAway);
-    _messageController?.close();
-    _subscriptions.clear();
     _setStatus(WebSocketConnectionStatus.disconnected);
   }
 
   void dispose() {
     disconnect();
+    _messageController.close();
     _statusController.close();
   }
 }
