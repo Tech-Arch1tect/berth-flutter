@@ -67,7 +67,7 @@ class ComposeApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<RawComposeConfig?> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname,) async {
+  Future<ResponseRawComposeConfig?> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameComposeGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -76,7 +76,7 @@ class ComposeApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RawComposeConfig',) as RawComposeConfig;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseRawComposeConfig',) as ResponseRawComposeConfig;
     
     }
     return null;
@@ -139,7 +139,7 @@ class ComposeApi {
   ///
   /// * [UpdateComposeRequest] updateComposeRequest (required):
   ///   Changes to apply to the compose file
-  Future<UpdateComposeResponse?> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest,) async {
+  Future<ResponseUpdateComposeResponse?> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameComposePatchWithHttpInfo(serverid, stackname, updateComposeRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -148,7 +148,7 @@ class ComposeApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'UpdateComposeResponse',) as UpdateComposeResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseUpdateComposeResponse',) as ResponseUpdateComposeResponse;
     
     }
     return null;

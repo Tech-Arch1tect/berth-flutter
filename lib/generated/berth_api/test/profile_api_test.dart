@@ -19,9 +19,9 @@ void main() {
   group('tests for ProfileApi', () {
     // Get current user profile
     //
-    // Returns the profile information for the authenticated user including roles and TOTP status.
+    // Returns the authenticated user's profile: UserInfo (including roles and TOTP status) for JWT callers, or UserIdentity (id and username only) for API-key callers.
     //
-    //Future<GetProfileResponse> apiV1ProfileGet() async
+    //Future<ApiV1ProfileGet200Response> apiV1ProfileGet() async
     test('test apiV1ProfileGet', () async {
       // TODO
     });

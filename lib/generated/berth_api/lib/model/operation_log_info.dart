@@ -27,7 +27,6 @@ class OperationLogInfo {
     required this.operationId,
     this.options,
     this.partialDurationMs,
-    this.queuedAt,
     required this.server,
     required this.serverId,
     required this.serverName,
@@ -84,8 +83,6 @@ class OperationLogInfo {
   String? options;
 
   int? partialDurationMs;
-
-  DateTime? queuedAt;
 
   Server server;
 
@@ -157,7 +154,6 @@ class OperationLogInfo {
     other.operationId == operationId &&
     other.options == options &&
     other.partialDurationMs == partialDurationMs &&
-    other.queuedAt == queuedAt &&
     other.server == server &&
     other.serverId == serverId &&
     other.serverName == serverName &&
@@ -190,7 +186,6 @@ class OperationLogInfo {
     (operationId.hashCode) +
     (options == null ? 0 : options!.hashCode) +
     (partialDurationMs == null ? 0 : partialDurationMs!.hashCode) +
-    (queuedAt == null ? 0 : queuedAt!.hashCode) +
     (server.hashCode) +
     (serverId.hashCode) +
     (serverName.hashCode) +
@@ -207,7 +202,7 @@ class OperationLogInfo {
     (userName.hashCode);
 
   @override
-  String toString() => 'OperationLogInfo[command=$command, createdAt=$createdAt, deletedAt=$deletedAt, durationMs=$durationMs, endTime=$endTime, exitCode=$exitCode, formattedDate=$formattedDate, id=$id, isIncomplete=$isIncomplete, lastMessageAt=$lastMessageAt, messageCount=$messageCount, operationId=$operationId, options=$options, partialDurationMs=$partialDurationMs, queuedAt=$queuedAt, server=$server, serverId=$serverId, serverName=$serverName, services=$services, stackName=$stackName, startTime=$startTime, status=$status, success=$success, summary=$summary, triggerSource=$triggerSource, updatedAt=$updatedAt, user=$user, userId=$userId, userName=$userName]';
+  String toString() => 'OperationLogInfo[command=$command, createdAt=$createdAt, deletedAt=$deletedAt, durationMs=$durationMs, endTime=$endTime, exitCode=$exitCode, formattedDate=$formattedDate, id=$id, isIncomplete=$isIncomplete, lastMessageAt=$lastMessageAt, messageCount=$messageCount, operationId=$operationId, options=$options, partialDurationMs=$partialDurationMs, server=$server, serverId=$serverId, serverName=$serverName, services=$services, stackName=$stackName, startTime=$startTime, status=$status, success=$success, summary=$summary, triggerSource=$triggerSource, updatedAt=$updatedAt, user=$user, userId=$userId, userName=$userName]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -252,11 +247,6 @@ class OperationLogInfo {
       json[r'partial_duration_ms'] = this.partialDurationMs;
     } else {
       json[r'partial_duration_ms'] = null;
-    }
-    if (this.queuedAt != null) {
-      json[r'queued_at'] = this.queuedAt!.toUtc().toIso8601String();
-    } else {
-      json[r'queued_at'] = null;
     }
       json[r'server'] = this.server;
       json[r'server_id'] = this.serverId;
@@ -328,7 +318,6 @@ class OperationLogInfo {
         operationId: mapValueOfType<String>(json, r'operation_id')!,
         options: mapValueOfType<String>(json, r'options'),
         partialDurationMs: mapValueOfType<int>(json, r'partial_duration_ms'),
-        queuedAt: mapDateTime(json, r'queued_at', r''),
         server: Server.fromJson(json[r'server'])!,
         serverId: mapValueOfType<int>(json, r'server_id')!,
         serverName: mapValueOfType<String>(json, r'server_name')!,

@@ -60,7 +60,7 @@ class StacksApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<CanCreateStackResponse?> apiV1ServersServeridStacksCanCreateGet(int serverid,) async {
+  Future<ResponseCanCreateStackData?> apiV1ServersServeridStacksCanCreateGet(int serverid,) async {
     final response = await apiV1ServersServeridStacksCanCreateGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -69,7 +69,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CanCreateStackResponse',) as CanCreateStackResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseCanCreateStackData',) as ResponseCanCreateStackData;
     
     }
     return null;
@@ -119,7 +119,7 @@ class StacksApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<ListStacksResponse?> apiV1ServersServeridStacksGet(int serverid,) async {
+  Future<ResponseListStacksData?> apiV1ServersServeridStacksGet(int serverid,) async {
     final response = await apiV1ServersServeridStacksGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -128,7 +128,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListStacksResponse',) as ListStacksResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListStacksData',) as ResponseListStacksData;
     
     }
     return null;
@@ -184,7 +184,7 @@ class StacksApi {
   ///
   /// * [CreateStackRequest] createStackRequest (required):
   ///   Stack creation request
-  Future<CreateStackResponse?> apiV1ServersServeridStacksPost(int serverid, CreateStackRequest createStackRequest,) async {
+  Future<ResponseCreateStackData?> apiV1ServersServeridStacksPost(int serverid, CreateStackRequest createStackRequest,) async {
     final response = await apiV1ServersServeridStacksPostWithHttpInfo(serverid, createStackRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -193,145 +193,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateStackResponse',) as CreateStackResponse;
-    
-    }
-    return null;
-  }
-
-  /// Get compose configuration
-  ///
-  /// Returns the parsed Docker Compose configuration for a stack. Requires files.read permission.
-  ///
-  /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [int] serverid (required):
-  ///   Server ID
-  ///
-  /// * [String] stackname (required):
-  ///   Stack name
-  Future<Response> apiV1ServersServeridStacksStacknameComposeGetWithHttpInfo(int serverid, String stackname,) async {
-    // ignore: prefer_const_declarations
-    final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/compose'
-      .replaceAll('{serverid}', serverid.toString())
-      .replaceAll('{stackname}', stackname);
-
-    // ignore: prefer_final_locals
-    Object? postBody;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    const contentTypes = <String>[];
-
-
-    return apiClient.invokeAPI(
-      path,
-      'GET',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Get compose configuration
-  ///
-  /// Returns the parsed Docker Compose configuration for a stack. Requires files.read permission.
-  ///
-  /// Parameters:
-  ///
-  /// * [int] serverid (required):
-  ///   Server ID
-  ///
-  /// * [String] stackname (required):
-  ///   Stack name
-  Future<RawComposeConfig?> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname,) async {
-    final response = await apiV1ServersServeridStacksStacknameComposeGetWithHttpInfo(serverid, stackname,);
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RawComposeConfig',) as RawComposeConfig;
-    
-    }
-    return null;
-  }
-
-  /// Update compose configuration
-  ///
-  /// Updates the Docker Compose configuration with the specified changes. Supports preview mode to see changes without applying. Requires files.write permission.
-  ///
-  /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [int] serverid (required):
-  ///   Server ID
-  ///
-  /// * [String] stackname (required):
-  ///   Stack name
-  ///
-  /// * [UpdateComposeRequest] updateComposeRequest (required):
-  ///   Changes to apply to the compose file
-  Future<Response> apiV1ServersServeridStacksStacknameComposePatchWithHttpInfo(int serverid, String stackname, UpdateComposeRequest updateComposeRequest,) async {
-    // ignore: prefer_const_declarations
-    final path = r'/api/v1/servers/{serverid}/stacks/{stackname}/compose'
-      .replaceAll('{serverid}', serverid.toString())
-      .replaceAll('{stackname}', stackname);
-
-    // ignore: prefer_final_locals
-    Object? postBody = updateComposeRequest;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    const contentTypes = <String>['application/json'];
-
-
-    return apiClient.invokeAPI(
-      path,
-      'PATCH',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Update compose configuration
-  ///
-  /// Updates the Docker Compose configuration with the specified changes. Supports preview mode to see changes without applying. Requires files.write permission.
-  ///
-  /// Parameters:
-  ///
-  /// * [int] serverid (required):
-  ///   Server ID
-  ///
-  /// * [String] stackname (required):
-  ///   Stack name
-  ///
-  /// * [UpdateComposeRequest] updateComposeRequest (required):
-  ///   Changes to apply to the compose file
-  Future<UpdateComposeResponse?> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest,) async {
-    final response = await apiV1ServersServeridStacksStacknameComposePatchWithHttpInfo(serverid, stackname, updateComposeRequest,);
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'UpdateComposeResponse',) as UpdateComposeResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseCreateStackData',) as ResponseCreateStackData;
     
     }
     return null;
@@ -398,7 +260,7 @@ class StacksApi {
   ///
   /// * [String] unmask:
   ///   Set to true to unmask sensitive values
-  Future<StackEnvironmentResponse?> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String? unmask, }) async {
+  Future<ResponseStackEnvironmentData?> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String? unmask, }) async {
     final response = await apiV1ServersServeridStacksStacknameEnvironmentGetWithHttpInfo(serverid, stackname,  unmask: unmask, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -407,7 +269,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackEnvironmentResponse',) as StackEnvironmentResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackEnvironmentData',) as ResponseStackEnvironmentData;
     
     }
     return null;
@@ -464,7 +326,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackDetails?> apiV1ServersServeridStacksStacknameGet(int serverid, String stackname,) async {
+  Future<ResponseStackDetails?> apiV1ServersServeridStacksStacknameGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -473,7 +335,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackDetails',) as StackDetails;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackDetails',) as ResponseStackDetails;
     
     }
     return null;
@@ -530,7 +392,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackImagesResponse?> apiV1ServersServeridStacksStacknameImagesGet(int serverid, String stackname,) async {
+  Future<ResponseStackImagesData?> apiV1ServersServeridStacksStacknameImagesGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameImagesGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -539,7 +401,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackImagesResponse',) as StackImagesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackImagesData',) as ResponseStackImagesData;
     
     }
     return null;
@@ -596,7 +458,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackNetworksResponse?> apiV1ServersServeridStacksStacknameNetworksGet(int serverid, String stackname,) async {
+  Future<ResponseStackNetworksData?> apiV1ServersServeridStacksStacknameNetworksGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameNetworksGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -605,7 +467,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackNetworksResponse',) as StackNetworksResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackNetworksData',) as ResponseStackNetworksData;
     
     }
     return null;
@@ -662,7 +524,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackPermissionsResponse?> apiV1ServersServeridStacksStacknamePermissionsGet(int serverid, String stackname,) async {
+  Future<ResponseStackPermissionsData?> apiV1ServersServeridStacksStacknamePermissionsGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknamePermissionsGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -671,7 +533,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackPermissionsResponse',) as StackPermissionsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackPermissionsData',) as ResponseStackPermissionsData;
     
     }
     return null;
@@ -728,7 +590,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackStatsResponse?> apiV1ServersServeridStacksStacknameStatsGet(int serverid, String stackname,) async {
+  Future<ResponseStackStats?> apiV1ServersServeridStacksStacknameStatsGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameStatsGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -737,7 +599,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackStatsResponse',) as StackStatsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackStats',) as ResponseStackStats;
     
     }
     return null;
@@ -794,7 +656,7 @@ class StacksApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<StackVolumesResponse?> apiV1ServersServeridStacksStacknameVolumesGet(int serverid, String stackname,) async {
+  Future<ResponseStackVolumesData?> apiV1ServersServeridStacksStacknameVolumesGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameVolumesGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -803,7 +665,7 @@ class StacksApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StackVolumesResponse',) as StackVolumesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStackVolumesData',) as ResponseStackVolumesData;
     
     }
     return null;

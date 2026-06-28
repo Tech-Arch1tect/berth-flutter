@@ -86,11 +86,6 @@ void main() {
       // TODO
     });
 
-    // DateTime queuedAt
-    test('to test the property `queuedAt`', () async {
-      // TODO
-    });
-
     // Server server
     test('to test the property `server`', () async {
       // TODO

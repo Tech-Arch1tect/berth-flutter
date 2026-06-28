@@ -60,7 +60,7 @@ class RegistriesApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<ListCredentialsResponse?> apiV1ServersServeridRegistriesGet(int serverid,) async {
+  Future<ResponseListCredentialsData?> apiV1ServersServeridRegistriesGet(int serverid,) async {
     final response = await apiV1ServersServeridRegistriesGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -69,7 +69,7 @@ class RegistriesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListCredentialsResponse',) as ListCredentialsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListCredentialsData',) as ResponseListCredentialsData;
     
     }
     return null;
@@ -126,7 +126,7 @@ class RegistriesApi {
   ///
   /// * [int] id (required):
   ///   Credential ID
-  Future<DeleteCredentialResponse?> apiV1ServersServeridRegistriesIdDelete(int serverid, int id,) async {
+  Future<ResponseDeleteCredentialMessageData?> apiV1ServersServeridRegistriesIdDelete(int serverid, int id,) async {
     final response = await apiV1ServersServeridRegistriesIdDeleteWithHttpInfo(serverid, id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -135,7 +135,7 @@ class RegistriesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DeleteCredentialResponse',) as DeleteCredentialResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseDeleteCredentialMessageData',) as ResponseDeleteCredentialMessageData;
     
     }
     return null;
@@ -192,7 +192,7 @@ class RegistriesApi {
   ///
   /// * [int] id (required):
   ///   Credential ID
-  Future<GetCredentialResponse?> apiV1ServersServeridRegistriesIdGet(int serverid, int id,) async {
+  Future<ResponseGetCredentialData?> apiV1ServersServeridRegistriesIdGet(int serverid, int id,) async {
     final response = await apiV1ServersServeridRegistriesIdGetWithHttpInfo(serverid, id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -201,7 +201,7 @@ class RegistriesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetCredentialResponse',) as GetCredentialResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetCredentialData',) as ResponseGetCredentialData;
     
     }
     return null;
@@ -264,7 +264,7 @@ class RegistriesApi {
   ///
   /// * [UpdateCredentialRequest] updateCredentialRequest (required):
   ///   Updated registry credential details
-  Future<UpdateCredentialResponse?> apiV1ServersServeridRegistriesIdPut(int serverid, int id, UpdateCredentialRequest updateCredentialRequest,) async {
+  Future<ResponseGetCredentialData?> apiV1ServersServeridRegistriesIdPut(int serverid, int id, UpdateCredentialRequest updateCredentialRequest,) async {
     final response = await apiV1ServersServeridRegistriesIdPutWithHttpInfo(serverid, id, updateCredentialRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -273,7 +273,7 @@ class RegistriesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'UpdateCredentialResponse',) as UpdateCredentialResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetCredentialData',) as ResponseGetCredentialData;
     
     }
     return null;
@@ -329,7 +329,7 @@ class RegistriesApi {
   ///
   /// * [CreateCredentialRequest] createCredentialRequest (required):
   ///   Registry credential details
-  Future<CreateCredentialResponse?> apiV1ServersServeridRegistriesPost(int serverid, CreateCredentialRequest createCredentialRequest,) async {
+  Future<ResponseGetCredentialData?> apiV1ServersServeridRegistriesPost(int serverid, CreateCredentialRequest createCredentialRequest,) async {
     final response = await apiV1ServersServeridRegistriesPostWithHttpInfo(serverid, createCredentialRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -338,7 +338,7 @@ class RegistriesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateCredentialResponse',) as CreateCredentialResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetCredentialData',) as ResponseGetCredentialData;
     
     }
     return null;

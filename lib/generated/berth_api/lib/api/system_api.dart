@@ -49,7 +49,7 @@ class SystemApi {
   /// Get application version
   ///
   /// Returns the current version of the Berth application.
-  Future<GetVersionResponse?> apiV1VersionGet() async {
+  Future<ResponseVersionData?> apiV1VersionGet() async {
     final response = await apiV1VersionGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -58,7 +58,7 @@ class SystemApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetVersionResponse',) as GetVersionResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseVersionData',) as ResponseVersionData;
     
     }
     return null;

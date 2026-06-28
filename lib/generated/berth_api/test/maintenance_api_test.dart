@@ -21,7 +21,7 @@ void main() {
     //
     // Returns detailed Docker system information including disk usage, images, containers, volumes, networks, and build cache
     //
-    //Future<MaintenanceInfo> apiV1ServersServeridMaintenanceInfoGet(int serverid) async
+    //Future<ResponseMaintenanceInfo> apiV1ServersServeridMaintenanceInfoGet(int serverid) async
     test('test apiV1ServersServeridMaintenanceInfoGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns the user's read and write permissions for Docker maintenance operations on the server
     //
-    //Future<PermissionsResponse> apiV1ServersServeridMaintenancePermissionsGet(int serverid) async
+    //Future<ResponsePermissionsData> apiV1ServersServeridMaintenancePermissionsGet(int serverid) async
     test('test apiV1ServersServeridMaintenancePermissionsGet', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Removes unused Docker resources such as images, containers, volumes, networks, or build cache
     //
-    //Future<PruneResult> apiV1ServersServeridMaintenancePrunePost(int serverid, PruneRequest pruneRequest) async
+    //Future<ResponsePruneResult> apiV1ServersServeridMaintenancePrunePost(int serverid, PruneRequest pruneRequest) async
     test('test apiV1ServersServeridMaintenancePrunePost', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Deletes a specific Docker resource (image, container, volume, or network) by ID
     //
-    //Future<DeleteResult> apiV1ServersServeridMaintenanceResourceDelete(int serverid, DeleteRequest deleteRequest) async
+    //Future<ResponseDeleteResult> apiV1ServersServeridMaintenanceResourceDelete(int serverid, DeleteRequest deleteRequest) async
     test('test apiV1ServersServeridMaintenanceResourceDelete', () async {
       // TODO
     });

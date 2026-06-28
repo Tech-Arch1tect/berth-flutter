@@ -59,7 +59,7 @@ class TotpApi {
   ///
   /// * [TOTPDisableRequest] tOTPDisableRequest (required):
   ///   TOTP code and password
-  Future<TOTPMessageResponse?> apiV1TotpDisablePost(TOTPDisableRequest tOTPDisableRequest,) async {
+  Future<ResponseTOTPMessageData?> apiV1TotpDisablePost(TOTPDisableRequest tOTPDisableRequest,) async {
     final response = await apiV1TotpDisablePostWithHttpInfo(tOTPDisableRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -68,7 +68,7 @@ class TotpApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'TOTPMessageResponse',) as TOTPMessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseTOTPMessageData',) as ResponseTOTPMessageData;
     
     }
     return null;
@@ -117,7 +117,7 @@ class TotpApi {
   ///
   /// * [TOTPEnableRequest] tOTPEnableRequest (required):
   ///   TOTP verification code
-  Future<TOTPMessageResponse?> apiV1TotpEnablePost(TOTPEnableRequest tOTPEnableRequest,) async {
+  Future<ResponseTOTPMessageData?> apiV1TotpEnablePost(TOTPEnableRequest tOTPEnableRequest,) async {
     final response = await apiV1TotpEnablePostWithHttpInfo(tOTPEnableRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -126,7 +126,7 @@ class TotpApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'TOTPMessageResponse',) as TOTPMessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseTOTPMessageData',) as ResponseTOTPMessageData;
     
     }
     return null;
@@ -165,7 +165,7 @@ class TotpApi {
   /// Get TOTP setup information
   ///
   /// Returns the QR code URI and secret for setting up two-factor authentication. Only available if TOTP is not already enabled.
-  Future<TOTPSetupResponse?> apiV1TotpSetupGet() async {
+  Future<ResponseTOTPSetupData?> apiV1TotpSetupGet() async {
     final response = await apiV1TotpSetupGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -174,7 +174,7 @@ class TotpApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'TOTPSetupResponse',) as TOTPSetupResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseTOTPSetupData',) as ResponseTOTPSetupData;
     
     }
     return null;
@@ -213,7 +213,7 @@ class TotpApi {
   /// Get TOTP status
   ///
   /// Returns whether two-factor authentication is enabled for the authenticated user.
-  Future<TOTPStatusResponse?> apiV1TotpStatusGet() async {
+  Future<ResponseTOTPStatusData?> apiV1TotpStatusGet() async {
     final response = await apiV1TotpStatusGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -222,7 +222,7 @@ class TotpApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'TOTPStatusResponse',) as TOTPStatusResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseTOTPStatusData',) as ResponseTOTPStatusData;
     
     }
     return null;

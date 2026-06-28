@@ -14,6 +14,7 @@ class Stack {
   /// Returns a new [Stack] instance.
   Stack({
     required this.composeFile,
+    this.healthDetails,
     required this.isHealthy,
     required this.name,
     required this.path,
@@ -24,6 +25,8 @@ class Stack {
   });
 
   String composeFile;
+
+  StackHealthDetails? healthDetails;
 
   bool isHealthy;
 
@@ -43,6 +46,7 @@ class Stack {
   @override
   bool operator ==(Object other) => identical(this, other) || other is Stack &&
     other.composeFile == composeFile &&
+    other.healthDetails == healthDetails &&
     other.isHealthy == isHealthy &&
     other.name == name &&
     other.path == path &&
@@ -55,6 +59,7 @@ class Stack {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (composeFile.hashCode) +
+    (healthDetails == null ? 0 : healthDetails!.hashCode) +
     (isHealthy.hashCode) +
     (name.hashCode) +
     (path.hashCode) +
@@ -64,11 +69,16 @@ class Stack {
     (totalContainers.hashCode);
 
   @override
-  String toString() => 'Stack[composeFile=$composeFile, isHealthy=$isHealthy, name=$name, path=$path, runningContainers=$runningContainers, serverId=$serverId, serverName=$serverName, totalContainers=$totalContainers]';
+  String toString() => 'Stack[composeFile=$composeFile, healthDetails=$healthDetails, isHealthy=$isHealthy, name=$name, path=$path, runningContainers=$runningContainers, serverId=$serverId, serverName=$serverName, totalContainers=$totalContainers]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'compose_file'] = this.composeFile;
+    if (this.healthDetails != null) {
+      json[r'health_details'] = this.healthDetails;
+    } else {
+      json[r'health_details'] = null;
+    }
       json[r'is_healthy'] = this.isHealthy;
       json[r'name'] = this.name;
       json[r'path'] = this.path;
@@ -99,6 +109,7 @@ class Stack {
 
       return Stack(
         composeFile: mapValueOfType<String>(json, r'compose_file')!,
+        healthDetails: StackHealthDetails.fromJson(json[r'health_details']),
         isHealthy: mapValueOfType<bool>(json, r'is_healthy')!,
         name: mapValueOfType<String>(json, r'name')!,
         path: mapValueOfType<String>(json, r'path')!,

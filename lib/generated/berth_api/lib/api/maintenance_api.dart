@@ -60,7 +60,7 @@ class MaintenanceApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<MaintenanceInfo?> apiV1ServersServeridMaintenanceInfoGet(int serverid,) async {
+  Future<ResponseMaintenanceInfo?> apiV1ServersServeridMaintenanceInfoGet(int serverid,) async {
     final response = await apiV1ServersServeridMaintenanceInfoGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -69,7 +69,7 @@ class MaintenanceApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MaintenanceInfo',) as MaintenanceInfo;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMaintenanceInfo',) as ResponseMaintenanceInfo;
     
     }
     return null;
@@ -119,7 +119,7 @@ class MaintenanceApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<PermissionsResponse?> apiV1ServersServeridMaintenancePermissionsGet(int serverid,) async {
+  Future<ResponsePermissionsData?> apiV1ServersServeridMaintenancePermissionsGet(int serverid,) async {
     final response = await apiV1ServersServeridMaintenancePermissionsGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -128,7 +128,7 @@ class MaintenanceApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PermissionsResponse',) as PermissionsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponsePermissionsData',) as ResponsePermissionsData;
     
     }
     return null;
@@ -184,7 +184,7 @@ class MaintenanceApi {
   ///
   /// * [PruneRequest] pruneRequest (required):
   ///   Prune request specifying the resource type to prune
-  Future<PruneResult?> apiV1ServersServeridMaintenancePrunePost(int serverid, PruneRequest pruneRequest,) async {
+  Future<ResponsePruneResult?> apiV1ServersServeridMaintenancePrunePost(int serverid, PruneRequest pruneRequest,) async {
     final response = await apiV1ServersServeridMaintenancePrunePostWithHttpInfo(serverid, pruneRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -193,7 +193,7 @@ class MaintenanceApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PruneResult',) as PruneResult;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponsePruneResult',) as ResponsePruneResult;
     
     }
     return null;
@@ -249,7 +249,7 @@ class MaintenanceApi {
   ///
   /// * [DeleteRequest] deleteRequest (required):
   ///   Delete request specifying the resource type and ID
-  Future<DeleteResult?> apiV1ServersServeridMaintenanceResourceDelete(int serverid, DeleteRequest deleteRequest,) async {
+  Future<ResponseDeleteResult?> apiV1ServersServeridMaintenanceResourceDelete(int serverid, DeleteRequest deleteRequest,) async {
     final response = await apiV1ServersServeridMaintenanceResourceDeleteWithHttpInfo(serverid, deleteRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -258,7 +258,7 @@ class MaintenanceApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DeleteResult',) as DeleteResult;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseDeleteResult',) as ResponseDeleteResult;
     
     }
     return null;

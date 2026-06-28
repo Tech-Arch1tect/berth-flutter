@@ -49,7 +49,7 @@ class ImageUpdatesApi {
   /// List available image updates
   ///
   /// Returns all container images with available updates across servers the user can access
-  Future<ImageUpdatesResponse?> apiV1ImageUpdatesGet() async {
+  Future<ResponseImageUpdatesData?> apiV1ImageUpdatesGet() async {
     final response = await apiV1ImageUpdatesGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -58,7 +58,7 @@ class ImageUpdatesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ImageUpdatesResponse',) as ImageUpdatesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseImageUpdatesData',) as ResponseImageUpdatesData;
     
     }
     return null;
@@ -108,7 +108,7 @@ class ImageUpdatesApi {
   ///
   /// * [int] serverid (required):
   ///   Server ID
-  Future<ImageUpdatesResponse?> apiV1ServersServeridImageUpdatesGet(int serverid,) async {
+  Future<ResponseImageUpdatesData?> apiV1ServersServeridImageUpdatesGet(int serverid,) async {
     final response = await apiV1ServersServeridImageUpdatesGetWithHttpInfo(serverid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -117,7 +117,7 @@ class ImageUpdatesApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ImageUpdatesResponse',) as ImageUpdatesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseImageUpdatesData',) as ResponseImageUpdatesData;
     
     }
     return null;

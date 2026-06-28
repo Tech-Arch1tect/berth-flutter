@@ -21,7 +21,7 @@ void main() {
     //
     // Returns the parsed Docker Compose configuration for a stack. Requires files.read permission.
     //
-    //Future<RawComposeConfig> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname) async
+    //Future<ResponseRawComposeConfig> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameComposeGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Updates the Docker Compose configuration with the specified changes. Supports preview mode to see changes without applying. Requires files.write permission.
     //
-    //Future<UpdateComposeResponse> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest) async
+    //Future<ResponseUpdateComposeResponse> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest) async
     test('test apiV1ServersServeridStacksStacknameComposePatch', () async {
       // TODO
     });

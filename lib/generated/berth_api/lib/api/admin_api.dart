@@ -133,7 +133,7 @@ class AdminApi {
   /// * [MultipartFile] backupFile (required):
   ///
   /// * [String] password (required):
-  Future<ImportResponse?> apiV1AdminMigrationImportPost(MultipartFile backupFile, String password,) async {
+  Future<ResponseImportData?> apiV1AdminMigrationImportPost(MultipartFile backupFile, String password,) async {
     final response = await apiV1AdminMigrationImportPostWithHttpInfo(backupFile, password,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -142,7 +142,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ImportResponse',) as ImportResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseImportData',) as ResponseImportData;
     
     }
     return null;
@@ -258,7 +258,7 @@ class AdminApi {
   ///
   /// * [int] daysBack:
   ///   Only return logs from the last N days
-  Future<PaginatedOperationLogsResponse?> apiV1AdminOperationLogsGet({ int? page, int? pageSize, String? search, String? serverId, String? stackName, String? command, String? status, int? daysBack, }) async {
+  Future<ResponseOperationLogInfo?> apiV1AdminOperationLogsGet({ int? page, int? pageSize, String? search, String? serverId, String? stackName, String? command, String? status, int? daysBack, }) async {
     final response = await apiV1AdminOperationLogsGetWithHttpInfo( page: page, pageSize: pageSize, search: search, serverId: serverId, stackName: stackName, command: command, status: status, daysBack: daysBack, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -267,7 +267,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'PaginatedOperationLogsResponse',) as PaginatedOperationLogsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseOperationLogInfo',) as ResponseOperationLogInfo;
     
     }
     return null;
@@ -317,7 +317,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Operation log ID
-  Future<OperationLogDetailResponse?> apiV1AdminOperationLogsIdGet(int id,) async {
+  Future<ResponseOperationLogDetailData?> apiV1AdminOperationLogsIdGet(int id,) async {
     final response = await apiV1AdminOperationLogsIdGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -326,7 +326,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogDetailResponse',) as OperationLogDetailResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseOperationLogDetailData',) as ResponseOperationLogDetailData;
     
     }
     return null;
@@ -365,7 +365,7 @@ class AdminApi {
   /// Get operation logs statistics
   ///
   /// Returns aggregated statistics for all operation logs. Requires admin permissions.
-  Future<OperationLogStatsResponse?> apiV1AdminOperationLogsStatsGet() async {
+  Future<ResponseOperationLogStatsData?> apiV1AdminOperationLogsStatsGet() async {
     final response = await apiV1AdminOperationLogsStatsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -374,7 +374,69 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'OperationLogStatsResponse',) as OperationLogStatsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseOperationLogStatsData',) as ResponseOperationLogStatsData;
+    
+    }
+    return null;
+  }
+
+  /// List all permissions
+  ///
+  /// Returns list of all permissions. Use ?type=role to filter out API-key-only permissions. Requires admin access.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] type:
+  ///   Filter type - use 'role' to exclude API-key-only permissions
+  Future<Response> apiV1AdminPermissionsGetWithHttpInfo({ String? type, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/v1/admin/permissions';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (type != null) {
+      queryParams.addAll(_queryParams('', 'type', type));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List all permissions
+  ///
+  /// Returns list of all permissions. Use ?type=role to filter out API-key-only permissions. Requires admin access.
+  ///
+  /// Parameters:
+  ///
+  /// * [String] type:
+  ///   Filter type - use 'role' to exclude API-key-only permissions
+  Future<ResponseListPermissionsData?> apiV1AdminPermissionsGet({ String? type, }) async {
+    final response = await apiV1AdminPermissionsGetWithHttpInfo( type: type, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListPermissionsData',) as ResponseListPermissionsData;
     
     }
     return null;
@@ -413,7 +475,7 @@ class AdminApi {
   /// List all roles
   ///
   /// List all roles. Requires admin permissions.
-  Future<ListRolesResponse?> apiV1AdminRolesGet() async {
+  Future<ResponseListRolesData?> apiV1AdminRolesGet() async {
     final response = await apiV1AdminRolesGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -422,7 +484,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListRolesResponse',) as ListRolesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListRolesData',) as ResponseListRolesData;
     
     }
     return null;
@@ -472,7 +534,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Role ID
-  Future<DeleteRoleResponse?> apiV1AdminRolesIdDelete(int id,) async {
+  Future<ResponseMessageData?> apiV1AdminRolesIdDelete(int id,) async {
     final response = await apiV1AdminRolesIdDeleteWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -481,7 +543,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DeleteRoleResponse',) as DeleteRoleResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData',) as ResponseMessageData;
     
     }
     return null;
@@ -537,7 +599,7 @@ class AdminApi {
   ///
   /// * [UpdateRoleRequest] updateRoleRequest (required):
   ///   Role details
-  Future<UpdateRoleResponse?> apiV1AdminRolesIdPut(int id, UpdateRoleRequest updateRoleRequest,) async {
+  Future<ResponseRoleWithPermissions?> apiV1AdminRolesIdPut(int id, UpdateRoleRequest updateRoleRequest,) async {
     final response = await apiV1AdminRolesIdPutWithHttpInfo(id, updateRoleRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -546,7 +608,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'UpdateRoleResponse',) as UpdateRoleResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseRoleWithPermissions',) as ResponseRoleWithPermissions;
     
     }
     return null;
@@ -595,7 +657,7 @@ class AdminApi {
   ///
   /// * [CreateRoleRequest] createRoleRequest (required):
   ///   Role details
-  Future<CreateRoleResponse?> apiV1AdminRolesPost(CreateRoleRequest createRoleRequest,) async {
+  Future<ResponseRoleWithPermissions?> apiV1AdminRolesPost(CreateRoleRequest createRoleRequest,) async {
     final response = await apiV1AdminRolesPostWithHttpInfo(createRoleRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -604,7 +666,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateRoleResponse',) as CreateRoleResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseRoleWithPermissions',) as ResponseRoleWithPermissions;
     
     }
     return null;
@@ -654,7 +716,7 @@ class AdminApi {
   ///
   /// * [int] roleId (required):
   ///   Role ID
-  Future<ListRoleStackPermissionsResponse?> apiV1AdminRolesRoleIdStackPermissionsGet(int roleId,) async {
+  Future<ResponseListRoleStackPermissionsData?> apiV1AdminRolesRoleIdStackPermissionsGet(int roleId,) async {
     final response = await apiV1AdminRolesRoleIdStackPermissionsGetWithHttpInfo(roleId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -663,7 +725,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListRoleStackPermissionsResponse',) as ListRoleStackPermissionsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListRoleStackPermissionsData',) as ResponseListRoleStackPermissionsData;
     
     }
     return null;
@@ -720,7 +782,7 @@ class AdminApi {
   ///
   /// * [int] permissionId (required):
   ///   Permission rule ID
-  Future<DeleteStackPermissionResponse?> apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(int roleId, int permissionId,) async {
+  Future<ResponseMessageData?> apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(int roleId, int permissionId,) async {
     final response = await apiV1AdminRolesRoleIdStackPermissionsPermissionIdDeleteWithHttpInfo(roleId, permissionId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -729,7 +791,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DeleteStackPermissionResponse',) as DeleteStackPermissionResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData',) as ResponseMessageData;
     
     }
     return null;
@@ -785,7 +847,7 @@ class AdminApi {
   ///
   /// * [CreateStackPermissionRequest] createStackPermissionRequest (required):
   ///   Permission rule details
-  Future<CreateStackPermissionResponse?> apiV1AdminRolesRoleIdStackPermissionsPost(int roleId, CreateStackPermissionRequest createStackPermissionRequest,) async {
+  Future<ResponseMessageData?> apiV1AdminRolesRoleIdStackPermissionsPost(int roleId, CreateStackPermissionRequest createStackPermissionRequest,) async {
     final response = await apiV1AdminRolesRoleIdStackPermissionsPostWithHttpInfo(roleId, createStackPermissionRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -794,7 +856,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateStackPermissionResponse',) as CreateStackPermissionResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData',) as ResponseMessageData;
     
     }
     return null;
@@ -808,11 +870,11 @@ class AdminApi {
   ///
   /// Parameters:
   ///
+  /// * [int] perPage (required):
+  ///   Number of items per page
+  ///
   /// * [int] page:
   ///   Page number
-  ///
-  /// * [int] perPage:
-  ///   Number of items per page
   ///
   /// * [String] eventType:
   ///   Filter by event type
@@ -837,7 +899,7 @@ class AdminApi {
   ///
   /// * [String] search:
   ///   Search in actor username, target name, or event type
-  Future<Response> apiV1AdminSecurityAuditLogsGetWithHttpInfo({ int? page, int? perPage, String? eventType, String? eventCategory, String? severity, String? actorUserId, String? success, String? startDate, String? endDate, String? search, }) async {
+  Future<Response> apiV1AdminSecurityAuditLogsGetWithHttpInfo(int perPage, { int? page, String? eventType, String? eventCategory, String? severity, String? actorUserId, String? success, String? startDate, String? endDate, String? search, }) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/admin/security-audit-logs';
 
@@ -851,9 +913,7 @@ class AdminApi {
     if (page != null) {
       queryParams.addAll(_queryParams('', 'page', page));
     }
-    if (perPage != null) {
       queryParams.addAll(_queryParams('', 'per_page', perPage));
-    }
     if (eventType != null) {
       queryParams.addAll(_queryParams('', 'event_type', eventType));
     }
@@ -899,11 +959,11 @@ class AdminApi {
   ///
   /// Parameters:
   ///
+  /// * [int] perPage (required):
+  ///   Number of items per page
+  ///
   /// * [int] page:
   ///   Page number
-  ///
-  /// * [int] perPage:
-  ///   Number of items per page
   ///
   /// * [String] eventType:
   ///   Filter by event type
@@ -928,8 +988,8 @@ class AdminApi {
   ///
   /// * [String] search:
   ///   Search in actor username, target name, or event type
-  Future<ListLogsAPIResponse?> apiV1AdminSecurityAuditLogsGet({ int? page, int? perPage, String? eventType, String? eventCategory, String? severity, String? actorUserId, String? success, String? startDate, String? endDate, String? search, }) async {
-    final response = await apiV1AdminSecurityAuditLogsGetWithHttpInfo( page: page, perPage: perPage, eventType: eventType, eventCategory: eventCategory, severity: severity, actorUserId: actorUserId, success: success, startDate: startDate, endDate: endDate, search: search, );
+  Future<ResponseSecurityAuditLogInfo?> apiV1AdminSecurityAuditLogsGet(int perPage, { int? page, String? eventType, String? eventCategory, String? severity, String? actorUserId, String? success, String? startDate, String? endDate, String? search, }) async {
+    final response = await apiV1AdminSecurityAuditLogsGetWithHttpInfo(perPage,  page: page, eventType: eventType, eventCategory: eventCategory, severity: severity, actorUserId: actorUserId, success: success, startDate: startDate, endDate: endDate, search: search, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -937,7 +997,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListLogsAPIResponse',) as ListLogsAPIResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseSecurityAuditLogInfo',) as ResponseSecurityAuditLogInfo;
     
     }
     return null;
@@ -987,7 +1047,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Security audit log ID
-  Future<GetLogAPIResponse?> apiV1AdminSecurityAuditLogsIdGet(int id,) async {
+  Future<ResponseSecurityAuditLogInfo2?> apiV1AdminSecurityAuditLogsIdGet(int id,) async {
     final response = await apiV1AdminSecurityAuditLogsIdGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -996,7 +1056,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLogAPIResponse',) as GetLogAPIResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseSecurityAuditLogInfo2',) as ResponseSecurityAuditLogInfo2;
     
     }
     return null;
@@ -1035,7 +1095,7 @@ class AdminApi {
   /// Get security audit statistics
   ///
   /// Returns aggregated statistics for security audit logs. Requires admin permissions.
-  Future<GetStatsAPIResponse?> apiV1AdminSecurityAuditLogsStatsGet() async {
+  Future<ResponseStatsResponseData?> apiV1AdminSecurityAuditLogsStatsGet() async {
     final response = await apiV1AdminSecurityAuditLogsStatsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1044,7 +1104,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetStatsAPIResponse',) as GetStatsAPIResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStatsResponseData',) as ResponseStatsResponseData;
     
     }
     return null;
@@ -1083,7 +1143,7 @@ class AdminApi {
   /// List all servers
   ///
   /// Returns list of all servers. Requires admin access.
-  Future<AdminListServersResponse?> apiV1AdminServersGet() async {
+  Future<ResponseAdminListServersData?> apiV1AdminServersGet() async {
     final response = await apiV1AdminServersGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1092,7 +1152,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AdminListServersResponse',) as AdminListServersResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAdminListServersData',) as ResponseAdminListServersData;
     
     }
     return null;
@@ -1142,7 +1202,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Server ID
-  Future<AdminDeleteServerResponse?> apiV1AdminServersIdDelete(int id,) async {
+  Future<ResponseMessageData2?> apiV1AdminServersIdDelete(int id,) async {
     final response = await apiV1AdminServersIdDeleteWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1151,7 +1211,66 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AdminDeleteServerResponse',) as AdminDeleteServerResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData2',) as ResponseMessageData2;
+    
+    }
+    return null;
+  }
+
+  /// Get a server
+  ///
+  /// Returns a single server by ID. Requires admin access.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] id (required):
+  ///   Server ID
+  Future<Response> apiV1AdminServersIdGetWithHttpInfo(int id,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/v1/admin/servers/{id}'
+      .replaceAll('{id}', id.toString());
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get a server
+  ///
+  /// Returns a single server by ID. Requires admin access.
+  ///
+  /// Parameters:
+  ///
+  /// * [int] id (required):
+  ///   Server ID
+  Future<ResponseGetServerData?> apiV1AdminServersIdGet(int id,) async {
+    final response = await apiV1AdminServersIdGetWithHttpInfo(id,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetServerData',) as ResponseGetServerData;
     
     }
     return null;
@@ -1207,7 +1326,7 @@ class AdminApi {
   ///
   /// * [ServerUpdateRequest] serverUpdateRequest (required):
   ///   Server details
-  Future<AdminUpdateServerResponse?> apiV1AdminServersIdPut(int id, ServerUpdateRequest serverUpdateRequest,) async {
+  Future<ResponseAdminUpdateServerData?> apiV1AdminServersIdPut(int id, ServerUpdateRequest serverUpdateRequest,) async {
     final response = await apiV1AdminServersIdPutWithHttpInfo(id, serverUpdateRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1216,7 +1335,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AdminUpdateServerResponse',) as AdminUpdateServerResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAdminUpdateServerData',) as ResponseAdminUpdateServerData;
     
     }
     return null;
@@ -1266,7 +1385,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   Server ID
-  Future<AdminTestConnectionResponse?> apiV1AdminServersIdTestPost(int id,) async {
+  Future<ResponseMessageData2?> apiV1AdminServersIdTestPost(int id,) async {
     final response = await apiV1AdminServersIdTestPostWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1275,7 +1394,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AdminTestConnectionResponse',) as AdminTestConnectionResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData2',) as ResponseMessageData2;
     
     }
     return null;
@@ -1324,7 +1443,7 @@ class AdminApi {
   ///
   /// * [ServerCreateRequest] serverCreateRequest (required):
   ///   Server details
-  Future<AdminCreateServerResponse?> apiV1AdminServersPost(ServerCreateRequest serverCreateRequest,) async {
+  Future<ResponseAdminCreateServerData?> apiV1AdminServersPost(ServerCreateRequest serverCreateRequest,) async {
     final response = await apiV1AdminServersPostWithHttpInfo(serverCreateRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1333,7 +1452,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AdminCreateServerResponse',) as AdminCreateServerResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAdminCreateServerData',) as ResponseAdminCreateServerData;
     
     }
     return null;
@@ -1382,7 +1501,7 @@ class AdminApi {
   ///
   /// * [AssignRoleRequest] assignRoleRequest (required):
   ///   User and role IDs
-  Future<AssignRoleResponse?> apiV1AdminUsersAssignRolePost(AssignRoleRequest assignRoleRequest,) async {
+  Future<ResponseMessageData?> apiV1AdminUsersAssignRolePost(AssignRoleRequest assignRoleRequest,) async {
     final response = await apiV1AdminUsersAssignRolePostWithHttpInfo(assignRoleRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1391,7 +1510,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AssignRoleResponse',) as AssignRoleResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData',) as ResponseMessageData;
     
     }
     return null;
@@ -1430,7 +1549,7 @@ class AdminApi {
   /// List all users
   ///
   /// List all users. Requires admin permissions.
-  Future<ListUsersResponse?> apiV1AdminUsersGet() async {
+  Future<ResponseListUsersData?> apiV1AdminUsersGet() async {
     final response = await apiV1AdminUsersGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1439,7 +1558,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListUsersResponse',) as ListUsersResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseListUsersData',) as ResponseListUsersData;
     
     }
     return null;
@@ -1489,7 +1608,7 @@ class AdminApi {
   ///
   /// * [int] id (required):
   ///   User ID
-  Future<GetUserRolesResponse?> apiV1AdminUsersIdRolesGet(int id,) async {
+  Future<ResponseGetUserRolesData?> apiV1AdminUsersIdRolesGet(int id,) async {
     final response = await apiV1AdminUsersIdRolesGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1498,7 +1617,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetUserRolesResponse',) as GetUserRolesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetUserRolesData',) as ResponseGetUserRolesData;
     
     }
     return null;
@@ -1547,7 +1666,7 @@ class AdminApi {
   ///
   /// * [CreateUserRequest] createUserRequest (required):
   ///   User details
-  Future<CreateUserResponse?> apiV1AdminUsersPost(CreateUserRequest createUserRequest,) async {
+  Future<ResponseUserInfo?> apiV1AdminUsersPost(CreateUserRequest createUserRequest,) async {
     final response = await apiV1AdminUsersPostWithHttpInfo(createUserRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1556,7 +1675,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateUserResponse',) as CreateUserResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseUserInfo',) as ResponseUserInfo;
     
     }
     return null;
@@ -1605,7 +1724,7 @@ class AdminApi {
   ///
   /// * [RevokeRoleRequest] revokeRoleRequest (required):
   ///   User and role IDs
-  Future<RevokeRoleResponse?> apiV1AdminUsersRevokeRolePost(RevokeRoleRequest revokeRoleRequest,) async {
+  Future<ResponseMessageData?> apiV1AdminUsersRevokeRolePost(RevokeRoleRequest revokeRoleRequest,) async {
     final response = await apiV1AdminUsersRevokeRolePostWithHttpInfo(revokeRoleRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1614,7 +1733,7 @@ class AdminApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RevokeRoleResponse',) as RevokeRoleResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData',) as ResponseMessageData;
     
     }
     return null;

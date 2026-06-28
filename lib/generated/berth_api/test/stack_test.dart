@@ -21,6 +21,11 @@ void main() {
       // TODO
     });
 
+    // StackHealthDetails healthDetails
+    test('to test the property `healthDetails`', () async {
+      // TODO
+    });
+
     // bool isHealthy
     test('to test the property `isHealthy`', () async {
       // TODO

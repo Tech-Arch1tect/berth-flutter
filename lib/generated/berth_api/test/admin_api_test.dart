@@ -30,7 +30,7 @@ void main() {
     //
     // Import configuration data from an encrypted backup file. WARNING: This will completely replace all existing data. Requires admin.system.import permission.
     //
-    //Future<ImportResponse> apiV1AdminMigrationImportPost(MultipartFile backupFile, String password) async
+    //Future<ResponseImportData> apiV1AdminMigrationImportPost(MultipartFile backupFile, String password) async
     test('test apiV1AdminMigrationImportPost', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Returns paginated list of all operation logs. Requires admin permissions.
     //
-    //Future<PaginatedOperationLogsResponse> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
+    //Future<ResponseOperationLogInfo> apiV1AdminOperationLogsGet({ int page, int pageSize, String search, String serverId, String stackName, String command, String status, int daysBack }) async
     test('test apiV1AdminOperationLogsGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns detailed information about a specific operation log including all messages. Requires admin permissions.
     //
-    //Future<OperationLogDetailResponse> apiV1AdminOperationLogsIdGet(int id) async
+    //Future<ResponseOperationLogDetailData> apiV1AdminOperationLogsIdGet(int id) async
     test('test apiV1AdminOperationLogsIdGet', () async {
       // TODO
     });
@@ -57,8 +57,17 @@ void main() {
     //
     // Returns aggregated statistics for all operation logs. Requires admin permissions.
     //
-    //Future<OperationLogStatsResponse> apiV1AdminOperationLogsStatsGet() async
+    //Future<ResponseOperationLogStatsData> apiV1AdminOperationLogsStatsGet() async
     test('test apiV1AdminOperationLogsStatsGet', () async {
+      // TODO
+    });
+
+    // List all permissions
+    //
+    // Returns list of all permissions. Use ?type=role to filter out API-key-only permissions. Requires admin access.
+    //
+    //Future<ResponseListPermissionsData> apiV1AdminPermissionsGet({ String type }) async
+    test('test apiV1AdminPermissionsGet', () async {
       // TODO
     });
 
@@ -66,7 +75,7 @@ void main() {
     //
     // List all roles. Requires admin permissions.
     //
-    //Future<ListRolesResponse> apiV1AdminRolesGet() async
+    //Future<ResponseListRolesData> apiV1AdminRolesGet() async
     test('test apiV1AdminRolesGet', () async {
       // TODO
     });
@@ -75,7 +84,7 @@ void main() {
     //
     // Deletes a role. Requires admin permissions.
     //
-    //Future<DeleteRoleResponse> apiV1AdminRolesIdDelete(int id) async
+    //Future<ResponseMessageData> apiV1AdminRolesIdDelete(int id) async
     test('test apiV1AdminRolesIdDelete', () async {
       // TODO
     });
@@ -84,7 +93,7 @@ void main() {
     //
     // Updates an existing role. Requires admin permissions.
     //
-    //Future<UpdateRoleResponse> apiV1AdminRolesIdPut(int id, UpdateRoleRequest updateRoleRequest) async
+    //Future<ResponseRoleWithPermissions> apiV1AdminRolesIdPut(int id, UpdateRoleRequest updateRoleRequest) async
     test('test apiV1AdminRolesIdPut', () async {
       // TODO
     });
@@ -93,7 +102,7 @@ void main() {
     //
     // Creates a new role. Requires admin permissions.
     //
-    //Future<CreateRoleResponse> apiV1AdminRolesPost(CreateRoleRequest createRoleRequest) async
+    //Future<ResponseRoleWithPermissions> apiV1AdminRolesPost(CreateRoleRequest createRoleRequest) async
     test('test apiV1AdminRolesPost', () async {
       // TODO
     });
@@ -102,7 +111,7 @@ void main() {
     //
     // Returns the role details, available servers, permissions, and current permission rules. Requires admin permissions.
     //
-    //Future<ListRoleStackPermissionsResponse> apiV1AdminRolesRoleIdStackPermissionsGet(int roleId) async
+    //Future<ResponseListRoleStackPermissionsData> apiV1AdminRolesRoleIdStackPermissionsGet(int roleId) async
     test('test apiV1AdminRolesRoleIdStackPermissionsGet', () async {
       // TODO
     });
@@ -111,7 +120,7 @@ void main() {
     //
     // Deletes a permission rule from a role. Requires admin permissions.
     //
-    //Future<DeleteStackPermissionResponse> apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(int roleId, int permissionId) async
+    //Future<ResponseMessageData> apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete(int roleId, int permissionId) async
     test('test apiV1AdminRolesRoleIdStackPermissionsPermissionIdDelete', () async {
       // TODO
     });
@@ -120,7 +129,7 @@ void main() {
     //
     // Creates a new permission rule for a role on a server with a stack pattern. Requires admin permissions.
     //
-    //Future<CreateStackPermissionResponse> apiV1AdminRolesRoleIdStackPermissionsPost(int roleId, CreateStackPermissionRequest createStackPermissionRequest) async
+    //Future<ResponseMessageData> apiV1AdminRolesRoleIdStackPermissionsPost(int roleId, CreateStackPermissionRequest createStackPermissionRequest) async
     test('test apiV1AdminRolesRoleIdStackPermissionsPost', () async {
       // TODO
     });
@@ -129,7 +138,7 @@ void main() {
     //
     // Returns paginated list of security audit logs. Requires admin permissions.
     //
-    //Future<ListLogsAPIResponse> apiV1AdminSecurityAuditLogsGet({ int page, int perPage, String eventType, String eventCategory, String severity, String actorUserId, String success, String startDate, String endDate, String search }) async
+    //Future<ResponseSecurityAuditLogInfo> apiV1AdminSecurityAuditLogsGet(int perPage, { int page, String eventType, String eventCategory, String severity, String actorUserId, String success, String startDate, String endDate, String search }) async
     test('test apiV1AdminSecurityAuditLogsGet', () async {
       // TODO
     });
@@ -138,7 +147,7 @@ void main() {
     //
     // Returns detailed information about a specific security audit log. Requires admin permissions.
     //
-    //Future<GetLogAPIResponse> apiV1AdminSecurityAuditLogsIdGet(int id) async
+    //Future<ResponseSecurityAuditLogInfo2> apiV1AdminSecurityAuditLogsIdGet(int id) async
     test('test apiV1AdminSecurityAuditLogsIdGet', () async {
       // TODO
     });
@@ -147,7 +156,7 @@ void main() {
     //
     // Returns aggregated statistics for security audit logs. Requires admin permissions.
     //
-    //Future<GetStatsAPIResponse> apiV1AdminSecurityAuditLogsStatsGet() async
+    //Future<ResponseStatsResponseData> apiV1AdminSecurityAuditLogsStatsGet() async
     test('test apiV1AdminSecurityAuditLogsStatsGet', () async {
       // TODO
     });
@@ -156,7 +165,7 @@ void main() {
     //
     // Returns list of all servers. Requires admin access.
     //
-    //Future<AdminListServersResponse> apiV1AdminServersGet() async
+    //Future<ResponseAdminListServersData> apiV1AdminServersGet() async
     test('test apiV1AdminServersGet', () async {
       // TODO
     });
@@ -165,8 +174,17 @@ void main() {
     //
     // Delete a server connection. Requires admin access.
     //
-    //Future<AdminDeleteServerResponse> apiV1AdminServersIdDelete(int id) async
+    //Future<ResponseMessageData2> apiV1AdminServersIdDelete(int id) async
     test('test apiV1AdminServersIdDelete', () async {
+      // TODO
+    });
+
+    // Get a server
+    //
+    // Returns a single server by ID. Requires admin access.
+    //
+    //Future<ResponseGetServerData> apiV1AdminServersIdGet(int id) async
+    test('test apiV1AdminServersIdGet', () async {
       // TODO
     });
 
@@ -174,7 +192,7 @@ void main() {
     //
     // Update an existing server connection. Requires admin access.
     //
-    //Future<AdminUpdateServerResponse> apiV1AdminServersIdPut(int id, ServerUpdateRequest serverUpdateRequest) async
+    //Future<ResponseAdminUpdateServerData> apiV1AdminServersIdPut(int id, ServerUpdateRequest serverUpdateRequest) async
     test('test apiV1AdminServersIdPut', () async {
       // TODO
     });
@@ -183,7 +201,7 @@ void main() {
     //
     // Test the connection to a server. Requires admin access.
     //
-    //Future<AdminTestConnectionResponse> apiV1AdminServersIdTestPost(int id) async
+    //Future<ResponseMessageData2> apiV1AdminServersIdTestPost(int id) async
     test('test apiV1AdminServersIdTestPost', () async {
       // TODO
     });
@@ -192,7 +210,7 @@ void main() {
     //
     // Create a new server connection. Requires admin access.
     //
-    //Future<AdminCreateServerResponse> apiV1AdminServersPost(ServerCreateRequest serverCreateRequest) async
+    //Future<ResponseAdminCreateServerData> apiV1AdminServersPost(ServerCreateRequest serverCreateRequest) async
     test('test apiV1AdminServersPost', () async {
       // TODO
     });
@@ -201,7 +219,7 @@ void main() {
     //
     // Assigns a role to a user. Requires admin permissions.
     //
-    //Future<AssignRoleResponse> apiV1AdminUsersAssignRolePost(AssignRoleRequest assignRoleRequest) async
+    //Future<ResponseMessageData> apiV1AdminUsersAssignRolePost(AssignRoleRequest assignRoleRequest) async
     test('test apiV1AdminUsersAssignRolePost', () async {
       // TODO
     });
@@ -210,7 +228,7 @@ void main() {
     //
     // List all users. Requires admin permissions.
     //
-    //Future<ListUsersResponse> apiV1AdminUsersGet() async
+    //Future<ResponseListUsersData> apiV1AdminUsersGet() async
     test('test apiV1AdminUsersGet', () async {
       // TODO
     });
@@ -219,7 +237,7 @@ void main() {
     //
     // Returns user details and all available roles. Requires admin permissions.
     //
-    //Future<GetUserRolesResponse> apiV1AdminUsersIdRolesGet(int id) async
+    //Future<ResponseGetUserRolesData> apiV1AdminUsersIdRolesGet(int id) async
     test('test apiV1AdminUsersIdRolesGet', () async {
       // TODO
     });
@@ -228,7 +246,7 @@ void main() {
     //
     // Creates a new user account. Requires admin permissions.
     //
-    //Future<CreateUserResponse> apiV1AdminUsersPost(CreateUserRequest createUserRequest) async
+    //Future<ResponseUserInfo> apiV1AdminUsersPost(CreateUserRequest createUserRequest) async
     test('test apiV1AdminUsersPost', () async {
       // TODO
     });
@@ -237,7 +255,7 @@ void main() {
     //
     // Revokes a role from a user. Requires admin permissions.
     //
-    //Future<RevokeRoleResponse> apiV1AdminUsersRevokeRolePost(RevokeRoleRequest revokeRoleRequest) async
+    //Future<ResponseMessageData> apiV1AdminUsersRevokeRolePost(RevokeRoleRequest revokeRoleRequest) async
     test('test apiV1AdminUsersRevokeRolePost', () async {
       // TODO
     });

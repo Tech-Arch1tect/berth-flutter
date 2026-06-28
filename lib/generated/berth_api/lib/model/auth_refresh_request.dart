@@ -13,10 +13,16 @@ part of openapi.api;
 class AuthRefreshRequest {
   /// Returns a new [AuthRefreshRequest] instance.
   AuthRefreshRequest({
-    required this.refreshToken,
+    this.refreshToken,
   });
 
-  String refreshToken;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? refreshToken;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AuthRefreshRequest &&
@@ -25,14 +31,18 @@ class AuthRefreshRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (refreshToken.hashCode);
+    (refreshToken == null ? 0 : refreshToken!.hashCode);
 
   @override
   String toString() => 'AuthRefreshRequest[refreshToken=$refreshToken]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+    if (this.refreshToken != null) {
       json[r'refresh_token'] = this.refreshToken;
+    } else {
+      json[r'refresh_token'] = null;
+    }
     return json;
   }
 
@@ -55,7 +65,7 @@ class AuthRefreshRequest {
       }());
 
       return AuthRefreshRequest(
-        refreshToken: mapValueOfType<String>(json, r'refresh_token')!,
+        refreshToken: mapValueOfType<String>(json, r'refresh_token'),
       );
     }
     return null;
@@ -103,7 +113,6 @@ class AuthRefreshRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'refresh_token',
   };
 }
 

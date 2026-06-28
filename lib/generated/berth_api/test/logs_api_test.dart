@@ -21,7 +21,7 @@ void main() {
     //
     // Returns logs for a specific container in a stack
     //
-    //Future<LogsResponse> apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(int serverid, String stackname, String containerName, { int tail, String since, bool timestamps }) async
+    //Future<ResponseLogsData> apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(int serverid, String stackname, String containerName, { int tail, String since, bool timestamps }) async
     test('test apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns logs for all containers in a stack
     //
-    //Future<LogsResponse> apiV1ServersServeridStacksStacknameLogsGet(int serverid, String stackname, { int tail, String since, bool timestamps }) async
+    //Future<ResponseLogsData> apiV1ServersServeridStacksStacknameLogsGet(int serverid, String stackname, { int tail, String since, bool timestamps }) async
     test('test apiV1ServersServeridStacksStacknameLogsGet', () async {
       // TODO
     });

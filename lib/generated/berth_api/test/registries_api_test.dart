@@ -21,7 +21,7 @@ void main() {
     //
     // Returns all registry credentials for a server. Requires registries.manage permission.
     //
-    //Future<ListCredentialsResponse> apiV1ServersServeridRegistriesGet(int serverid) async
+    //Future<ResponseListCredentialsData> apiV1ServersServeridRegistriesGet(int serverid) async
     test('test apiV1ServersServeridRegistriesGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Deletes a registry credential. Requires registries.manage permission.
     //
-    //Future<DeleteCredentialResponse> apiV1ServersServeridRegistriesIdDelete(int serverid, int id) async
+    //Future<ResponseDeleteCredentialMessageData> apiV1ServersServeridRegistriesIdDelete(int serverid, int id) async
     test('test apiV1ServersServeridRegistriesIdDelete', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Returns a specific registry credential by ID. Requires registries.manage permission.
     //
-    //Future<GetCredentialResponse> apiV1ServersServeridRegistriesIdGet(int serverid, int id) async
+    //Future<ResponseGetCredentialData> apiV1ServersServeridRegistriesIdGet(int serverid, int id) async
     test('test apiV1ServersServeridRegistriesIdGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Updates an existing registry credential. Requires registries.manage permission.
     //
-    //Future<UpdateCredentialResponse> apiV1ServersServeridRegistriesIdPut(int serverid, int id, UpdateCredentialRequest updateCredentialRequest) async
+    //Future<ResponseGetCredentialData> apiV1ServersServeridRegistriesIdPut(int serverid, int id, UpdateCredentialRequest updateCredentialRequest) async
     test('test apiV1ServersServeridRegistriesIdPut', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Creates a new registry credential for a server. Requires registries.manage permission.
     //
-    //Future<CreateCredentialResponse> apiV1ServersServeridRegistriesPost(int serverid, CreateCredentialRequest createCredentialRequest) async
+    //Future<ResponseGetCredentialData> apiV1ServersServeridRegistriesPost(int serverid, CreateCredentialRequest createCredentialRequest) async
     test('test apiV1ServersServeridRegistriesPost', () async {
       // TODO
     });

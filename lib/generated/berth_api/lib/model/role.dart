@@ -20,7 +20,6 @@ class Role {
     required this.isAdmin,
     required this.name,
     required this.updatedAt,
-    this.users = const [],
   });
 
   DateTime createdAt;
@@ -44,8 +43,6 @@ class Role {
 
   DateTime updatedAt;
 
-  List<User> users;
-
   @override
   bool operator ==(Object other) => identical(this, other) || other is Role &&
     other.createdAt == createdAt &&
@@ -54,8 +51,7 @@ class Role {
     other.id == id &&
     other.isAdmin == isAdmin &&
     other.name == name &&
-    other.updatedAt == updatedAt &&
-    _deepEquality.equals(other.users, users);
+    other.updatedAt == updatedAt;
 
   @override
   int get hashCode =>
@@ -66,11 +62,10 @@ class Role {
     (id.hashCode) +
     (isAdmin.hashCode) +
     (name.hashCode) +
-    (updatedAt.hashCode) +
-    (users.hashCode);
+    (updatedAt.hashCode);
 
   @override
-  String toString() => 'Role[createdAt=$createdAt, deletedAt=$deletedAt, description=$description, id=$id, isAdmin=$isAdmin, name=$name, updatedAt=$updatedAt, users=$users]';
+  String toString() => 'Role[createdAt=$createdAt, deletedAt=$deletedAt, description=$description, id=$id, isAdmin=$isAdmin, name=$name, updatedAt=$updatedAt]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -85,7 +80,6 @@ class Role {
       json[r'is_admin'] = this.isAdmin;
       json[r'name'] = this.name;
       json[r'updated_at'] = this.updatedAt.toUtc().toIso8601String();
-      json[r'users'] = this.users;
     return json;
   }
 
@@ -115,7 +109,6 @@ class Role {
         isAdmin: mapValueOfType<bool>(json, r'is_admin')!,
         name: mapValueOfType<String>(json, r'name')!,
         updatedAt: mapDateTime(json, r'updated_at', r'')!,
-        users: User.listFromJson(json[r'users']),
       );
     }
     return null;
@@ -169,7 +162,6 @@ class Role {
     'is_admin',
     'name',
     'updated_at',
-    'users',
   };
 }
 

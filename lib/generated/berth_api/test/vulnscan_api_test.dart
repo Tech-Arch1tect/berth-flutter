@@ -21,7 +21,7 @@ void main() {
     //
     // Returns the most recent vulnerability scan and summary for a stack. Requires stacks.read permission.
     //
-    //Future<GetLatestScanResponse> apiV1ServersServeridStacksStacknameVulnscanGet(int serverid, String stackname) async
+    //Future<ResponseGetLatestScanData> apiV1ServersServeridStacksStacknameVulnscanGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameVulnscanGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns all vulnerability scans for a stack with summaries. Requires stacks.read permission.
     //
-    //Future<GetScansHistoryResponse> apiV1ServersServeridStacksStacknameVulnscanHistoryGet(int serverid, String stackname) async
+    //Future<ResponseGetScansHistoryData> apiV1ServersServeridStacksStacknameVulnscanHistoryGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameVulnscanHistoryGet', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Starts a vulnerability scan for a stack. Requires stacks.read permission.
     //
-    //Future<StartScanResponse> apiV1ServersServeridStacksStacknameVulnscanPost(int serverid, String stackname, StartScanRequest startScanRequest) async
+    //Future<ResponseStartScanData> apiV1ServersServeridStacksStacknameVulnscanPost(int serverid, String stackname, StartScanRequest startScanRequest) async
     test('test apiV1ServersServeridStacksStacknameVulnscanPost', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns vulnerability trend data for a stack. Requires stacks.read permission.
     //
-    //Future<GetScanTrendResponse> apiV1ServersServeridStacksStacknameVulnscanTrendGet(int serverid, String stackname, { int limit }) async
+    //Future<ResponseGetScanTrendData> apiV1ServersServeridStacksStacknameVulnscanTrendGet(int serverid, String stackname, { int limit }) async
     test('test apiV1ServersServeridStacksStacknameVulnscanTrendGet', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Compares two vulnerability scans and returns new, fixed, and unchanged vulnerabilities. Both scans must be from the same stack. Requires stacks.read permission.
     //
-    //Future<CompareScanResponse> apiV1VulnscanCompareBaseScanIdCompareScanIdGet(int baseScanId, int compareScanId) async
+    //Future<ResponseCompareScanData> apiV1VulnscanCompareBaseScanIdCompareScanIdGet(int baseScanId, int compareScanId) async
     test('test apiV1VulnscanCompareBaseScanIdCompareScanIdGet', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Returns a specific vulnerability scan with all vulnerabilities. Requires stacks.read permission for the scanned stack.
     //
-    //Future<GetScanResponse> apiV1VulnscanScanidGet(int scanid) async
+    //Future<ResponseGetScanData> apiV1VulnscanScanidGet(int scanid) async
     test('test apiV1VulnscanScanidGet', () async {
       // TODO
     });
@@ -75,7 +75,7 @@ void main() {
     //
     // Returns vulnerability counts by severity for a scan. Requires stacks.read permission for the scanned stack.
     //
-    //Future<GetScanSummaryResponse> apiV1VulnscanScanidSummaryGet(int scanid) async
+    //Future<ResponseGetScanSummaryData> apiV1VulnscanScanidSummaryGet(int scanid) async
     test('test apiV1VulnscanScanidSummaryGet', () async {
       // TODO
     });

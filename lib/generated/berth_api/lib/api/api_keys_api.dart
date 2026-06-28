@@ -49,7 +49,7 @@ class ApiKeysApi {
   /// List API keys
   ///
   /// Returns all API keys belonging to the authenticated user.
-  Future<ListAPIKeysResponse?> apiV1ApiKeysGet() async {
+  Future<ResponseAPIKeyInfo?> apiV1ApiKeysGet() async {
     final response = await apiV1ApiKeysGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -58,7 +58,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListAPIKeysResponse',) as ListAPIKeysResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAPIKeyInfo',) as ResponseAPIKeyInfo;
     
     }
     return null;
@@ -108,7 +108,7 @@ class ApiKeysApi {
   ///
   /// * [int] id (required):
   ///   API key ID
-  Future<MessageResponse?> apiV1ApiKeysIdDelete(int id,) async {
+  Future<ResponseMessageData3?> apiV1ApiKeysIdDelete(int id,) async {
     final response = await apiV1ApiKeysIdDeleteWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -117,7 +117,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData3',) as ResponseMessageData3;
     
     }
     return null;
@@ -167,7 +167,7 @@ class ApiKeysApi {
   ///
   /// * [int] id (required):
   ///   API key ID
-  Future<GetAPIKeyResponse?> apiV1ApiKeysIdGet(int id,) async {
+  Future<ResponseAPIKeyInfo2?> apiV1ApiKeysIdGet(int id,) async {
     final response = await apiV1ApiKeysIdGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -176,7 +176,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetAPIKeyResponse',) as GetAPIKeyResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAPIKeyInfo2',) as ResponseAPIKeyInfo2;
     
     }
     return null;
@@ -226,7 +226,7 @@ class ApiKeysApi {
   ///
   /// * [int] id (required):
   ///   API key ID
-  Future<ListScopesResponse?> apiV1ApiKeysIdScopesGet(int id,) async {
+  Future<ResponseAPIKeyScopeInfo?> apiV1ApiKeysIdScopesGet(int id,) async {
     final response = await apiV1ApiKeysIdScopesGetWithHttpInfo(id,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -235,7 +235,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ListScopesResponse',) as ListScopesResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseAPIKeyScopeInfo',) as ResponseAPIKeyScopeInfo;
     
     }
     return null;
@@ -291,7 +291,7 @@ class ApiKeysApi {
   ///
   /// * [AddScopeRequest] addScopeRequest (required):
   ///   Scope details
-  Future<MessageResponse?> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest,) async {
+  Future<ResponseMessageData3?> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest,) async {
     final response = await apiV1ApiKeysIdScopesPostWithHttpInfo(id, addScopeRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -300,7 +300,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData3',) as ResponseMessageData3;
     
     }
     return null;
@@ -357,7 +357,7 @@ class ApiKeysApi {
   ///
   /// * [int] scopeId (required):
   ///   Scope ID
-  Future<MessageResponse?> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId,) async {
+  Future<ResponseMessageData3?> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId,) async {
     final response = await apiV1ApiKeysIdScopesScopeIdDeleteWithHttpInfo(id, scopeId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -366,7 +366,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'MessageResponse',) as MessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseMessageData3',) as ResponseMessageData3;
     
     }
     return null;
@@ -415,7 +415,7 @@ class ApiKeysApi {
   ///
   /// * [CreateAPIKeyRequest] createAPIKeyRequest (required):
   ///   API key creation request
-  Future<CreateAPIKeyResponse?> apiV1ApiKeysPost(CreateAPIKeyRequest createAPIKeyRequest,) async {
+  Future<ResponseCreateAPIKeyData?> apiV1ApiKeysPost(CreateAPIKeyRequest createAPIKeyRequest,) async {
     final response = await apiV1ApiKeysPostWithHttpInfo(createAPIKeyRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -424,7 +424,7 @@ class ApiKeysApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CreateAPIKeyResponse',) as CreateAPIKeyResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseCreateAPIKeyData',) as ResponseCreateAPIKeyData;
     
     }
     return null;

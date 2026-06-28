@@ -51,11 +51,6 @@ void main() {
       // TODO
     });
 
-    // List<User> users (default value: const [])
-    test('to test the property `users`', () async {
-      // TODO
-    });
-
 
   });
 

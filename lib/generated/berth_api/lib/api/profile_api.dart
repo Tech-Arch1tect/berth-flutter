@@ -18,7 +18,7 @@ class ProfileApi {
 
   /// Get current user profile
   ///
-  /// Returns the profile information for the authenticated user including roles and TOTP status.
+  /// Returns the authenticated user's profile: UserInfo (including roles and TOTP status) for JWT callers, or UserIdentity (id and username only) for API-key callers.
   ///
   /// Note: This method returns the HTTP [Response].
   Future<Response> apiV1ProfileGetWithHttpInfo() async {
@@ -48,8 +48,8 @@ class ProfileApi {
 
   /// Get current user profile
   ///
-  /// Returns the profile information for the authenticated user including roles and TOTP status.
-  Future<GetProfileResponse?> apiV1ProfileGet() async {
+  /// Returns the authenticated user's profile: UserInfo (including roles and TOTP status) for JWT callers, or UserIdentity (id and username only) for API-key callers.
+  Future<ApiV1ProfileGet200Response?> apiV1ProfileGet() async {
     final response = await apiV1ProfileGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -58,7 +58,7 @@ class ProfileApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetProfileResponse',) as GetProfileResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ApiV1ProfileGet200Response',) as ApiV1ProfileGet200Response;
     
     }
     return null;

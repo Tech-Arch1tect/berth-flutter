@@ -21,7 +21,7 @@ void main() {
     //
     // Returns all container images with available updates across servers the user can access
     //
-    //Future<ImageUpdatesResponse> apiV1ImageUpdatesGet() async
+    //Future<ResponseImageUpdatesData> apiV1ImageUpdatesGet() async
     test('test apiV1ImageUpdatesGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns container images with available updates for a specific server
     //
-    //Future<ImageUpdatesResponse> apiV1ServersServeridImageUpdatesGet(int serverid) async
+    //Future<ResponseImageUpdatesData> apiV1ServersServeridImageUpdatesGet(int serverid) async
     test('test apiV1ServersServeridImageUpdatesGet', () async {
       // TODO
     });

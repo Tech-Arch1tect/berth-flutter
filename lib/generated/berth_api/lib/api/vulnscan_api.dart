@@ -67,7 +67,7 @@ class VulnscanApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<GetLatestScanResponse?> apiV1ServersServeridStacksStacknameVulnscanGet(int serverid, String stackname,) async {
+  Future<ResponseGetLatestScanData?> apiV1ServersServeridStacksStacknameVulnscanGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameVulnscanGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -76,7 +76,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestScanResponse',) as GetLatestScanResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetLatestScanData',) as ResponseGetLatestScanData;
     
     }
     return null;
@@ -133,7 +133,7 @@ class VulnscanApi {
   ///
   /// * [String] stackname (required):
   ///   Stack name
-  Future<GetScansHistoryResponse?> apiV1ServersServeridStacksStacknameVulnscanHistoryGet(int serverid, String stackname,) async {
+  Future<ResponseGetScansHistoryData?> apiV1ServersServeridStacksStacknameVulnscanHistoryGet(int serverid, String stackname,) async {
     final response = await apiV1ServersServeridStacksStacknameVulnscanHistoryGetWithHttpInfo(serverid, stackname,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -142,7 +142,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetScansHistoryResponse',) as GetScansHistoryResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetScansHistoryData',) as ResponseGetScansHistoryData;
     
     }
     return null;
@@ -205,7 +205,7 @@ class VulnscanApi {
   ///
   /// * [StartScanRequest] startScanRequest (required):
   ///   Optional list of services to scan
-  Future<StartScanResponse?> apiV1ServersServeridStacksStacknameVulnscanPost(int serverid, String stackname, StartScanRequest startScanRequest,) async {
+  Future<ResponseStartScanData?> apiV1ServersServeridStacksStacknameVulnscanPost(int serverid, String stackname, StartScanRequest startScanRequest,) async {
     final response = await apiV1ServersServeridStacksStacknameVulnscanPostWithHttpInfo(serverid, stackname, startScanRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -214,7 +214,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'StartScanResponse',) as StartScanResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseStartScanData',) as ResponseStartScanData;
     
     }
     return null;
@@ -281,7 +281,7 @@ class VulnscanApi {
   ///
   /// * [int] limit:
   ///   Maximum number of scans to include (default 10, max 50)
-  Future<GetScanTrendResponse?> apiV1ServersServeridStacksStacknameVulnscanTrendGet(int serverid, String stackname, { int? limit, }) async {
+  Future<ResponseGetScanTrendData?> apiV1ServersServeridStacksStacknameVulnscanTrendGet(int serverid, String stackname, { int? limit, }) async {
     final response = await apiV1ServersServeridStacksStacknameVulnscanTrendGetWithHttpInfo(serverid, stackname,  limit: limit, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -290,7 +290,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetScanTrendResponse',) as GetScanTrendResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetScanTrendData',) as ResponseGetScanTrendData;
     
     }
     return null;
@@ -347,7 +347,7 @@ class VulnscanApi {
   ///
   /// * [int] compareScanId (required):
   ///   Comparison scan ID
-  Future<CompareScanResponse?> apiV1VulnscanCompareBaseScanIdCompareScanIdGet(int baseScanId, int compareScanId,) async {
+  Future<ResponseCompareScanData?> apiV1VulnscanCompareBaseScanIdCompareScanIdGet(int baseScanId, int compareScanId,) async {
     final response = await apiV1VulnscanCompareBaseScanIdCompareScanIdGetWithHttpInfo(baseScanId, compareScanId,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -356,7 +356,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'CompareScanResponse',) as CompareScanResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseCompareScanData',) as ResponseCompareScanData;
     
     }
     return null;
@@ -406,7 +406,7 @@ class VulnscanApi {
   ///
   /// * [int] scanid (required):
   ///   Scan ID
-  Future<GetScanResponse?> apiV1VulnscanScanidGet(int scanid,) async {
+  Future<ResponseGetScanData?> apiV1VulnscanScanidGet(int scanid,) async {
     final response = await apiV1VulnscanScanidGetWithHttpInfo(scanid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -415,7 +415,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetScanResponse',) as GetScanResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetScanData',) as ResponseGetScanData;
     
     }
     return null;
@@ -465,7 +465,7 @@ class VulnscanApi {
   ///
   /// * [int] scanid (required):
   ///   Scan ID
-  Future<GetScanSummaryResponse?> apiV1VulnscanScanidSummaryGet(int scanid,) async {
+  Future<ResponseGetScanSummaryData?> apiV1VulnscanScanidSummaryGet(int scanid,) async {
     final response = await apiV1VulnscanScanidSummaryGetWithHttpInfo(scanid,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -474,7 +474,7 @@ class VulnscanApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetScanSummaryResponse',) as GetScanSummaryResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetScanSummaryData',) as ResponseGetScanSummaryData;
     
     }
     return null;

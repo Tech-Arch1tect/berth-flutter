@@ -102,7 +102,7 @@ class LogsApi {
   ///
   /// * [bool] timestamps:
   ///   Include timestamps in log output
-  Future<LogsResponse?> apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(int serverid, String stackname, String containerName, { int? tail, String? since, bool? timestamps, }) async {
+  Future<ResponseLogsData?> apiV1ServersServeridStacksStacknameContainersContainerNameLogsGet(int serverid, String stackname, String containerName, { int? tail, String? since, bool? timestamps, }) async {
     final response = await apiV1ServersServeridStacksStacknameContainersContainerNameLogsGetWithHttpInfo(serverid, stackname, containerName,  tail: tail, since: since, timestamps: timestamps, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -111,7 +111,7 @@ class LogsApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'LogsResponse',) as LogsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseLogsData',) as ResponseLogsData;
     
     }
     return null;
@@ -196,7 +196,7 @@ class LogsApi {
   ///
   /// * [bool] timestamps:
   ///   Include timestamps in log output
-  Future<LogsResponse?> apiV1ServersServeridStacksStacknameLogsGet(int serverid, String stackname, { int? tail, String? since, bool? timestamps, }) async {
+  Future<ResponseLogsData?> apiV1ServersServeridStacksStacknameLogsGet(int serverid, String stackname, { int? tail, String? since, bool? timestamps, }) async {
     final response = await apiV1ServersServeridStacksStacknameLogsGetWithHttpInfo(serverid, stackname,  tail: tail, since: since, timestamps: timestamps, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -205,7 +205,7 @@ class LogsApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'LogsResponse',) as LogsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseLogsData',) as ResponseLogsData;
     
     }
     return null;

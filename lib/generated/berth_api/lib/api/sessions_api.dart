@@ -18,31 +18,26 @@ class SessionsApi {
 
   /// List user sessions
   ///
-  /// Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
+  /// Returns all active sessions for the authenticated user.
   ///
   /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [GetSessionsRequest] getSessionsRequest (required):
-  ///   Refresh token to identify current session
-  Future<Response> apiV1SessionsPostWithHttpInfo(GetSessionsRequest getSessionsRequest,) async {
+  Future<Response> apiV1SessionsGetWithHttpInfo() async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/sessions';
 
     // ignore: prefer_final_locals
-    Object? postBody = getSessionsRequest;
+    Object? postBody;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
 
-    const contentTypes = <String>['application/json'];
+    const contentTypes = <String>[];
 
 
     return apiClient.invokeAPI(
       path,
-      'POST',
+      'GET',
       queryParams,
       postBody,
       headerParams,
@@ -53,14 +48,9 @@ class SessionsApi {
 
   /// List user sessions
   ///
-  /// Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
-  ///
-  /// Parameters:
-  ///
-  /// * [GetSessionsRequest] getSessionsRequest (required):
-  ///   Refresh token to identify current session
-  Future<GetSessionsResponse?> apiV1SessionsPost(GetSessionsRequest getSessionsRequest,) async {
-    final response = await apiV1SessionsPostWithHttpInfo(getSessionsRequest,);
+  /// Returns all active sessions for the authenticated user.
+  Future<ResponseGetSessionsData?> apiV1SessionsGet() async {
+    final response = await apiV1SessionsGetWithHttpInfo();
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -68,7 +58,7 @@ class SessionsApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetSessionsResponse',) as GetSessionsResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseGetSessionsData',) as ResponseGetSessionsData;
     
     }
     return null;
@@ -76,20 +66,20 @@ class SessionsApi {
 
   /// Revoke all other sessions
   ///
-  /// Revokes all sessions except the current one. For JWT authentication, the refresh token must be provided in the request body.
+  /// Revokes all sessions for the authenticated user except the current one.
   ///
   /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
-  /// * [RevokeAllOtherSessionsRequest] revokeAllOtherSessionsRequest (required):
-  ///   Refresh token (required for JWT auth, not needed for session auth)
-  Future<Response> apiV1SessionsRevokeAllOthersPostWithHttpInfo(RevokeAllOtherSessionsRequest revokeAllOtherSessionsRequest,) async {
+  /// * [Object] body (required):
+  ///   No body required
+  Future<Response> apiV1SessionsRevokeAllOthersPostWithHttpInfo(Object body,) async {
     // ignore: prefer_const_declarations
     final path = r'/api/v1/sessions/revoke-all-others';
 
     // ignore: prefer_final_locals
-    Object? postBody = revokeAllOtherSessionsRequest;
+    Object? postBody = body;
 
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
@@ -111,14 +101,14 @@ class SessionsApi {
 
   /// Revoke all other sessions
   ///
-  /// Revokes all sessions except the current one. For JWT authentication, the refresh token must be provided in the request body.
+  /// Revokes all sessions for the authenticated user except the current one.
   ///
   /// Parameters:
   ///
-  /// * [RevokeAllOtherSessionsRequest] revokeAllOtherSessionsRequest (required):
-  ///   Refresh token (required for JWT auth, not needed for session auth)
-  Future<SessionMessageResponse?> apiV1SessionsRevokeAllOthersPost(RevokeAllOtherSessionsRequest revokeAllOtherSessionsRequest,) async {
-    final response = await apiV1SessionsRevokeAllOthersPostWithHttpInfo(revokeAllOtherSessionsRequest,);
+  /// * [Object] body (required):
+  ///   No body required
+  Future<ResponseSessionMessageData?> apiV1SessionsRevokeAllOthersPost(Object body,) async {
+    final response = await apiV1SessionsRevokeAllOthersPostWithHttpInfo(body,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
@@ -126,7 +116,7 @@ class SessionsApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'SessionMessageResponse',) as SessionMessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseSessionMessageData',) as ResponseSessionMessageData;
     
     }
     return null;
@@ -175,7 +165,7 @@ class SessionsApi {
   ///
   /// * [RevokeSessionRequest] revokeSessionRequest (required):
   ///   Session to revoke
-  Future<SessionMessageResponse?> apiV1SessionsRevokePost(RevokeSessionRequest revokeSessionRequest,) async {
+  Future<ResponseSessionMessageData?> apiV1SessionsRevokePost(RevokeSessionRequest revokeSessionRequest,) async {
     final response = await apiV1SessionsRevokePostWithHttpInfo(revokeSessionRequest,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -184,7 +174,7 @@ class SessionsApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'SessionMessageResponse',) as SessionMessageResponse;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResponseSessionMessageData',) as ResponseSessionMessageData;
     
     }
     return null;

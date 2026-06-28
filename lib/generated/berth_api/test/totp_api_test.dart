@@ -21,7 +21,7 @@ void main() {
     //
     // Disables two-factor authentication. Requires both the current TOTP code and password for security.
     //
-    //Future<TOTPMessageResponse> apiV1TotpDisablePost(TOTPDisableRequest tOTPDisableRequest) async
+    //Future<ResponseTOTPMessageData> apiV1TotpDisablePost(TOTPDisableRequest tOTPDisableRequest) async
     test('test apiV1TotpDisablePost', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Enables two-factor authentication after verifying the TOTP code from the authenticator app.
     //
-    //Future<TOTPMessageResponse> apiV1TotpEnablePost(TOTPEnableRequest tOTPEnableRequest) async
+    //Future<ResponseTOTPMessageData> apiV1TotpEnablePost(TOTPEnableRequest tOTPEnableRequest) async
     test('test apiV1TotpEnablePost', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Returns the QR code URI and secret for setting up two-factor authentication. Only available if TOTP is not already enabled.
     //
-    //Future<TOTPSetupResponse> apiV1TotpSetupGet() async
+    //Future<ResponseTOTPSetupData> apiV1TotpSetupGet() async
     test('test apiV1TotpSetupGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns whether two-factor authentication is enabled for the authenticated user.
     //
-    //Future<TOTPStatusResponse> apiV1TotpStatusGet() async
+    //Future<ResponseTOTPStatusData> apiV1TotpStatusGet() async
     test('test apiV1TotpStatusGet', () async {
       // TODO
     });

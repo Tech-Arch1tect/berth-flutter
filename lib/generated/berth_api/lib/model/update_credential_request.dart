@@ -13,20 +13,38 @@ part of openapi.api;
 class UpdateCredentialRequest {
   /// Returns a new [UpdateCredentialRequest] instance.
   UpdateCredentialRequest({
-    required this.imagePattern,
-    required this.password,
+    this.imagePattern,
+    this.password,
     required this.registryUrl,
-    required this.stackPattern,
+    this.stackPattern,
     required this.username,
   });
 
-  String imagePattern;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? imagePattern;
 
-  String password;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? password;
 
   String registryUrl;
 
-  String stackPattern;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? stackPattern;
 
   String username;
 
@@ -41,10 +59,10 @@ class UpdateCredentialRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (imagePattern.hashCode) +
-    (password.hashCode) +
+    (imagePattern == null ? 0 : imagePattern!.hashCode) +
+    (password == null ? 0 : password!.hashCode) +
     (registryUrl.hashCode) +
-    (stackPattern.hashCode) +
+    (stackPattern == null ? 0 : stackPattern!.hashCode) +
     (username.hashCode);
 
   @override
@@ -52,10 +70,22 @@ class UpdateCredentialRequest {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+    if (this.imagePattern != null) {
       json[r'image_pattern'] = this.imagePattern;
+    } else {
+      json[r'image_pattern'] = null;
+    }
+    if (this.password != null) {
       json[r'password'] = this.password;
+    } else {
+      json[r'password'] = null;
+    }
       json[r'registry_url'] = this.registryUrl;
+    if (this.stackPattern != null) {
       json[r'stack_pattern'] = this.stackPattern;
+    } else {
+      json[r'stack_pattern'] = null;
+    }
       json[r'username'] = this.username;
     return json;
   }
@@ -79,10 +109,10 @@ class UpdateCredentialRequest {
       }());
 
       return UpdateCredentialRequest(
-        imagePattern: mapValueOfType<String>(json, r'image_pattern')!,
-        password: mapValueOfType<String>(json, r'password')!,
+        imagePattern: mapValueOfType<String>(json, r'image_pattern'),
+        password: mapValueOfType<String>(json, r'password'),
         registryUrl: mapValueOfType<String>(json, r'registry_url')!,
-        stackPattern: mapValueOfType<String>(json, r'stack_pattern')!,
+        stackPattern: mapValueOfType<String>(json, r'stack_pattern'),
         username: mapValueOfType<String>(json, r'username')!,
       );
     }
@@ -131,10 +161,7 @@ class UpdateCredentialRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'image_pattern',
-    'password',
     'registry_url',
-    'stack_pattern',
     'username',
   };
 }

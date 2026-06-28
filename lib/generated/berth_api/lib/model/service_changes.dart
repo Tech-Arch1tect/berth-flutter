@@ -48,11 +48,11 @@ class ServiceChanges {
 
   Map<String, ServiceNetworkConfig> networks;
 
-  List<PortMapping> ports;
+  List<PortMapping>? ports;
 
   String? restart;
 
-  List<VolumeMount2> volumes;
+  List<VolumeMount2>? volumes;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ServiceChanges &&
@@ -83,9 +83,9 @@ class ServiceChanges {
     (image == null ? 0 : image!.hashCode) +
     (labels.hashCode) +
     (networks.hashCode) +
-    (ports.hashCode) +
+    (ports == null ? 0 : ports!.hashCode) +
     (restart == null ? 0 : restart!.hashCode) +
-    (volumes.hashCode);
+    (volumes == null ? 0 : volumes!.hashCode);
 
   @override
   String toString() => 'ServiceChanges[build=$build, command=$command, dependsOn=$dependsOn, deploy=$deploy, entrypoint=$entrypoint, environment=$environment, healthcheck=$healthcheck, image=$image, labels=$labels, networks=$networks, ports=$ports, restart=$restart, volumes=$volumes]';
@@ -126,13 +126,21 @@ class ServiceChanges {
     }
       json[r'labels'] = this.labels;
       json[r'networks'] = this.networks;
+    if (this.ports != null) {
       json[r'ports'] = this.ports;
+    } else {
+      json[r'ports'] = null;
+    }
     if (this.restart != null) {
       json[r'restart'] = this.restart;
     } else {
       json[r'restart'] = null;
     }
+    if (this.volumes != null) {
       json[r'volumes'] = this.volumes;
+    } else {
+      json[r'volumes'] = null;
+    }
     return json;
   }
 

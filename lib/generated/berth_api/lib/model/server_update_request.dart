@@ -13,22 +13,40 @@ part of openapi.api;
 class ServerUpdateRequest {
   /// Returns a new [ServerUpdateRequest] instance.
   ServerUpdateRequest({
-    required this.accessToken,
-    required this.description,
+    this.accessToken,
+    this.description,
     required this.host,
-    required this.isActive,
+    this.isActive,
     required this.name,
     required this.port,
-    required this.skipSslVerification,
+    this.skipSslVerification,
   });
 
-  String accessToken;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? accessToken;
 
-  String description;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? description;
 
   String host;
 
-  bool isActive;
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  bool? isActive;
 
   String name;
 
@@ -49,10 +67,10 @@ class ServerUpdateRequest {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (accessToken.hashCode) +
-    (description.hashCode) +
+    (accessToken == null ? 0 : accessToken!.hashCode) +
+    (description == null ? 0 : description!.hashCode) +
     (host.hashCode) +
-    (isActive.hashCode) +
+    (isActive == null ? 0 : isActive!.hashCode) +
     (name.hashCode) +
     (port.hashCode) +
     (skipSslVerification == null ? 0 : skipSslVerification!.hashCode);
@@ -62,10 +80,22 @@ class ServerUpdateRequest {
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+    if (this.accessToken != null) {
       json[r'access_token'] = this.accessToken;
+    } else {
+      json[r'access_token'] = null;
+    }
+    if (this.description != null) {
       json[r'description'] = this.description;
+    } else {
+      json[r'description'] = null;
+    }
       json[r'host'] = this.host;
+    if (this.isActive != null) {
       json[r'is_active'] = this.isActive;
+    } else {
+      json[r'is_active'] = null;
+    }
       json[r'name'] = this.name;
       json[r'port'] = this.port;
     if (this.skipSslVerification != null) {
@@ -95,10 +125,10 @@ class ServerUpdateRequest {
       }());
 
       return ServerUpdateRequest(
-        accessToken: mapValueOfType<String>(json, r'access_token')!,
-        description: mapValueOfType<String>(json, r'description')!,
+        accessToken: mapValueOfType<String>(json, r'access_token'),
+        description: mapValueOfType<String>(json, r'description'),
         host: mapValueOfType<String>(json, r'host')!,
-        isActive: mapValueOfType<bool>(json, r'is_active')!,
+        isActive: mapValueOfType<bool>(json, r'is_active'),
         name: mapValueOfType<String>(json, r'name')!,
         port: mapValueOfType<int>(json, r'port')!,
         skipSslVerification: mapValueOfType<bool>(json, r'skip_ssl_verification'),
@@ -149,13 +179,9 @@ class ServerUpdateRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'access_token',
-    'description',
     'host',
-    'is_active',
     'name',
     'port',
-    'skip_ssl_verification',
   };
 }
 

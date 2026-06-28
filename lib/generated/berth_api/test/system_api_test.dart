@@ -21,7 +21,7 @@ void main() {
     //
     // Returns the current version of the Berth application.
     //
-    //Future<GetVersionResponse> apiV1VersionGet() async
+    //Future<ResponseVersionData> apiV1VersionGet() async
     test('test apiV1VersionGet', () async {
       // TODO
     });

@@ -23,7 +23,6 @@ class OperationLog {
     this.lastMessageAt,
     required this.operationId,
     this.options,
-    this.queuedAt,
     required this.server,
     required this.serverId,
     this.services,
@@ -69,8 +68,6 @@ class OperationLog {
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
   String? options;
-
-  DateTime? queuedAt;
 
   Server server;
 
@@ -132,7 +129,6 @@ class OperationLog {
     other.lastMessageAt == lastMessageAt &&
     other.operationId == operationId &&
     other.options == options &&
-    other.queuedAt == queuedAt &&
     other.server == server &&
     other.serverId == serverId &&
     other.services == services &&
@@ -158,7 +154,6 @@ class OperationLog {
     (lastMessageAt == null ? 0 : lastMessageAt!.hashCode) +
     (operationId.hashCode) +
     (options == null ? 0 : options!.hashCode) +
-    (queuedAt == null ? 0 : queuedAt!.hashCode) +
     (server.hashCode) +
     (serverId.hashCode) +
     (services == null ? 0 : services!.hashCode) +
@@ -172,7 +167,7 @@ class OperationLog {
     (userId.hashCode);
 
   @override
-  String toString() => 'OperationLog[command=$command, createdAt=$createdAt, deletedAt=$deletedAt, durationMs=$durationMs, endTime=$endTime, exitCode=$exitCode, id=$id, lastMessageAt=$lastMessageAt, operationId=$operationId, options=$options, queuedAt=$queuedAt, server=$server, serverId=$serverId, services=$services, stackName=$stackName, startTime=$startTime, status=$status, success=$success, summary=$summary, updatedAt=$updatedAt, user=$user, userId=$userId]';
+  String toString() => 'OperationLog[command=$command, createdAt=$createdAt, deletedAt=$deletedAt, durationMs=$durationMs, endTime=$endTime, exitCode=$exitCode, id=$id, lastMessageAt=$lastMessageAt, operationId=$operationId, options=$options, server=$server, serverId=$serverId, services=$services, stackName=$stackName, startTime=$startTime, status=$status, success=$success, summary=$summary, updatedAt=$updatedAt, user=$user, userId=$userId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -209,11 +204,6 @@ class OperationLog {
       json[r'options'] = this.options;
     } else {
       json[r'options'] = null;
-    }
-    if (this.queuedAt != null) {
-      json[r'queued_at'] = this.queuedAt!.toUtc().toIso8601String();
-    } else {
-      json[r'queued_at'] = null;
     }
       json[r'server'] = this.server;
       json[r'server_id'] = this.serverId;
@@ -278,7 +268,6 @@ class OperationLog {
         lastMessageAt: mapDateTime(json, r'last_message_at', r''),
         operationId: mapValueOfType<String>(json, r'operation_id')!,
         options: mapValueOfType<String>(json, r'options'),
-        queuedAt: mapDateTime(json, r'queued_at', r''),
         server: Server.fromJson(json[r'server'])!,
         serverId: mapValueOfType<int>(json, r'server_id')!,
         services: mapValueOfType<String>(json, r'services'),

@@ -19,18 +19,18 @@ void main() {
   group('tests for SessionsApi', () {
     // List user sessions
     //
-    // Returns all active sessions for the authenticated user. The refresh token must be provided to identify the current session.
+    // Returns all active sessions for the authenticated user.
     //
-    //Future<GetSessionsResponse> apiV1SessionsPost(GetSessionsRequest getSessionsRequest) async
-    test('test apiV1SessionsPost', () async {
+    //Future<ResponseGetSessionsData> apiV1SessionsGet() async
+    test('test apiV1SessionsGet', () async {
       // TODO
     });
 
     // Revoke all other sessions
     //
-    // Revokes all sessions except the current one. For JWT authentication, the refresh token must be provided in the request body.
+    // Revokes all sessions for the authenticated user except the current one.
     //
-    //Future<SessionMessageResponse> apiV1SessionsRevokeAllOthersPost(RevokeAllOtherSessionsRequest revokeAllOtherSessionsRequest) async
+    //Future<ResponseSessionMessageData> apiV1SessionsRevokeAllOthersPost(Object body) async
     test('test apiV1SessionsRevokeAllOthersPost', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Revokes a specific session by ID. The user will be logged out from that device.
     //
-    //Future<SessionMessageResponse> apiV1SessionsRevokePost(RevokeSessionRequest revokeSessionRequest) async
+    //Future<ResponseSessionMessageData> apiV1SessionsRevokePost(RevokeSessionRequest revokeSessionRequest) async
     test('test apiV1SessionsRevokePost', () async {
       // TODO
     });

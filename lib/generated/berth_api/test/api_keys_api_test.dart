@@ -21,7 +21,7 @@ void main() {
     //
     // Returns all API keys belonging to the authenticated user.
     //
-    //Future<ListAPIKeysResponse> apiV1ApiKeysGet() async
+    //Future<ResponseAPIKeyInfo> apiV1ApiKeysGet() async
     test('test apiV1ApiKeysGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Revokes (deletes) an API key. This action cannot be undone.
     //
-    //Future<MessageResponse> apiV1ApiKeysIdDelete(int id) async
+    //Future<ResponseMessageData3> apiV1ApiKeysIdDelete(int id) async
     test('test apiV1ApiKeysIdDelete', () async {
       // TODO
     });
@@ -39,7 +39,7 @@ void main() {
     //
     // Returns details of a specific API key.
     //
-    //Future<GetAPIKeyResponse> apiV1ApiKeysIdGet(int id) async
+    //Future<ResponseAPIKeyInfo2> apiV1ApiKeysIdGet(int id) async
     test('test apiV1ApiKeysIdGet', () async {
       // TODO
     });
@@ -48,7 +48,7 @@ void main() {
     //
     // Returns all scopes configured for a specific API key.
     //
-    //Future<ListScopesResponse> apiV1ApiKeysIdScopesGet(int id) async
+    //Future<ResponseAPIKeyScopeInfo> apiV1ApiKeysIdScopesGet(int id) async
     test('test apiV1ApiKeysIdScopesGet', () async {
       // TODO
     });
@@ -57,7 +57,7 @@ void main() {
     //
     // Adds a new permission scope to an API key. The scope limits what the API key can access.
     //
-    //Future<MessageResponse> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest) async
+    //Future<ResponseMessageData3> apiV1ApiKeysIdScopesPost(int id, AddScopeRequest addScopeRequest) async
     test('test apiV1ApiKeysIdScopesPost', () async {
       // TODO
     });
@@ -66,7 +66,7 @@ void main() {
     //
     // Removes a permission scope from an API key.
     //
-    //Future<MessageResponse> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId) async
+    //Future<ResponseMessageData3> apiV1ApiKeysIdScopesScopeIdDelete(int id, int scopeId) async
     test('test apiV1ApiKeysIdScopesScopeIdDelete', () async {
       // TODO
     });
@@ -75,7 +75,7 @@ void main() {
     //
     // Creates a new API key for the authenticated user. The plain key is only returned once at creation time.
     //
-    //Future<CreateAPIKeyResponse> apiV1ApiKeysPost(CreateAPIKeyRequest createAPIKeyRequest) async
+    //Future<ResponseCreateAPIKeyData> apiV1ApiKeysPost(CreateAPIKeyRequest createAPIKeyRequest) async
     test('test apiV1ApiKeysPost', () async {
       // TODO
     });

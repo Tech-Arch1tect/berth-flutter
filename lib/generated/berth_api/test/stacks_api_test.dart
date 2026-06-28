@@ -21,7 +21,7 @@ void main() {
     //
     // Returns whether the authenticated user has permission to create stacks on the server
     //
-    //Future<CanCreateStackResponse> apiV1ServersServeridStacksCanCreateGet(int serverid) async
+    //Future<ResponseCanCreateStackData> apiV1ServersServeridStacksCanCreateGet(int serverid) async
     test('test apiV1ServersServeridStacksCanCreateGet', () async {
       // TODO
     });
@@ -30,7 +30,7 @@ void main() {
     //
     // Returns all stacks on a server that the authenticated user has permission to access
     //
-    //Future<ListStacksResponse> apiV1ServersServeridStacksGet(int serverid) async
+    //Future<ResponseListStacksData> apiV1ServersServeridStacksGet(int serverid) async
     test('test apiV1ServersServeridStacksGet', () async {
       // TODO
     });
@@ -39,26 +39,8 @@ void main() {
     //
     // Creates a new stack on the server
     //
-    //Future<CreateStackResponse> apiV1ServersServeridStacksPost(int serverid, CreateStackRequest createStackRequest) async
+    //Future<ResponseCreateStackData> apiV1ServersServeridStacksPost(int serverid, CreateStackRequest createStackRequest) async
     test('test apiV1ServersServeridStacksPost', () async {
-      // TODO
-    });
-
-    // Get compose configuration
-    //
-    // Returns the parsed Docker Compose configuration for a stack. Requires files.read permission.
-    //
-    //Future<RawComposeConfig> apiV1ServersServeridStacksStacknameComposeGet(int serverid, String stackname) async
-    test('test apiV1ServersServeridStacksStacknameComposeGet', () async {
-      // TODO
-    });
-
-    // Update compose configuration
-    //
-    // Updates the Docker Compose configuration with the specified changes. Supports preview mode to see changes without applying. Requires files.write permission.
-    //
-    //Future<UpdateComposeResponse> apiV1ServersServeridStacksStacknameComposePatch(int serverid, String stackname, UpdateComposeRequest updateComposeRequest) async
-    test('test apiV1ServersServeridStacksStacknameComposePatch', () async {
       // TODO
     });
 
@@ -66,7 +48,7 @@ void main() {
     //
     // Returns environment variables for all services in a stack. Use unmask=true to see sensitive values.
     //
-    //Future<StackEnvironmentResponse> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String unmask }) async
+    //Future<ResponseStackEnvironmentData> apiV1ServersServeridStacksStacknameEnvironmentGet(int serverid, String stackname, { String unmask }) async
     test('test apiV1ServersServeridStacksStacknameEnvironmentGet', () async {
       // TODO
     });
@@ -75,7 +57,7 @@ void main() {
     //
     // Returns detailed information about a specific stack including services and containers
     //
-    //Future<StackDetails> apiV1ServersServeridStacksStacknameGet(int serverid, String stackname) async
+    //Future<ResponseStackDetails> apiV1ServersServeridStacksStacknameGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameGet', () async {
       // TODO
     });
@@ -84,7 +66,7 @@ void main() {
     //
     // Returns detailed image information for all containers in a stack
     //
-    //Future<StackImagesResponse> apiV1ServersServeridStacksStacknameImagesGet(int serverid, String stackname) async
+    //Future<ResponseStackImagesData> apiV1ServersServeridStacksStacknameImagesGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameImagesGet', () async {
       // TODO
     });
@@ -93,7 +75,7 @@ void main() {
     //
     // Returns network information for a specific stack
     //
-    //Future<StackNetworksResponse> apiV1ServersServeridStacksStacknameNetworksGet(int serverid, String stackname) async
+    //Future<ResponseStackNetworksData> apiV1ServersServeridStacksStacknameNetworksGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameNetworksGet', () async {
       // TODO
     });
@@ -102,7 +84,7 @@ void main() {
     //
     // Returns the list of permissions the authenticated user has for a specific stack
     //
-    //Future<StackPermissionsResponse> apiV1ServersServeridStacksStacknamePermissionsGet(int serverid, String stackname) async
+    //Future<ResponseStackPermissionsData> apiV1ServersServeridStacksStacknamePermissionsGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknamePermissionsGet', () async {
       // TODO
     });
@@ -111,7 +93,7 @@ void main() {
     //
     // Returns resource usage statistics for all containers in a stack
     //
-    //Future<StackStatsResponse> apiV1ServersServeridStacksStacknameStatsGet(int serverid, String stackname) async
+    //Future<ResponseStackStats> apiV1ServersServeridStacksStacknameStatsGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameStatsGet', () async {
       // TODO
     });
@@ -120,7 +102,7 @@ void main() {
     //
     // Returns volume information for a specific stack
     //
-    //Future<StackVolumesResponse> apiV1ServersServeridStacksStacknameVolumesGet(int serverid, String stackname) async
+    //Future<ResponseStackVolumesData> apiV1ServersServeridStacksStacknameVolumesGet(int serverid, String stackname) async
     test('test apiV1ServersServeridStacksStacknameVolumesGet', () async {
       // TODO
     });
