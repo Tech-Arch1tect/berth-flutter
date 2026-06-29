@@ -113,41 +113,11 @@ class _OperationsModalState extends State<OperationsModal>
     );
   }
 
-  Future<void> _connectToOperations() async {
-    if (widget.operationsService.isConnected) return;
-
-    setState(() {
-      _isConnecting = true;
-      _error = null;
-    });
-
-    try {
-      await widget.operationsService.connect(
-        widget.serverId,
-        widget.stackName,
-      );
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-          _isConnecting = false;
-        });
-      }
-    }
-  }
-
   Future<void> _startOperation(OperationRequest request) async {
-    if (!widget.operationsService.isConnected) {
-      await _connectToOperations();
-    }
-
-    if (!widget.operationsService.isConnected) {
-      _showErrorSnackBar('Unable to connect to operations service');
-      return;
-    }
-
     try {
       setState(() {
+        _error = null;
+        _isConnecting = true;
         _operationStatus = OperationStatus(
           isRunning: true,
           command: request.command,
@@ -156,7 +126,7 @@ class _OperationsModalState extends State<OperationsModal>
         );
       });
 
-      
+
       _operationTimeout?.cancel();
       _operationTimeout = Timer(const Duration(minutes: 10), () {
         if (mounted && _operationStatus.isRunning) {
@@ -174,14 +144,19 @@ class _OperationsModalState extends State<OperationsModal>
         }
       });
 
-      await widget.operationsService.startOperation(request);
+      await widget.operationsService.startOperation(
+        widget.serverId,
+        widget.stackName,
+        request,
+      );
 
-      
+
       _tabController.animateTo(1);
     } catch (e) {
       _operationTimeout?.cancel();
       _operationTimeout = null;
       setState(() {
+        _isConnecting = false;
         _operationStatus = _operationStatus.copyWith(isRunning: false);
       });
       _showErrorSnackBar('Failed to start operation: $e');
@@ -278,7 +253,7 @@ class _OperationsModalState extends State<OperationsModal>
       message: tooltip,
       child: IconButton(
         icon: Icon(icon, color: color),
-        onPressed: _connectToOperations,
+        onPressed: null,
       ),
     );
   }

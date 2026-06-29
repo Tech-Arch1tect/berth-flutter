@@ -21,21 +21,6 @@ class OperationRequest {
 }
 
 @JsonSerializable()
-class OperationResponse {
-  @JsonKey(name: 'operationId')
-  final String operationId;
-
-  const OperationResponse({
-    required this.operationId,
-  });
-
-  factory OperationResponse.fromJson(Map<String, dynamic> json) =>
-      _$OperationResponseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$OperationResponseToJson(this);
-}
-
-@JsonSerializable()
 class StreamMessage {
   final String type;
   final String? data;
@@ -56,26 +41,6 @@ class StreamMessage {
       _$StreamMessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$StreamMessageToJson(this);
-}
-
-@JsonSerializable()
-class OperationWebSocketMessage {
-  final String type;
-  final dynamic data;
-  final String? error;
-  final String? message;
-
-  const OperationWebSocketMessage({
-    required this.type,
-    this.data,
-    this.error,
-    this.message,
-  });
-
-  factory OperationWebSocketMessage.fromJson(Map<String, dynamic> json) =>
-      _$OperationWebSocketMessageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$OperationWebSocketMessageToJson(this);
 }
 
 class OperationPreset {

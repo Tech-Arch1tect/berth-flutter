@@ -2144,9 +2144,11 @@ class _FileManagerState extends State<FileManager> {
           ),
         );
         
-        // Connect and start the operation
-        await operationsService.connect(widget.serverId, widget.stackName);
-        await operationsService.startOperation(request);
+        await operationsService.startOperation(
+          widget.serverId,
+          widget.stackName,
+          request,
+        );
         
         // Refresh directory after operation (with delay to allow completion)
         Future.delayed(const Duration(seconds: 3), () {

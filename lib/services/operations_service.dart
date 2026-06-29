@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:berth_api/api.dart' as berth_api;
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -13,12 +14,8 @@ class OperationsService {
   StreamController<StreamMessage>? _messageController;
   StreamController<bool>? _connectionController;
   StreamController<String>? _errorController;
-  
+
   bool _isConnected = false;
-  int _reconnectAttempts = 0;
-  static const int _maxReconnectAttempts = 3;
-  Timer? _reconnectTimer;
-  Timer? _pingTimer;
 
   OperationsService(this._berthApiProvider) {
     _messageController = StreamController<StreamMessage>.broadcast();
@@ -32,97 +29,89 @@ class OperationsService {
 
   bool get isConnected => _isConnected;
 
-  Future<void> connect(int serverId, String stackName, {String? operationId}) async {
+  Future<void> startOperation(
+    int serverId,
+    String stackName,
+    OperationRequest request,
+  ) async {
     await disconnect();
 
-    try {
-      final token = _berthApiProvider.authToken;
-      if (token == null) {
-        throw Exception('No authentication token available');
-      }
+    final startData = await _berthApiProvider.callWithAutoRefresh(
+      () => _berthApiProvider.operationsApi
+          .apiV1ServersServeridStacksStacknameOperationsPost(
+        serverId,
+        stackName,
+        berth_api.OperationRequest(
+          command: request.command,
+          options: request.options,
+          services: request.services,
+        ),
+      ),
+    );
 
-      final baseUrl = _berthApiProvider.baseUrl;
+    final operationId = startData?.data.operationId;
+    if (operationId == null || operationId.isEmpty) {
+      throw Exception('Failed to start operation: no operation ID returned');
+    }
 
-      String wsUrl = baseUrl.replaceFirst('http://', 'ws://').replaceFirst('https://', 'wss://');
+    await _connectStream(serverId, stackName, operationId);
+  }
 
-      String path = '/ws/api/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/operations';
-      if (operationId != null) {
-        path += '/$operationId';
-      }
+  Future<void> _connectStream(
+    int serverId,
+    String stackName,
+    String operationId,
+  ) async {
+    final token = _berthApiProvider.authToken;
+    if (token == null) {
+      throw Exception('No authentication token available');
+    }
 
-      final uri = Uri.parse('$wsUrl$path');
+    final baseUrl = _berthApiProvider.baseUrl;
+    final wsUrl =
+        baseUrl.replaceFirst('http://', 'ws://').replaceFirst('https://', 'wss://');
+    final path =
+        '/ws/api/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/operations/$operationId';
+    final uri = Uri.parse('$wsUrl$path');
 
-      final headers = <String, String>{
-        'Authorization': 'Bearer $token',
-      };
+    final headers = <String, String>{
+      'Authorization': 'Bearer $token',
+    };
 
-      if (_berthApiProvider.skipSslVerification) {
-        final webSocket = await WebSocket.connect(
-          uri.toString(),
-          headers: headers,
-          customClient: HttpClient()..badCertificateCallback = (cert, host, port) => true,
-        );
-        _channel = IOWebSocketChannel(webSocket);
-      } else {
-        _channel = IOWebSocketChannel.connect(
-          uri,
-          headers: headers,
-        );
-      }
-
-      if (_connectionController?.isClosed == false) {
-        _connectionController!.add(false); 
-      }
-
-      _channel!.stream.listen(
-        _handleMessage,
-        onError: _handleError,
-        onDone: _handleDisconnected,
+    if (_berthApiProvider.skipSslVerification) {
+      final webSocket = await WebSocket.connect(
+        uri.toString(),
+        headers: headers,
+        customClient: HttpClient()..badCertificateCallback = (cert, host, port) => true,
       );
+      _channel = IOWebSocketChannel(webSocket);
+    } else {
+      _channel = IOWebSocketChannel.connect(uri, headers: headers);
+    }
 
-      
-      _startPingTimer();
-      
-      _isConnected = true;
-      _reconnectAttempts = 0;
-      if (_connectionController?.isClosed == false) {
-        _connectionController!.add(true);
-      }
+    _channel!.stream.listen(
+      _handleMessage,
+      onError: _handleError,
+      onDone: _handleDisconnected,
+    );
 
-    } catch (e) {
-      _handleError(e);
+    _isConnected = true;
+    if (_connectionController?.isClosed == false) {
+      _connectionController!.add(true);
     }
   }
 
   Future<void> disconnect() async {
-    _stopPingTimer();
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
-    
     if (_channel != null) {
       await _channel!.sink.close(status.goingAway);
       _channel = null;
     }
 
     _isConnected = false;
-    
-    
+
     if (_connectionController?.isClosed == false) {
       _connectionController?.add(false);
     }
-  }
-
-  Future<void> startOperation(OperationRequest request) async {
-    if (!_isConnected || _channel == null) {
-      throw Exception('Not connected to operations service');
-    }
-
-    final message = OperationWebSocketMessage(
-      type: 'operation_request',
-      data: request.toJson(),
-    );
-
-    _channel!.sink.add(jsonEncode(message.toJson()));
   }
 
   void _handleMessage(dynamic data) {
@@ -164,11 +153,6 @@ class OperationsService {
     if (_errorController?.isClosed == false) {
       _errorController?.add(error.toString());
     }
-
-    
-    if (_reconnectAttempts < _maxReconnectAttempts) {
-      _scheduleReconnect();
-    }
   }
 
   void _handleDisconnected() {
@@ -176,41 +160,6 @@ class OperationsService {
     if (_connectionController?.isClosed == false) {
       _connectionController?.add(false);
     }
-    
-    
-    if (_reconnectAttempts < _maxReconnectAttempts) {
-      _scheduleReconnect();
-    }
-  }
-
-  void _scheduleReconnect() {
-    _reconnectAttempts++;
-    final delay = Duration(seconds: _reconnectAttempts * 2);
-    
-    _reconnectTimer = Timer(delay, () {
-      
-      
-      if (_errorController?.isClosed == false) {
-        _errorController?.add('Connection lost. Please reconnect manually.');
-      }
-    });
-  }
-
-  void _startPingTimer() {
-    _stopPingTimer();
-    _pingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (_isConnected && _channel != null) {
-        
-        
-      } else {
-        timer.cancel();
-      }
-    });
-  }
-
-  void _stopPingTimer() {
-    _pingTimer?.cancel();
-    _pingTimer = null;
   }
 
   void dispose() {

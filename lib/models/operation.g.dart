@@ -25,12 +25,6 @@ Map<String, dynamic> _$OperationRequestToJson(OperationRequest instance) =>
       'services': instance.services,
     };
 
-OperationResponse _$OperationResponseFromJson(Map<String, dynamic> json) =>
-    OperationResponse(operationId: json['operationId'] as String);
-
-Map<String, dynamic> _$OperationResponseToJson(OperationResponse instance) =>
-    <String, dynamic>{'operationId': instance.operationId};
-
 StreamMessage _$StreamMessageFromJson(Map<String, dynamic> json) =>
     StreamMessage(
       type: json['type'] as String,
@@ -48,21 +42,3 @@ Map<String, dynamic> _$StreamMessageToJson(StreamMessage instance) =>
       'success': instance.success,
       'exitCode': instance.exitCode,
     };
-
-OperationWebSocketMessage _$OperationWebSocketMessageFromJson(
-  Map<String, dynamic> json,
-) => OperationWebSocketMessage(
-  type: json['type'] as String,
-  data: json['data'],
-  error: json['error'] as String?,
-  message: json['message'] as String?,
-);
-
-Map<String, dynamic> _$OperationWebSocketMessageToJson(
-  OperationWebSocketMessage instance,
-) => <String, dynamic>{
-  'type': instance.type,
-  'data': instance.data,
-  'error': instance.error,
-  'message': instance.message,
-};

@@ -70,8 +70,11 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   Timer? _statsTimer;
   
   OperationsService? _operationsService;
+  StreamSubscription<StreamMessage>? _operationMessagesSub;
   bool _isQuickOperationRunning = false;
   String? _runningQuickOperation;
+  String? _quickOpCommand;
+  String? _quickOpTargetName;
 
   @override
   void initState() {
@@ -84,6 +87,7 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
   void dispose() {
     _wsService?.dispose();
     _statsTimer?.cancel();
+    _operationMessagesSub?.cancel();
     _operationsService?.disconnect();
     super.dispose();
   }
@@ -171,21 +175,25 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
 
     final berthApiProvider = context.read<BerthApiProvider>();
     _operationsService ??= OperationsService(berthApiProvider);
-    
+    _operationMessagesSub ??=
+        _operationsService!.messages.listen(_onQuickOperationMessage);
+
     final isStackOperation = request.services.isEmpty;
-    final operationKey = isStackOperation 
+    final operationKey = isStackOperation
         ? 'stack:${request.command}'
         : '${request.command}:${request.services.first}';
-    
+
+    final targetName = isStackOperation
+        ? 'stack ${widget.stackName}'
+        : request.services.first;
+
     setState(() {
       _isQuickOperationRunning = true;
       _runningQuickOperation = operationKey;
+      _quickOpCommand = request.command;
+      _quickOpTargetName = targetName;
     });
-    
-    final targetName = isStackOperation 
-        ? 'stack ${widget.stackName}'
-        : request.services.first;
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Starting ${request.command} operation for $targetName...'),
@@ -193,56 +201,13 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
         duration: const Duration(seconds: 2),
       ),
     );
-    
+
     try {
-      if (!_operationsService!.isConnected) {
-        await _operationsService!.connect(widget.serverId, widget.stackName);
-      }
-      
-      if (!_operationsService!.isConnected) {
-        throw Exception('Unable to connect to operations service');
-      }
-      
-      await _operationsService!.startOperation(request);
-      
-      _operationsService!.messages.listen(
-        (message) {
-          if (message.type == 'complete' && mounted) {
-            setState(() {
-              _isQuickOperationRunning = false;
-              _runningQuickOperation = null;
-            });
-            
-            final completionTargetName = isStackOperation 
-                ? 'stack ${widget.stackName}'
-                : request.services.first;
-                
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${request.command.toUpperCase()} operation completed successfully for $completionTargetName'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                duration: const Duration(seconds: 3),
-              ),
-            );
-            
-            _refreshDataSilently();
-          } else if (message.type == 'error' && mounted) {
-            setState(() {
-              _isQuickOperationRunning = false;
-              _runningQuickOperation = null;
-            });
-            
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Operation failed: ${message.data ?? 'Unknown error'}'),
-                backgroundColor: Theme.of(context).colorScheme.error,
-                duration: const Duration(seconds: 5),
-              ),
-            );
-          }
-        },
+      await _operationsService!.startOperation(
+        widget.serverId,
+        widget.stackName,
+        request,
       );
-      
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -256,6 +221,42 @@ class _StackDetailsScreenState extends State<StackDetailsScreen> with SingleTick
           ),
         );
       }
+    }
+  }
+
+  void _onQuickOperationMessage(StreamMessage message) {
+    if (!mounted || !_isQuickOperationRunning) return;
+
+    if (message.type == 'complete') {
+      final command = _quickOpCommand ?? '';
+      final targetName = _quickOpTargetName ?? 'stack ${widget.stackName}';
+      setState(() {
+        _isQuickOperationRunning = false;
+        _runningQuickOperation = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${command.toUpperCase()} operation completed successfully for $targetName'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+
+      _refreshDataSilently();
+    } else if (message.type == 'error') {
+      setState(() {
+        _isQuickOperationRunning = false;
+        _runningQuickOperation = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Operation failed: ${message.data ?? 'Unknown error'}'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
 
