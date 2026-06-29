@@ -23,15 +23,15 @@ class NetworkCard extends StatelessWidget {
               const SizedBox(height: 12),
               _buildIPAMInfo(context),
             ],
-            if (network.containers != null && network.containers!.isNotEmpty) ...[
+            if (network.containers.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildConnectedContainers(context),
             ],
-            if (network.labels != null && network.labels!.isNotEmpty) ...[
+            if (network.labels.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildLabels(context),
             ],
-            if (network.options != null && network.options!.isNotEmpty) ...[
+            if (network.options.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildOptions(context),
             ],
@@ -153,7 +153,7 @@ class NetworkCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (ipam.driver != null) _buildInfoRow(context, 'IPAM Driver', ipam.driver!),
-              if (ipam.config != null && ipam.config!.isNotEmpty) ...[
+              if (ipam.config.isNotEmpty) ...[
                 if (ipam.driver != null) const SizedBox(height: 8),
                 Text(
                   'Subnets:',
@@ -162,7 +162,7 @@ class NetworkCard extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 4),
-                ...ipam.config!.map((config) => Padding(
+                ...ipam.config.map((config) => Padding(
                       padding: const EdgeInsets.only(left: 8, top: 4),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +193,7 @@ class NetworkCard extends StatelessWidget {
   }
 
   Widget _buildConnectedContainers(BuildContext context) {
-    final containers = network.containers!;
+    final containers = network.containers;
     return ExpansionTile(
       title: Text(
         'Connected Containers (${containers.length})',
@@ -292,7 +292,7 @@ class NetworkCard extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 4,
-          children: network.labels!.entries
+          children: network.labels.entries
               .map((entry) => Chip(
                     label: Text(
                       '${entry.key}: ${entry.value}',
@@ -325,7 +325,7 @@ class NetworkCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
-            children: network.options!.entries
+            children: network.options.entries
                 .map((entry) => _buildInfoRow(context, entry.key, entry.value))
                 .toList(),
           ),

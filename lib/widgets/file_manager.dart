@@ -944,9 +944,9 @@ class _FileManagerState extends State<FileManager> {
         final stats = await _loadSmartDefaults(_currentPath);
         
         if (stats != null) {
-          modeController.text = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
-          ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
-          groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+          modeController.text = stats.mostCommonMode == '755' ? '644' : stats.mostCommonMode;
+          ownerIdController.text = stats.mostCommonOwner.toString();
+          groupIdController.text = stats.mostCommonGroup.toString();
         } else {
           modeController.text = '644';
         }
@@ -1212,10 +1212,10 @@ class _FileManagerState extends State<FileManager> {
     final stats = await _loadSmartDefaults(_currentPath);
     
     if (stats != null) {
-      final defaultMode = stats.mostCommonMode == '755' ? '644' : (stats.mostCommonMode ?? '644');
+      final defaultMode = stats.mostCommonMode == '755' ? '644' : stats.mostCommonMode;
       modeController.text = defaultMode;
-      ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
-      groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+      ownerIdController.text = stats.mostCommonOwner.toString();
+      groupIdController.text = stats.mostCommonGroup.toString();
     } else {
       modeController.text = '644';
     }
@@ -1357,9 +1357,9 @@ class _FileManagerState extends State<FileManager> {
     final stats = await _loadSmartDefaults(_currentPath);
     
     if (stats != null) {
-      modeController.text = stats.mostCommonMode ?? '755';
-      ownerIdController.text = stats.mostCommonOwner?.toString() ?? '';
-      groupIdController.text = stats.mostCommonGroup?.toString() ?? '';
+      modeController.text = stats.mostCommonMode;
+      ownerIdController.text = stats.mostCommonOwner.toString();
+      groupIdController.text = stats.mostCommonGroup.toString();
     } else {
       modeController.text = '755';
     }

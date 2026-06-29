@@ -523,12 +523,12 @@ class _UsersScreenState extends State<UsersScreen> {
                   ),
                 ],
               ),
-              if (user.roles?.isNotEmpty == true) ...[
+              if (user.roles.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
-                  children: user.roles!
+                  children: user.roles
                       .map((role) => Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(

@@ -19,15 +19,15 @@ class VolumeCard extends StatelessWidget {
             _buildHeader(context),
             const SizedBox(height: 12),
             _buildVolumeInfo(context),
-            if (volume.usedBy != null && volume.usedBy!.isNotEmpty) ...[
+            if (volume.usedBy.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildUsedByContainers(context),
             ],
-            if (volume.driverOpts != null && volume.driverOpts!.isNotEmpty) ...[
+            if (volume.driverOpts.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildDriverOptions(context),
             ],
-            if (volume.labels != null && volume.labels!.isNotEmpty) ...[
+            if (volume.labels.isNotEmpty) ...[
               const SizedBox(height: 12),
               _buildLabels(context),
             ],
@@ -136,7 +136,7 @@ class VolumeCard extends StatelessWidget {
   }
 
   Widget _buildUsedByContainers(BuildContext context) {
-    final usedBy = volume.usedBy!;
+    final usedBy = volume.usedBy;
     return ExpansionTile(
       title: Text(
         'Used by Containers (${usedBy.length})',
@@ -241,7 +241,7 @@ class VolumeCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
-            children: volume.driverOpts!.entries
+            children: volume.driverOpts.entries
                 .map((entry) => _buildInfoRow(context, entry.key, entry.value))
                 .toList(),
           ),
@@ -264,7 +264,7 @@ class VolumeCard extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 4,
-          children: volume.labels!.entries
+          children: volume.labels.entries
               .map((entry) => Chip(
                     label: Text(
                       '${entry.key}: ${entry.value}',

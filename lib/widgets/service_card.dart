@@ -759,8 +759,8 @@ class _ServiceCardState extends State<ServiceCard>
             ),
           ),
           
-          if (container.ports != null && container.ports!.isNotEmpty)
-            ...container.ports!.take(isMobile ? 1 : 2).map((port) => Container(
+          if (container.ports.isNotEmpty)
+            ...container.ports.take(isMobile ? 1 : 2).map((port) => Container(
               margin: const EdgeInsets.only(left: 4),
               padding: EdgeInsets.symmetric(
                 horizontal: isMobile ? 4 : 6, 
@@ -783,7 +783,7 @@ class _ServiceCardState extends State<ServiceCard>
               ),
             )),
           
-          if (container.ports != null && container.ports!.length > (isMobile ? 1 : 2))
+          if (container.ports.length > (isMobile ? 1 : 2))
             Container(
               margin: const EdgeInsets.only(left: 4),
               padding: EdgeInsets.symmetric(
@@ -795,7 +795,7 @@ class _ServiceCardState extends State<ServiceCard>
                 borderRadius: BorderRadius.circular(isMobile ? 4 : 6),
               ),
               child: Text(
-                '+${container.ports!.length - (isMobile ? 1 : 2)}',
+                '+${container.ports.length - (isMobile ? 1 : 2)}',
                 style: TextStyle(
                   fontSize: isMobile ? 9 : 10,
                   fontWeight: FontWeight.w600,
@@ -910,7 +910,7 @@ class _ServiceCardState extends State<ServiceCard>
             isMobile: true,
           ),
         
-        if (container.networks != null && container.networks!.isNotEmpty) ...[
+        if (container.networks.isNotEmpty) ...[
           SizedBox(height: 6),
           Text(
             'Networks',
@@ -921,7 +921,7 @@ class _ServiceCardState extends State<ServiceCard>
             ),
           ),
           const SizedBox(height: 2),
-          ...container.networks!.take(2).map((network) => Padding(
+          ...container.networks.take(2).map((network) => Padding(
             padding: const EdgeInsets.only(bottom: 1),
             child: Text(
               '${network.name}${network.ipAddress?.isNotEmpty == true ? ': ${network.ipAddress}' : ''}',
@@ -932,9 +932,9 @@ class _ServiceCardState extends State<ServiceCard>
               ),
             ),
           )),
-          if (container.networks!.length > 2)
+          if (container.networks.length > 2)
             Text(
-              '+${container.networks!.length - 2} more',
+              '+${container.networks.length - 2} more',
               style: TextStyle(
                 fontSize: 9,
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -1030,7 +1030,7 @@ class _ServiceCardState extends State<ServiceCard>
                   isCode: true,
                 ),
               
-              if (container.networks != null && container.networks!.isNotEmpty) ...[
+              if (container.networks.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
                   'Networks',
@@ -1041,7 +1041,7 @@ class _ServiceCardState extends State<ServiceCard>
                   ),
                 ),
                 const SizedBox(height: 4),
-                ...container.networks!.map((network) => Padding(
+                ...container.networks.map((network) => Padding(
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Row(
                     children: [
