@@ -105,7 +105,7 @@ class _TerminalWidgetState extends State<TerminalWidget> {
 
   Future<void> _connectAndStart() async {
     try {
-      final connected = await _terminalService.connect(widget.serverId);
+      final connected = await _terminalService.connect(widget.serverId, widget.stackName);
       
       if (connected) {
         // Set up streams after connection is established
@@ -288,7 +288,7 @@ class _TerminalWidgetState extends State<TerminalWidget> {
                         cursor: theme.colorScheme.primary,
                         selection: theme.colorScheme.primaryContainer,
                         foreground: theme.colorScheme.onSurface,
-                        background: Colors.transparent,
+                        background: theme.colorScheme.surface,
                         black: theme.colorScheme.onSurface.withOpacity(0.87),
                         red: Colors.red,
                         green: Colors.green,

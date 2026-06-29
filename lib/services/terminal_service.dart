@@ -45,7 +45,7 @@ class TerminalService {
   Stream<WebSocketConnectionStatus> get connectionStatusStream => _statusController.stream;
 
   // Connection management
-  Future<bool> connect(int serverId) async {
+  Future<bool> connect(int serverId, String stackName) async {
     if (_isConnecting || isConnected) {
       return isConnected;
     }
@@ -56,7 +56,9 @@ class TerminalService {
     try {
       final baseUrl = _berthApiProvider.baseUrl;
       final wsUrl = baseUrl.replaceFirst('http', 'ws');
-      final uri = Uri.parse('$wsUrl/ws/api/servers/$serverId/terminal');
+      final uri = Uri.parse(
+        '$wsUrl/ws/api/servers/$serverId/stacks/${Uri.encodeComponent(stackName)}/terminal',
+      );
 
       final token = _berthApiProvider.authToken;
       final Map<String, String> headers = {};
@@ -91,6 +93,7 @@ class TerminalService {
       
       _setSession(_session.copyWith(
         serverId: serverId,
+        stackName: stackName,
         isConnecting: false,
         isConnected: false,
         error: null,
@@ -112,7 +115,7 @@ class TerminalService {
         isConnected: false,
         error: 'Connection failed: $e',
       ));
-      _scheduleReconnect(serverId);
+      _scheduleReconnect(serverId, stackName);
       return false;
     }
   }
@@ -270,7 +273,7 @@ class TerminalService {
     ));
     
     if (_shouldReconnect) {
-      _scheduleReconnect(_session.serverId);
+      _scheduleReconnect(_session.serverId, _session.stackName);
     }
   }
 
@@ -281,15 +284,15 @@ class TerminalService {
     ));
   }
 
-  void _scheduleReconnect(int serverId) {
-    if (!_shouldReconnect || serverId == 0) {
+  void _scheduleReconnect(int serverId, String stackName) {
+    if (!_shouldReconnect || serverId == 0 || stackName.isEmpty) {
       return;
     }
-    
+
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(Duration(milliseconds: _reconnectInterval), () {
       if (_shouldReconnect) {
-        connect(serverId);
+        connect(serverId, stackName);
       }
     });
   }
